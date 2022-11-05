@@ -2,6 +2,7 @@ import 'react-native-gesture-handler';
 // Import React and Component
 import React from 'react';
 import {Platform} from 'react-native';
+import {Provider} from 'react-redux';
 
 // Import Navigators from React Navigation
 import {NavigationContainer} from '@react-navigation/native';
@@ -20,6 +21,7 @@ import ShortCut from './screens/maintabs/ShortCut';
 import Friend from './screens/maintabs/Friend';
 import {STATUSBAR_HEIGHT} from './constants';
 import {navigationRef} from './RootNavigation';
+import store from './Store';
 
 const Stack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -141,21 +143,27 @@ const App = () => {
         // },
     };
     return (
-        <NavigationContainer ref={navigationRef}>
-            <Stack.Navigator initialRouteName="SplashScreen" screenOptions={navigationOptions}>
-                {/* SplashScreen which will come once for 5 Seconds */}
-                <Stack.Screen
-                    name="SplashScreen"
-                    component={SplashScreen}
-                    // Hiding header for Splash Screen
-                    options={{headerShown: false}}
-                />
-                {/* Auth Navigator: Include Login and Signup */}
-                <Stack.Screen name="Auth" component={Auth} options={{headerShown: false}} />
-                {/* Navigation Drawer as a landing page */}
-                <Stack.Screen name="RootTab" component={RootTab} options={{headerShown: false}} />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <Provider store={store}>
+            <NavigationContainer ref={navigationRef}>
+                <Stack.Navigator initialRouteName="SplashScreen" screenOptions={navigationOptions}>
+                    {/* SplashScreen which will come once for 5 Seconds */}
+                    <Stack.Screen
+                        name="SplashScreen"
+                        component={SplashScreen}
+                        // Hiding header for Splash Screen
+                        options={{headerShown: false}}
+                    />
+                    {/* Auth Navigator: Include Login and Signup */}
+                    <Stack.Screen name="Auth" component={Auth} options={{headerShown: false}} />
+                    {/* Navigation Drawer as a landing page */}
+                    <Stack.Screen
+                        name="RootTab"
+                        component={RootTab}
+                        options={{headerShown: false}}
+                    />
+                </Stack.Navigator>
+            </NavigationContainer>
+        </Provider>
     );
 };
 
