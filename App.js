@@ -19,6 +19,12 @@ import Profile from './screens/maintabs/Profile';
 import Notification from './screens/maintabs/Notification';
 import ShortCut from './screens/maintabs/ShortCut';
 import Friend from './screens/maintabs/Friend';
+import PostDetail from './screens/maintabs/post/PostDetail';
+import SharePost from './screens/maintabs/post/SharePost';
+import PostOptions from './screens/maintabs/post/PostOptions';
+import FullPostTool from './screens/maintabs/post/posttool/FullPostTool';
+import Comments from './screens/maintabs/comments/Comments';
+import CommentsPopUp from './screens/maintabs/comments/CommentsPopup';
 import {STATUSBAR_HEIGHT} from './constants';
 import {navigationRef} from './RootNavigation';
 import store from './Store';
@@ -54,6 +60,25 @@ const Auth = () => {
     );
 };
 
+const HomeTab = () => {
+    return (
+        <Stack.Navigator
+            screenOptions={{
+                headerShown: false,
+                ...TransitionPresets.ModalSlideFromBottomIOS,
+                gestureResponseDistance: {vertical: 800},
+            }}>
+            <Stack.Screen name="Home" component={Home} />
+
+            <Stack.Screen
+                options={{cardStyle: {backgroundColor: 'transparent'}}}
+                name="Comments"
+                component={Comments}
+            />
+        </Stack.Navigator>
+    );
+};
+
 const MainTab = () => {
     const navigationOptions = {
         tabBarStyle: {
@@ -72,7 +97,7 @@ const MainTab = () => {
                     ),
                 }}
                 name="Home"
-                component={Home}
+                component={HomeTab}
             />
             <Tab.Screen
                 options={{
@@ -129,6 +154,27 @@ const RootTab = props => {
     return (
         <RootStack.Navigator screenOptions={navigationOptions} initialRouteName="MainTab">
             <RootStack.Screen name="MainTab" component={MainTab} />
+            <RootStack.Screen
+                options={{cardStyle: {backgroundColor: 'transparent'}}}
+                name="CommentsPopUp"
+                component={CommentsPopUp}
+            />
+            <RootStack.Screen name="PostDetail" component={PostDetail} />
+            <RootStack.Screen
+                options={{cardStyle: {backgroundColor: 'transparent'}}}
+                name="SharePost"
+                component={SharePost}
+            />
+            <RootStack.Screen
+                options={{cardStyle: {backgroundColor: 'transparent'}}}
+                name="PostOptions"
+                component={PostOptions}
+            />
+            <RootStack.Screen
+                options={{gestureEnabled: false}}
+                name="FullPostTool"
+                component={FullPostTool}
+            />
         </RootStack.Navigator>
     );
 };

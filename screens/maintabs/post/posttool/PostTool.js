@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Text, StyleSheet, View, Image, TextInput, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import FontAweSome5 from 'react-native-vector-icons/FontAwesome5';
-import * as navigation from '../../../RootNavigation';
+import * as navigation from '../../../../RootNavigation';
 class PostTool extends Component {
     constructor(props) {
         super(props);

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, Image, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
-import ScaledImage from '../ScaledImage';
+import ScaledImage from './ScaledImage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import * as navigation from '../../RootNavigation';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';

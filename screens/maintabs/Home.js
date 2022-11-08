@@ -3,8 +3,9 @@ import {View, ScrollView, StyleSheet, Dimensions} from 'react-native';
 import {connect} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import PostTool from './post/posttool/PostTool';
 import Item from '../components/Item';
-import {FetchPostsRequest} from '../../actions/PostActions';
+import {FetchPostsRequest} from '../../actions/PostsActions';
 import {FetchUserData} from '../../actions/UserActions';
 
 class Home extends Component {
@@ -23,7 +24,7 @@ class Home extends Component {
         return (
             <View>
                 <ScrollView bounces={false} style={styles.container}>
-                    {/* <PostTool></PostTool> */}
+                    <PostTool></PostTool>
                     {posts.map((item, index) => (
                         <View key={index}>
                             <Item item={item} key={index}></Item>

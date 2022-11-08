@@ -12,8 +12,6 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
 } from 'react-native';
-import Prompt from 'react-native-single-prompt';
-import {NavigationActions, StackActions} from 'react-navigation';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
