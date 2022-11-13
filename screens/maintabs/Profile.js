@@ -1,13 +1,21 @@
 import React, {useState, useEffect, Component} from 'react';
-import {ActivityIndicator, View, StyleSheet, Image} from 'react-native';
+import {ActivityIndicator, View, Text, Button, StyleSheet, Image} from 'react-native';
 
-class Profile extends Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return <View />;
-  }
-}
+const Profile = ({navigation}) => {
+    const onPressLearnMore = () => {
+      //  navigation.navigate
+    };
+
+    return (
+        <View>
+            <Text>THIS IS PERSONAL PAGE</Text>
+            <Button
+                onPress={onPressLearnMore}
+                title="Learn More"
+                color="#841584"
+                accessibilityLabel="Learn more about this purple button"></Button>
+        </View>
+    );
+};
 
 export default Profile;
