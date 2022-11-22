@@ -36,10 +36,11 @@ class Home extends Component {
     }
 }
 const mapDispatchToProps = async (dispatch, props) => {
-    const jwtToken = await AsyncStorage.getItem('jwt_token');
+    const token = await AsyncStorage.getItem('token');
+    const userId = await AsyncStorage.getItem('user_id');
     return {
-        fetchUserData: () => dispatch(FetchUserData(jwtToken)),
-        fetchPosts: () => dispatch(FetchPostsRequest(jwtToken)),
+        fetchUserData: () => dispatch(FetchUserData(token, userId)),
+        fetchPosts: () => dispatch(FetchPostsRequest(token)),
     };
 };
 const mapStateToProps = state => {

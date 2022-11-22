@@ -1,16 +1,21 @@
-import {UserActions} from '../constants';
+import {UserActions, BASE_URL} from '../constants';
 import axios from 'axios';
-export const FetchUserData = jwtToken => {
-    const taskURI = `${jwtToken}`;
+
+export const FetchUserData = (token, userId) => {
+    const requestBody = {
+        token: token,
+        user_id: userId,
+    };
     return dispatch => {
         dispatch(FetchDefaultState());
         axios
-            .get(taskURI)
-            .then(v => {
-                const userData = v.data;
+            .post(BASE_URL + '/it4788/get_user_info', requestBody)
+            .then(response => {
+                const responseData = response.data;
+                const userData = responseData['data'];
                 dispatch(FetchUserDataSuccess(userData));
-                dispatch(FetchFriendsRequest(jwtToken));
-                dispatch(FetchProfilePostsRequest(jwtToken));
+                dispatch(FetchFriendsRequest(token, userId));
+                dispatch(FetchProfilePostsRequest(token, userId));
             })
             .catch(error => {
                 dispatch(FetchUserDataFailure(error));
@@ -37,13 +42,19 @@ export const FetchUserDataSuccess = userData => {
 };
 
 //Friends
-export const FetchFriendsRequest = jwtToken => {
-    const taskURI = `${jwtToken}`;
+export const FetchFriendsRequest = (token, userId) => {
+    const requestBody = {
+        token: token,
+        user_id: userId,
+        index: 0,
+        count: 0,
+    };
     return dispatch => {
         axios
-            .get(taskURI)
-            .then(v => {
-                const friends = v.data;
+            .post(BASE_URL + '/it4788/get_user_friends', requestBody)
+            .then(response => {
+                const responseData = response.data;
+                const friends = responseData['data']['friends'];
                 dispatch(FetchFriendsSuccess(friends));
             })
             .catch(error => {
@@ -64,13 +75,20 @@ export const FetchFriendsSuccess = friends => {
     };
 };
 //Profie posts
-export const FetchProfilePostsRequest = jwtToken => {
-    const taskURI = `${jwtToken}`;
+export const FetchProfilePostsRequest = (token, userId) => {
+    const requestBody = {
+        token: token,
+        user_id: userId,
+        last_id: 0,
+        index: 0,
+        count: 0,
+    };
     return dispatch => {
         axios
-            .get(taskURI)
-            .then(v => {
-                const posts = v.data;
+            .post(BASE_URL + '/it4788/get_list_posts', requestBody)
+            .then(response => {
+                const responseData = response.data;
+                const posts = responseData['posts'];
                 dispatch(FetchProfilePostsSuccess(posts));
             })
             .catch(error => {

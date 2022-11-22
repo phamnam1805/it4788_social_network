@@ -12,13 +12,15 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
 } from 'react-native';
-
+import axios from 'axios';
+import {HttpStatusCode} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Loader from './components/Loader';
+import {BASE_URL} from '../constants';
 
 const LoginScreen = ({navigation}) => {
-    const [email, setEmail] = useState('');
+    const [phonenumber, setPhonenumber] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errorText, setErrorText] = useState('');
@@ -27,8 +29,8 @@ const LoginScreen = ({navigation}) => {
 
     const handleSubmitPress = () => {
         setErrorText('');
-        if (!email) {
-            alert('Please fill Email');
+        if (!phonenumber) {
+            alert('Please fill Phonenumber');
             return;
         }
         if (!password) {
@@ -36,51 +38,23 @@ const LoginScreen = ({navigation}) => {
             return;
         }
         setLoading(true);
-        let dataToSend = {email: email, password: password};
-        let formBody = [];
-        for (let key in dataToSend) {
-            let encodedKey = encodeURIComponent(key);
-            let encodedValue = encodeURIComponent(dataToSend[key]);
-            formBody.push(encodedKey + '=' + encodedValue);
-        }
-        formBody = formBody.join('&');
-
-        // fetch('http://localhost:3000/api/user/login', {
-        //     method: 'POST',
-        //     body: formBody,
-        //     headers: {
-        //         //Header Defination
-        //         'Content-Type':
-        //             'application/x-www-form-urlencoded;charset=UTF-8',
-        //     },
-        // })
-        //     .then((response) => response.json())
-        //     .then((responseJson) => {
-        //         //Hide Loader
-        //         setLoading(false);
-        //         console.log(responseJson);
-        //         // If server response message same as Data Matched
-        //         if (responseJson.status === 'success') {
-        //             AsyncStorage.setItem('user_id', responseJson.data.email);
-        //             console.log(responseJson.data.email);
-        //             navigation.replace('DrawerNavigationRoutes');
-        //         } else {
-        //             setErrorText(responseJson.msg);
-        //             console.log('Please check your email id or password');
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         //Hide Loader
-        //         setLoading(false);
-        //         console.error(error);
-        //     });
-        if (true) {
-            setLoading(false);
-            console.log(formBody);
-            console.log('Login success');
-            AsyncStorage.setItem('jwt_token', formBody);
-            navigation.replace('RootTab');
-        }
+        let requestBody = {phonenumber: phonenumber, password: password};
+        axios
+            .post(BASE_URL + '/it4788/login', requestBody)
+            .then(response => {
+                if ((response.status = HttpStatusCode.Ok)) {
+                    setLoading(false);
+                    const responseData = response.data;
+                    AsyncStorage.setItem('token', responseData['data']['token']);
+                    AsyncStorage.setItem('user_id', responseData['data']['id']);
+                    navigation.replace('RootTab');
+                }
+            })
+            .catch(error => {
+                //Hide Loader
+                setLoading(false);
+                console.error(error);
+            });
     };
     return (
         <View style={styles.mainBody}>
@@ -108,11 +82,11 @@ const LoginScreen = ({navigation}) => {
                         <View style={styles.SectionStyle}>
                             <TextInput
                                 style={styles.inputStyle}
-                                onChangeText={Email => setEmail(Email)}
-                                placeholder="Enter Email" //dummy@abc.com
+                                onChangeText={Phonenumber => setPhonenumber(Phonenumber)}
+                                placeholder="Enter Phonenumber" //dummy@abc.com
                                 placeholderTextColor="#8b9cb5"
                                 autoCapitalize="none"
-                                keyboardType="email-address"
+                                keyboardType="phone-pad"
                                 returnKeyType="next"
                                 onSubmitEditing={() =>
                                     passwordInputRef.current && passwordInputRef.current.focus()

@@ -13,16 +13,18 @@ import {
     ScrollView,
     Modal,
     SafeAreaView,
-    Button,
     Alert,
 } from 'react-native';
 import Prompt from 'react-native-single-prompt';
-
+import DeviceInfo from 'react-native-device-info';
+import axios from 'axios';
+import {HttpStatusCode} from 'axios';
 import Loader from './components/Loader';
+import {BASE_URL} from '../constants';
 
 const RegisterScreen = props => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+    let phonenumberForVerification = '';
+    const [phonenumber, setPhonenumber] = useState('');
     const [password, setPassword] = useState('');
     const [retypePassword, setRetypePassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -30,18 +32,14 @@ const RegisterScreen = props => {
     const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false);
     const [isPromptActive, setIsPromptActive] = useState(false);
 
-    const emailInputRef = createRef();
+    const phonenumberInputRef = createRef();
     const passwordInputRef = createRef();
     const retypePasswordInputRef = createRef();
 
     const handleSubmitButton = () => {
         setErrorText('');
-        if (!name) {
-            alert('Please fill Name');
-            return;
-        }
-        if (!email) {
-            alert('Please fill Email');
+        if (!phonenumber) {
+            alert('Please fill Phonenumber');
             return;
         }
         if (!password) {
@@ -58,72 +56,59 @@ const RegisterScreen = props => {
         }
         //Show Loader
         setLoading(true);
-        var dataToSend = {
-            name: name,
-            email: email,
+        phonenumberForVerification = phonenumber;
+        var requestBody = {
+            uuid: DeviceInfo.getUniqueId(),
+            phonenumber: phonenumber,
             password: password,
         };
-        var formBody = [];
-        for (var key in dataToSend) {
-            var encodedKey = encodeURIComponent(key);
-            var encodedValue = encodeURIComponent(dataToSend[key]);
-            formBody.push(encodedKey + '=' + encodedValue);
-        }
-        formBody = formBody.join('&');
 
-        // fetch('http://localhost:3000/api/user/register', {
-        //     method: 'POST',
-        //     body: formBody,
-        //     headers: {
-        //         //Header Defination
-        //         'Content-Type':
-        //             'application/x-www-form-urlencoded;charset=UTF-8',
-        //     },
-        // })
-        //     .then((response) => response.json())
-        //     .then((responseJson) => {
-        //         //Hide Loader
-        //         setLoading(false);
-        //         console.log(responseJson);
-        //         // If server response message same as Data Matched
-        //         if (responseJson.status === 'success') {
-        //             setIsRegistrationSuccess(true);
-        //             console.log(
-        //                 'Registration Successful. Please Login to proceed'
-        //             );
-        //         } else {
-        //             setErrorText(responseJson.msg);
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         //Hide Loader
-        //         setLoading(false);
-        //         console.error(error);
-        //     });
-        if (true) {
-            setLoading(false);
-            setIsPromptActive(true);
-            console.log(formBody);
-            console.log('Register success');
-            //   setIsRegistrationSuccess(true);
-        }
+        axios
+            .post(BASE_URL + '/it4788/signup', requestBody)
+            .then(response => {
+                setLoading(false);
+                const responseData = response.data;
+                console.log(responseData);
+                setIsPromptActive(true);
+            })
+            .catch(err => {
+                setLoading(false);
+                console.log(err);
+            });
     };
     const HandleSubmitVerificationCode = code => {
-        if (false) {
-            console.log('Verify success ', code);
-            Alert.alert('Success', 'Register success', [
-                {
-                    text: 'OK',
-                    onPress: () => {
-                        setIsPromptActive(false);
-                        setIsRegistrationSuccess(true);
-                    },
-                },
-            ]);
-        } else {
-            console.log('Verify failed');
-            Alert.alert('Failed', 'Register failed', [{text: 'OK'}]);
-        }
+        var requestBody = {
+            phonenumber: phonenumberForVerification,
+            code_verify: code,
+        };
+        axios
+            .post(BASE_URL + '/it4788/check_verify_code', requestBody)
+            .then(response => {
+                if (response.status === HttpStatusCode.Ok) {
+                    Alert.alert('Success', 'Register success', [
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                setIsPromptActive(false);
+                                setIsRegistrationSuccess(true);
+                            },
+                        },
+                    ]);
+                } else {
+                    Alert.alert('Failed', 'Register failed', [
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                setIsPromptActive(false);
+                                setIsRegistrationSuccess(false);
+                            },
+                        },
+                    ]);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
     };
     if (isPromptActive) {
         return (
@@ -189,27 +174,12 @@ const RegisterScreen = props => {
                     <View style={styles.SectionStyle}>
                         <TextInput
                             style={styles.inputStyle}
-                            onChangeText={Name => setName(Name)}
+                            onChangeText={Phonenumber => setPhonenumber(Phonenumber)}
                             underlineColorAndroid="#f000"
-                            placeholder="Enter Name"
+                            placeholder="Enter Phonenumber"
                             placeholderTextColor="#8b9cb5"
-                            autoCapitalize="sentences"
-                            returnKeyType="next"
-                            onSubmitEditing={() =>
-                                emailInputRef.current && emailInputRef.current.focus()
-                            }
-                            blurOnSubmit={false}
-                        />
-                    </View>
-                    <View style={styles.SectionStyle}>
-                        <TextInput
-                            style={styles.inputStyle}
-                            onChangeText={Email => setEmail(Email)}
-                            underlineColorAndroid="#f000"
-                            placeholder="Enter Email"
-                            placeholderTextColor="#8b9cb5"
-                            keyboardType="email-address"
-                            ref={emailInputRef}
+                            keyboardType="phone-pad"
+                            ref={phonenumberInputRef}
                             returnKeyType="next"
                             onSubmitEditing={() =>
                                 passwordInputRef.current && passwordInputRef.current.focus()
