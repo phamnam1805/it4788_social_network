@@ -9,8 +9,7 @@ const authentication = createSlice({
     initialState,
     reducers: {
         setAuth(state, action) {
-            const {isLoggedIn} = action.payload;
-            state.isLoggedIn = isLoggedIn;
+            state.isLoggedIn = action.payload;
         },
     },
 });

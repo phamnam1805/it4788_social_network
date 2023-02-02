@@ -15,10 +15,13 @@ import {
     SafeAreaView,
     Alert,
 } from 'react-native';
+import prompt from 'react-native-prompt-android';
 import DeviceInfo from 'react-native-device-info';
 import axios from 'axios';
 import {HttpStatusCode} from 'axios';
 
+import {Routes} from '../../core/Routes';
+import {navigation} from '../../core/Navigation';
 import {BASE_URL} from '../../core/Constants';
 import Loader from '../../components/Loader';
 
@@ -30,7 +33,6 @@ const RegisterScreen = props => {
     const [loading, setLoading] = useState(false);
     const [errorText, setErrorText] = useState('');
     const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false);
-    const [isPromptActive, setIsPromptActive] = useState(false);
 
     const phonenumberInputRef = createRef();
     const passwordInputRef = createRef();
@@ -55,21 +57,39 @@ const RegisterScreen = props => {
             return;
         }
         //Show Loader
-        setLoading(true);
+        // setLoading(true);
         phonenumberForVerification = phonenumber;
         var requestBody = {
-            uuid: DeviceInfo.getUniqueId(),
-            phonenumber: phonenumber,
+            phone_number: phonenumber,
             password: password,
         };
-
         axios
             .post(BASE_URL + '/it4788/signup', requestBody)
             .then(response => {
                 setLoading(false);
                 const responseData = response.data;
                 console.log(responseData);
-                setIsPromptActive(true);
+                if (response.status === HttpStatusCode.Ok) {
+                    prompt(
+                        'Verification register',
+                        'Enter your verification code',
+                        [
+                            {
+                                text: 'Cancel',
+                                onPress: () => console.log('Cancel is pressed'),
+                                style: 'cancel',
+                            },
+                            {text: 'Submit', onPress: code => HandleSubmitVerificationCode(code)},
+                        ],
+                        {
+                            type: 'phone-pad',
+                            // type: 'secure-text',
+                            cancelable: true,
+                            placeholder: 'verification code',
+                            // keyboardType: 'phone-pad',
+                        },
+                    );
+                }
             })
             .catch(err => {
                 setLoading(false);
@@ -78,9 +98,10 @@ const RegisterScreen = props => {
     };
     const HandleSubmitVerificationCode = code => {
         var requestBody = {
-            phonenumber: phonenumberForVerification,
-            code_verify: code,
+            phone_number: phonenumberForVerification,
+            verify_code: code,
         };
+        console.log(requestBody);
         axios
             .post(BASE_URL + '/it4788/check_verify_code', requestBody)
             .then(response => {
@@ -89,7 +110,6 @@ const RegisterScreen = props => {
                         {
                             text: 'OK',
                             onPress: () => {
-                                setIsPromptActive(false);
                                 setIsRegistrationSuccess(true);
                             },
                         },
@@ -99,7 +119,6 @@ const RegisterScreen = props => {
                         {
                             text: 'OK',
                             onPress: () => {
-                                setIsPromptActive(false);
                                 setIsRegistrationSuccess(false);
                             },
                         },
@@ -110,20 +129,6 @@ const RegisterScreen = props => {
                 console.log(err);
             });
     };
-    if (isPromptActive) {
-        return (
-            <SafeAreaView style={{flex: 1}}>
-                {/* <Modal transparent={true} visible={isPromptActive} animationType="fade">
-                    <Prompt
-                        exit={() => setIsPromptActive(false)}
-                        submit={code => HandleSubmitVerificationCode(code)}
-                        name="Verification"
-                        placeholder="Enter Verification Code"
-                    />
-                </Modal> */}
-            </SafeAreaView>
-        );
-    }
     if (isRegistrationSuccess) {
         return (
             <View
@@ -144,7 +149,7 @@ const RegisterScreen = props => {
                 <TouchableOpacity
                     style={styles.buttonStyle}
                     activeOpacity={0.5}
-                    onPress={() => props.navigation.navigate('LoginScreen')}>
+                    onPress={() => navigation.navigate(Routes.LOGIN_SCREEN)}>
                     <Text style={styles.buttonTextStyle}>Login Now</Text>
                 </TouchableOpacity>
             </View>

@@ -11,15 +11,22 @@ import {
     Keyboard,
     TouchableOpacity,
     KeyboardAvoidingView,
+    Alert,
 } from 'react-native';
 import axios from 'axios';
 import {HttpStatusCode} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DeviceInfo from 'react-native-device-info';
 
+import {dispatch, navigation} from '../../core/Navigation';
+import {Routes} from '../../core/Routes';
 import {BASE_URL} from '../../core/Constants';
 import Loader from '../../components/Loader';
+import {appOperations} from '../../core/slice/App';
+import {useDispatch} from 'react-redux';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = () => {
+    const dispatch = useDispatch();
     const [phonenumber, setPhonenumber] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -39,25 +46,30 @@ const LoginScreen = ({navigation}) => {
         }
 
         setLoading(true);
-        let requestBody = {phonenumber: phonenumber, password: password};
+        let requestBody = {
+            phone_number: phonenumber,
+            password: password,
+            device_id: DeviceInfo.getUniqueId(),
+        };
         console.log(requestBody);
-        setLoading(false);
-        // axios
-        //     .post(BASE_URL + '/it4788/login', requestBody)
-        //     .then(response => {
-        //         if ((response.status = HttpStatusCode.Ok)) {
-        //             setLoading(false);
-        //             const responseData = response.data;
-        //             AsyncStorage.setItem('token', responseData['data']['token']);
-        //             AsyncStorage.setItem('user_id', responseData['data']['id']);
-        //             navigation.replace('RootTab');
-        //         }
-        //     })
-        //     .catch(error => {
-        //         //Hide Loader
-        //         setLoading(false);
-        //         console.error(error);
-        //     });
+        axios
+            .post(BASE_URL + '/it4788/login', requestBody)
+            .then(response => {
+                if ((response.status = HttpStatusCode.Ok)) {
+                    const responseData = response.data;
+                    const token = responseData.data.token;
+                    // console.log(token);
+                    dispatch(appOperations.login(token));
+                    setLoading(false);
+                } else {
+                    alert('Incorrect phone number or password');
+                }
+            })
+            .catch(error => {
+                //Hide Loader
+                setLoading(false);
+                console.error(error);
+            });
     };
     return (
         <View style={styles.mainBody}>
@@ -124,7 +136,7 @@ const LoginScreen = ({navigation}) => {
                         </TouchableOpacity>
                         <Text
                             style={styles.registerTextStyle}
-                            onPress={() => navigation.navigate('RegisterScreen')}>
+                            onPress={() => navigation.navigate(Routes.REGISTER_SCREEN)}>
                             New Here ? Register
                         </Text>
                     </KeyboardAvoidingView>

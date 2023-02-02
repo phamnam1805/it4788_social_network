@@ -6,6 +6,7 @@ import {navigationRef} from './Navigation';
 import {TransitionPresets} from '@react-navigation/stack';
 import {authenticationSelectors} from './slice/Authentication';
 import {UnAuthNavigationStack} from './navigation/UnAuthNavigationStack';
+import {AuthNavigationStack} from './navigation/AuthNavigationStack';
 
 const forFade = ({current, closing}) => ({
     cardStyle: {
@@ -17,7 +18,7 @@ const TransitionPreset = Platform.OS === 'ios' ? TransitionPresets.ModalSlideFro
 export const screenOptions = {
     headerShown: false,
     ...TransitionPreset,
-    headerBackVisible: false,
+    // headerBackVisible: false,
 };
 
 if (Platform.OS === 'android') {
@@ -26,10 +27,11 @@ if (Platform.OS === 'android') {
 
 export function NavigationRouter() {
     const isLoggedIn = useSelector(authenticationSelectors.isLoggedIn);
+    console.log(isLoggedIn);
     return (
         <NavigationContainer screenOptions={screenOptions} ref={navigationRef}>
-            <UnAuthNavigationStack />
-            {/* {isLoggedIn ? <AuthNavigationStack /> : <UnAuthNavigationStack />} */}
+            {/* <AuthNavigationStack /> */}
+            {isLoggedIn ? <AuthNavigationStack /> : <UnAuthNavigationStack />}
         </NavigationContainer>
     );
 }

@@ -3,6 +3,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import SplashScreen from 'react-native-splash-screen';
 import {navigate} from '../Navigation';
 import {Routes} from '../Routes';
+import {authenticationActions} from './Authentication';
 
 const initialState = {
     loading: true,
@@ -35,10 +36,16 @@ export const appOperations = {
     initialize: () => async (dispatch, getState) => {
         let token = await AsyncStorage.getItem('token');
         if (token) {
+            dispatch(authenticationActions.setAuth(true));
             dispatch(appActions.setToken(token));
         } else {
             navigate(Routes.LOGIN_SCREEN);
         }
+    },
+    login: token => async (dispatch, getState) => {
+        dispatch(authenticationActions.setAuth(true));
+        dispatch(appActions.setToken(token));
+        await AsyncStorage.setItem('token', token);
     },
 };
 
