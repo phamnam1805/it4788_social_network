@@ -21,10 +21,11 @@ export const TabNavigatorScreen = () => {
         },
         showIcon: true,
         showLabel: false,
+        tabBarShowLabel: false,
     };
 
     return (
-        <TopTab.Navigator tabBarOptions={navigationOptions}>
+        <TopTab.Navigator screenOptions={navigationOptions}>
             <TopTab.Screen
                 options={{
                     tabBarIcon: ({tintColor, focused}) => (

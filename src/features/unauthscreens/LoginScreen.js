@@ -57,9 +57,16 @@ const LoginScreen = () => {
             .then(response => {
                 if ((response.status = HttpStatusCode.Ok)) {
                     const responseData = response.data;
-                    const token = responseData.data.token;
+                    const data = responseData.data;
                     // console.log(token);
-                    dispatch(appOperations.login(token));
+                    dispatch(
+                        appOperations.login({
+                            userId: data.id,
+                            username: data.username,
+                            token: data.token,
+                            avatar: data.avatar,
+                        }),
+                    );
                     setLoading(false);
                 } else {
                     alert('Incorrect phone number or password');

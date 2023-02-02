@@ -22,9 +22,9 @@ const user = createSlice({
 
 export const userActions = user.actions;
 
-const getRoot = state => state.app;
+const getRoot = state => state.user;
 
-export const appSelectors = {
+export const userSelectors = {
     getUsername: state => getRoot(state).username,
     getAvatar: state => getRoot(state).avatar,
 };
