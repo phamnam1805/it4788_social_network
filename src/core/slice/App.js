@@ -3,7 +3,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import SplashScreen from 'react-native-splash-screen';
 import {navigate} from '../Navigation';
 import {Routes} from '../Routes';
-import {userActions} from './User';
+import {userActions, userOperations, userSelectors} from './User';
 import {authenticationActions} from './Authentication';
 import {postOperations} from './Post';
 
@@ -34,6 +34,7 @@ export const appActions = app.actions;
 const getRoot = state => state.app;
 
 export const appSelectors = {
+    getApp: state => getRoot(state),
     getLoading: state => getRoot(state).loading,
     getUserId: state => getRoot(state).userId,
     getToken: state => getRoot(state).token,
@@ -41,13 +42,12 @@ export const appSelectors = {
 
 export const appOperations = {
     initialize: () => async (dispatch, getState) => {
-        let userId = await AsyncStorage.getItem('userId');
-        let token = await AsyncStorage.getItem('token');
-
-        if (token && userId) {
+        let appData = await AsyncStorage.getItem('app');
+        let userData = await AsyncStorage.getItem('user');
+        if (appData && userData) {
+            dispatchData(dispatch, appData, userData);
             dispatch(authenticationActions.setAuth(true));
-            dispatch(appActions.setUserId(userId));
-            dispatch(appActions.setToken(token));
+            dispatch(userOperations.fetchUserInfo());
             dispatch(postOperations.fetchListPosts({lastId: 0, index: 0, count: 0}));
         } else {
             navigate(Routes.LOGIN_SCREEN);
@@ -62,9 +62,27 @@ export const appOperations = {
             dispatch(userActions.setUsername(username));
             dispatch(userActions.setAvatar(avatar));
             dispatch(postOperations.fetchListPosts({lastId: 0, index: 0, count: 0}));
-            await AsyncStorage.setItem('userId', userId);
-            await AsyncStorage.setItem('token', token);
+            const appData = appSelectors.getApp(getState());
+            const userData = userSelectors.getUser(getState());
+            await saveData(appData, userData);
         },
 };
 
 export const appReducer = app.reducer;
+
+const saveData = async (appData, userData) => {
+    await AsyncStorage.setItem('app', JSON.stringify(appData));
+    await AsyncStorage.setItem('user', JSON.stringify(userData));
+};
+
+const dispatchData = (dispatch, appData, userData) => {
+    const appDataParsed = JSON.parse(appData);
+    const userDataParsed = JSON.parse(userData);
+    dispatch(appActions.setToken(appDataParsed.token));
+    dispatch(appActions.setUserId(appDataParsed.userId));
+
+    dispatch(userActions.setUsername(userDataParsed.username));
+    dispatch(userActions.setAvatar(userDataParsed.avatar));
+    dispatch(userActions.setPosts(userDataParsed.posts));
+    dispatch(userActions.setFriends(userDataParsed.friends));
+};

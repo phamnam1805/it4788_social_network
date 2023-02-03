@@ -14,19 +14,31 @@ const post = createSlice({
         setPosts(state, action) {
             state.posts = action.payload;
         },
+        setPost(state, action) {
+            const payload = action.payload;
+            state.posts[payload.index] = payload.post;
+        },
     },
     extraReducers: builder => {
         builder.addCase(postOperations.fetchListPosts.fulfilled, (state, action) => {
             const response = action.payload;
             if (response.status === HttpStatusCode.Ok) {
                 const posts = response.data.data.posts;
-                console.log(posts);
+                // console.log(posts);
                 state.posts = posts;
                 // state.posts = [...posts];
             }
         });
         builder.addCase(postOperations.fetchListPosts.rejected, (state, action) => {});
         builder.addCase(postOperations.fetchListPosts.pending, (state, action) => {});
+        builder.addCase(postOperations.fetchLikePost.fulfilled, (state, action) => {
+            const result = action.payload;
+            const response = result.response;
+            if (response.status === HttpStatusCode.Ok) {
+                const index = result.index;
+                state.posts[index] = response.data.data;
+            }
+        });
     },
 });
 
@@ -53,6 +65,32 @@ export const postOperations = {
         const response = await axios.post(BASE_URL + '/it4788/get_list_posts', requestBody);
         return response;
     }),
+    fetchLikePost: createAsyncThunk('post/fetchLikePost', async (data, thunkParams) => {
+        const {index} = data;
+        const token = appSelectors.getToken(thunkParams.getState());
+        const postId = postSelectors.getPost(thunkParams.getState())[index].id;
+        await postApi.likePost(token, postId);
+        return {index: index, response: await postApi.getPost(token, postId)};
+    }),
 };
 
 export const postReducer = post.reducer;
+
+export const postApi = {
+    getPost: async (token, postId) => {
+        const requestBody = {
+            token: token,
+            id: postId,
+        };
+        const response = await axios.post(BASE_URL + '/it4788/get_post', requestBody);
+        return response;
+    },
+    likePost: async (token, postId) => {
+        const requestBody = {
+            token: token,
+            id: postId,
+        };
+        const response = await axios.post(BASE_URL + '/it4788/like', requestBody);
+        return response;
+    },
+};

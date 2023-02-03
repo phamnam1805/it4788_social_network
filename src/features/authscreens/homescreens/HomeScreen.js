@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
     View,
     ScrollView,
@@ -10,22 +10,36 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-import {postSelectors} from '../../../core/slice/Post';
+import {postOperations, postSelectors} from '../../../core/slice/Post';
 import ScaledImage from '../../../components/ScaledImage';
+import PostTool from './PostTool';
 
 import {Routes} from '../../../core/Routes';
 import {navigation} from '../../../core/Navigation';
 import {userSelectors} from '../../../core/slice/User';
 
-const Item = ({user, item, userAvatar}) => {
+const Item = ({index, item, user}) => {
+    const [isLiked, setIsLiked] = useState(item.is_liked);
+    const [like, setLike] = useState(item.like);
+    const dispatch = useDispatch();
     const onPressHandle = () => {
         const {comments} = item;
         navigation.navigate('Comments', {
             comments,
         });
     };
+    const onReactPressHandler = async () => {
+        dispatch(postOperations.fetchLikePost({index: index}));
+        if (isLiked) {
+            setLike(like - 1);
+        } else {
+            setLike(like + 1);
+        }
+        setIsLiked(!isLiked);
+    };
+
     const onPressPostOptionsIconHandler = () => {
         navigation.navigate('PostOptions', {
             postDetail: item,
@@ -54,9 +68,7 @@ const Item = ({user, item, userAvatar}) => {
         <View style={stylesForItem.item}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={stylesForItem.customListView}>
-                    <Image
-                        style={stylesForItem.avatar}
-                        source={{uri: item.user?.avatar_url}}></Image>
+                    <Image style={stylesForItem.avatar} source={{uri: item.author?.avatar}}></Image>
                     <View style={stylesForItem.infoWrapper}>
                         <View style={stylesForItem.namesWrapper}>
                             <TouchableOpacity
@@ -82,17 +94,24 @@ const Item = ({user, item, userAvatar}) => {
                 <Text style={stylesForItem.paragraph}>{item.content}</Text>
             </View>
             <TouchableOpacity onPress={onPressPostImageHandler.bind(this, item.id)}>
-                <View style={stylesForItem.imageContainer}>
-                    <ScaledImage height={300} source={item.image[0]}></ScaledImage>
-                </View>
+                {item.image.length ? (
+                    <View style={stylesForItem.imageContainer}>
+                        <ScaledImage height={300} source={item.image[0]}></ScaledImage>
+                    </View>
+                ) : (
+                    <View></View>
+                )}
             </TouchableOpacity>
             <View horizontal={true} style={stylesForItem.reactionContainer}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={onReactPressHandler}>
                     <Icon
                         name="thumbs-up"
-                        color="#318bfb"
+                        // color="#318bfb"
+                        color={isLiked ? '#318bfb' : '#999999'}
                         backgroundColor="#fff"
-                        style={stylesForItem.reactionIcon}></Icon>
+                        style={stylesForItem.reactionIcon}>
+                        <Text style={{fontSize: 14}}> {like} likes</Text>
+                    </Icon>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={onPressHandle.bind(this)}>
                     <Icon
@@ -101,12 +120,12 @@ const Item = ({user, item, userAvatar}) => {
                         color="gray"
                         backgroundColor="white"
                         style={{...stylesForItem.reactionIcon, fontSize: 14}}>
-                        <Text style={{fontSize: 12}}> {item.comment} comments</Text>
+                        <Text style={{fontSize: 14}}> {item.comment} comments</Text>
                     </Icon>
                 </TouchableOpacity>
             </View>
             <View style={stylesForItem.commentContainer}>
-                <Image source={{uri: userAvatar}} style={stylesForItem.commentAvatar}></Image>
+                <Image source={{uri: user.avatar}} style={stylesForItem.commentAvatar}></Image>
                 <View style={stylesForItem.commentInput}>
                     <TouchableOpacity
                         onPress={onPressHandle.bind(this)}
@@ -127,17 +146,17 @@ const Item = ({user, item, userAvatar}) => {
 
 const HomeScreen = () => {
     const posts = useSelector(postSelectors.getPost);
-    const userAvatar = useSelector(userSelectors.getAvatar);
+    const user = useSelector(userSelectors.getUser);
     if (posts.length === 0) return <View></View>;
     return (
         <View>
             <ScrollView bounces={false} style={styles.listContainter}>
-                {/* <PostTool></PostTool> */}
+                <PostTool userAvatar={user.avatar}></PostTool>
                 {/* <Stories></Stories> */}
                 {posts.map((item, index) => (
                     <View key={index}>
                         {/* {index === 1 && <RecommendFriends></RecommendFriends>} */}
-                        <Item item={item} key={index} userAvatar={userAvatar}></Item>
+                        <Item index={index} item={item} key={index} user={user}></Item>
                     </View>
                 ))}
             </ScrollView>
@@ -201,10 +220,11 @@ const stylesForItem = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'nowrap',
         alignItems: 'center',
+        justifyContent: 'space-between',
     },
     reactionIcon: {
-        fontSize: 20,
-        padding: 10,
+        fontSize: 25,
+        padding: 12,
     },
     shareIcon: {
         position: 'absolute',
