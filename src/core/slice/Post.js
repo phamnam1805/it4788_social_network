@@ -2,7 +2,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios, {HttpStatusCode} from 'axios';
 import {BASE_URL} from '../Constants';
 import {appSelectors} from './App';
-import {View, Text} from 'react-native';
+import {View, Text, Alert} from 'react-native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const initialState = {
@@ -14,6 +14,8 @@ const initialState = {
         'emoticon-sad-outline': 'feeling sad',
     },
     statusList: [],
+    lastIndex: 0,
+    count: 10,
 };
 
 const post = createSlice({
@@ -31,15 +33,29 @@ const post = createSlice({
             const payload = action.payload;
             state.statusList = payload;
         },
+        setLastIndex(state, action) {
+            const payload = action.payload;
+            state.lastIndex = payload;
+        },
     },
     extraReducers: builder => {
         builder.addCase(postOperations.fetchGetListPosts.fulfilled, (state, action) => {
-            const response = action.payload;
+            const payload = action.payload;
+            const response = payload.response;
             if (response.status === HttpStatusCode.Ok) {
-                const posts = response.data.data.posts;
-                // console.log(posts);
-                state.posts = posts;
-                // state.posts = [...posts];
+                const newList = response.data.data.posts;
+                const reloadFlag = payload.reloadFlag;
+                if (reloadFlag) {
+                    state.posts = newList;
+                    state.lastIndex = 0;
+                    // Alert.alert('Hehe');
+                } else {
+                    // Alert.alert('Hehe');
+                    const lastList = payload.lastList;
+                    const result = mergePosts(lastList, newList);
+                    state.posts = result;
+                    state.lastIndex = Math.ceil(result.length / state.count);
+                }
             }
         });
         builder.addCase(postOperations.fetchGetListPosts.rejected, (state, action) => {});
@@ -69,6 +85,8 @@ export const postSelectors = {
     getPost: state => getRoot(state).posts,
     getStatusContent: state => getRoot(state).statusContent,
     getStatusList: state => getRoot(state).statusList,
+    getLastIndex: state => getRoot(state).lastIndex,
+    getCount: state => getRoot(state).count,
 };
 export const postOperations = {
     createStatusList: () => async (dispatch, getState) => {
@@ -84,7 +102,7 @@ export const postOperations = {
                             <Text style={{color: '#1493ff', fontSize: 20}}>
                                 {statusContent[key] + ' '}
                                 <MaterialCommunityIcon
-                                    size={30}
+                                    size={35}
                                     name={key}
                                     // style={styles.optionImage}
                                     color="#bd9cf1"
@@ -107,12 +125,21 @@ export const postOperations = {
         dispatch(postActions.setStatusList(statusArr));
     },
     fetchGetListPosts: createAsyncThunk('post/fetchGetListPosts', async (data, thunkParams) => {
-        const {lastId, index, count} = data;
+        const {lastId, reloadFlag} = data;
         const state = thunkParams.getState();
-        const userId = appSelectors.getUserId(state);
+
         const token = appSelectors.getToken(state);
-        const response = await postApi.getListPosts(token, userId, lastId, index, count);
-        return response;
+        const userId = appSelectors.getUserId(state);
+        const lastIndex = postSelectors.getLastIndex(state);
+        const count = postSelectors.getCount(state);
+        const lastList = postSelectors.getPost(state);
+        if (reloadFlag) {
+            const response = await postApi.getListPosts(token, userId, lastId, 0, count);
+            return {lastList: lastList, response: response, reloadFlag: true};
+        } else {
+            const response = await postApi.getListPosts(token, userId, lastId, lastIndex, count);
+            return {lastList: lastList, response: response};
+        }
     }),
     fetchLikePost: createAsyncThunk('post/fetchLikePost', async (data, thunkParams) => {
         const {index} = data;
@@ -184,3 +211,19 @@ export const postApi = {
         return response;
     },
 };
+
+const mergePosts = (lastList, newList) => {
+    if (newList.length === 0) {
+        return lastList;
+    }
+    const firstItem = newList[0];
+    for (let i = lastList.length - 1; i > 0; i--) {
+        if (lastList[i].id === firstItem.id) {
+            lastList.pop();
+            console.log('pop');
+        }
+    }
+    return lastList.concat(newList);
+};
+
+export const convertTime = time => {};

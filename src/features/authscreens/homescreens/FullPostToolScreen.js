@@ -117,6 +117,7 @@ const FullPostToolScreen = ({route}) => {
                     video: video,
                 }),
             );
+            navigation.navigate(Routes.HOME_SCREEN);
         }
     };
 
@@ -152,7 +153,7 @@ const FullPostToolScreen = ({route}) => {
                                         {' is ' + statusContent[selectedStatus]}
                                     </Text>
                                     <MaterialCommunityIcon
-                                        size={25}
+                                        size={30}
                                         name={selectedStatus}
                                         // style={styles.optionImage}
                                         color="#bd9cf1"

@@ -7,6 +7,9 @@ import {
     StyleSheet,
     Dimensions,
     TouchableOpacity,
+    RefreshControl,
+    FlatList,
+    ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
@@ -20,11 +23,13 @@ import PostTool from '../../../components/PostTool';
 import {Routes} from '../../../core/Routes';
 import {navigation} from '../../../core/Navigation';
 import {userSelectors} from '../../../core/slice/User';
+import Loader from '../../../components/Loader';
 
 const Item = ({index, item, user, statusContent}) => {
     // console.log(item);
     const [isLiked, setIsLiked] = useState(item.is_liked);
     const [like, setLike] = useState(item.like);
+
     const dispatch = useDispatch();
     const onPressHandle = () => {
         const {comments} = item;
@@ -80,7 +85,7 @@ const Item = ({index, item, user, statusContent}) => {
                                         {' is ' + statusContent[item.status]}
                                     </Text>
                                     <MaterialCommunityIcon
-                                        size={20}
+                                        size={35}
                                         name={item.status}
                                         // style={styles.optionImage}
                                         color="#bd9cf1"
@@ -160,15 +165,44 @@ const HomeScreen = () => {
     const posts = useSelector(postSelectors.getPost);
     const user = useSelector(userSelectors.getUser);
     const statusContent = useSelector(postSelectors.getStatusContent);
-    if (posts.length === 0) return <View></View>;
+    const dispatch = useDispatch();
+
+    const [isReload, setIsReload] = useState(false);
+    const [isLoadMore, setIsLoadMore] = useState(false);
+    const handleReload = () => {
+        setIsReload(true);
+        dispatch(postOperations.fetchGetListPosts({reloadFlag: true})).then(() => {
+            setIsReload(false);
+        });
+    };
+    const handleLoadMore = () => {
+        if (!isLoadMore) {
+            setIsLoadMore(true);
+            dispatch(postOperations.fetchGetListPosts({})).then(() => {
+                setIsLoadMore(false);
+            });
+        }
+    };
+
+    const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+    };
+
     return (
         <View>
-            <ScrollView bounces={false} style={styles.listContainter}>
+            <ScrollView
+                bounces={false}
+                style={styles.listContainter}
+                refreshControl={<RefreshControl refreshing={isReload} onRefresh={handleReload} />}
+                onMomentumScrollEnd={({nativeEvent}) => {
+                    if (isCloseToBottom(nativeEvent)) {
+                        handleLoadMore();
+                    }
+                }}
+                scrollEventThrottle={400}>
                 <PostTool userAvatar={user.avatar}></PostTool>
-                {/* <Stories></Stories> */}
                 {posts.map((item, index) => (
                     <View key={index}>
-                        {/* {index === 1 && <RecommendFriends></RecommendFriends>} */}
                         <Item
                             index={index}
                             item={item}
@@ -177,6 +211,14 @@ const HomeScreen = () => {
                             statusContent={statusContent}></Item>
                     </View>
                 ))}
+                <View visible={isLoadMore}>
+                    <ActivityIndicator
+                        animating={isLoadMore}
+                        color="#000000"
+                        size="large"
+                        style={styles.activityIndicator}
+                    />
+                </View>
             </ScrollView>
         </View>
     );
@@ -302,5 +344,9 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
         lineHeight: 50,
+    },
+    activityIndicator: {
+        alignItems: 'center',
+        height: 80,
     },
 });
