@@ -10,17 +10,19 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {postOperations, postSelectors} from '../../../core/slice/Post';
 import ScaledImage from '../../../components/ScaledImage';
-import PostTool from './PostTool';
+import PostTool from '../../../components/PostTool';
 
 import {Routes} from '../../../core/Routes';
 import {navigation} from '../../../core/Navigation';
 import {userSelectors} from '../../../core/slice/User';
 
-const Item = ({index, item, user}) => {
+const Item = ({index, item, user, statusContent}) => {
+    // console.log(item);
     const [isLiked, setIsLiked] = useState(item.is_liked);
     const [like, setLike] = useState(item.like);
     const dispatch = useDispatch();
@@ -50,11 +52,6 @@ const Item = ({index, item, user}) => {
             id,
         });
     };
-    const onPressShareHandler = () => {
-        navigation.navigate('SharePost', {
-            id: item.id,
-        });
-    };
     const onPressProfileHandler = userId => {
         if (userId === user.id) {
             return navigation.navigate('Profile');
@@ -77,6 +74,21 @@ const Item = ({index, item, user}) => {
                                     {item.author?.username}
                                 </Text>
                             </TouchableOpacity>
+                            {item.status ? (
+                                <>
+                                    <Text style={{fontSize: 16, fontWeight: '500'}}>
+                                        {' is ' + statusContent[item.status]}
+                                    </Text>
+                                    <MaterialCommunityIcon
+                                        size={20}
+                                        name={item.status}
+                                        // style={styles.optionImage}
+                                        color="#bd9cf1"
+                                    />
+                                </>
+                            ) : (
+                                <></>
+                            )}
                         </View>
                         <View style={stylesForItem.extraInfoWrapper}>
                             <Text style={{color: '#333', fontSize: 14}}>{item.created}</Text>
@@ -104,24 +116,24 @@ const Item = ({index, item, user}) => {
             </TouchableOpacity>
             <View horizontal={true} style={stylesForItem.reactionContainer}>
                 <TouchableOpacity onPress={onReactPressHandler}>
-                    <Icon
+                    <FontAwesome5Icon
                         name="thumbs-up"
                         // color="#318bfb"
                         color={isLiked ? '#318bfb' : '#999999'}
                         backgroundColor="#fff"
                         style={stylesForItem.reactionIcon}>
                         <Text style={{fontSize: 14}}> {like} likes</Text>
-                    </Icon>
+                    </FontAwesome5Icon>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={onPressHandle.bind(this)}>
-                    <Icon
+                    <FontAwesome5Icon
                         lineBreakMode={false}
                         name="comment-alt"
                         color="gray"
                         backgroundColor="white"
                         style={{...stylesForItem.reactionIcon, fontSize: 14}}>
                         <Text style={{fontSize: 14}}> {item.comment} comments</Text>
-                    </Icon>
+                    </FontAwesome5Icon>
                 </TouchableOpacity>
             </View>
             <View style={stylesForItem.commentContainer}>
@@ -147,6 +159,7 @@ const Item = ({index, item, user}) => {
 const HomeScreen = () => {
     const posts = useSelector(postSelectors.getPost);
     const user = useSelector(userSelectors.getUser);
+    const statusContent = useSelector(postSelectors.getStatusContent);
     if (posts.length === 0) return <View></View>;
     return (
         <View>
@@ -156,7 +169,12 @@ const HomeScreen = () => {
                 {posts.map((item, index) => (
                     <View key={index}>
                         {/* {index === 1 && <RecommendFriends></RecommendFriends>} */}
-                        <Item index={index} item={item} key={index} user={user}></Item>
+                        <Item
+                            index={index}
+                            item={item}
+                            key={index}
+                            user={user}
+                            statusContent={statusContent}></Item>
                     </View>
                 ))}
             </ScrollView>

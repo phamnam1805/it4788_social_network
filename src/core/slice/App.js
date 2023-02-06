@@ -48,7 +48,8 @@ export const appOperations = {
             dispatchData(dispatch, appData, userData);
             dispatch(authenticationActions.setAuth(true));
             dispatch(userOperations.fetchUserInfo());
-            dispatch(postOperations.fetchListPosts({lastId: 0, index: 0, count: 0}));
+            dispatch(postOperations.createStatusList());
+            dispatch(postOperations.fetchGetListPosts({lastId: 0, index: 0, count: 0}));
         } else {
             navigate(Routes.LOGIN_SCREEN);
         }
@@ -61,7 +62,7 @@ export const appOperations = {
             dispatch(appActions.setToken(token));
             dispatch(userActions.setUsername(username));
             dispatch(userActions.setAvatar(avatar));
-            dispatch(postOperations.fetchListPosts({lastId: 0, index: 0, count: 0}));
+            dispatch(postOperations.fetchGetListPosts({lastId: 0, index: 0, count: 0}));
             const appData = appSelectors.getApp(getState());
             const userData = userSelectors.getUser(getState());
             await saveData(appData, userData);

@@ -1,6 +1,6 @@
 import React from 'react';
-import {View, Text} from 'react-native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {View, Text, Platform} from 'react-native';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -12,9 +12,12 @@ import {NotificationNavigationStack} from './NotificationNavigationStack';
 import {ShortcutNavigationStack} from './ShortcutNavigationStack';
 import {Routes} from '../Routes';
 
-const TopTab = createMaterialTopTabNavigator();
+import FullPostToolScreen from '../../features/authscreens/homescreens/FullPostToolScreen';
 
-export const TabNavigatorScreen = () => {
+const TopTab = createMaterialTopTabNavigator();
+const StackNavigator = createStackNavigator();
+
+export const MainTab = ({navigation}) => {
     const navigationOptions = {
         style: {
             paddingTop: STATUSBAR_HEIGHT,
@@ -78,7 +81,22 @@ export const TabNavigatorScreen = () => {
     );
 };
 export const AuthNavigationStack = () => {
-    return <TabNavigatorScreen />;
+    const TransitionPreset = Platform.OS === 'ios' ? TransitionPresets.ModalSlideFromBottomIOS : {};
+    const navigationOptions = {
+        headerShown: false,
+        ...TransitionPreset,
+    };
+    return (
+        <StackNavigator.Navigator
+            screenOptions={navigationOptions}
+            initialRouteName={Routes.MAIN_TAB}>
+            <StackNavigator.Screen name={Routes.MAIN_TAB} component={MainTab} />
+            <StackNavigator.Screen
+                name={Routes.FULL_POST_TOOL_SCREEN}
+                component={FullPostToolScreen}
+            />
+        </StackNavigator.Navigator>
+    );
     // return (
     //     <View>
     //         <Text>Auth</Text>

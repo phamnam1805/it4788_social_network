@@ -37,11 +37,11 @@ const LoginScreen = () => {
     const handleSubmitPress = () => {
         setErrorText('');
         if (!phonenumber) {
-            alert('Please fill Phonenumber');
+            Alert.alert('', 'Please fill Phonenumber');
             return;
         }
         if (!password) {
-            alert('Please fill Password');
+            Alert.alert('', 'Please fill Password');
             return;
         }
 

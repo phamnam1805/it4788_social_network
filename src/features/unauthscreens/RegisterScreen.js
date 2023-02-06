@@ -41,19 +41,19 @@ const RegisterScreen = props => {
     const handleSubmitButton = () => {
         setErrorText('');
         if (!phonenumber) {
-            alert('Please fill Phonenumber');
+            Alert.alert('', 'Please fill Phonenumber');
             return;
         }
         if (!password) {
-            alert('Please fill Password');
+            Alert.alert('', 'Please fill Password');
             return;
         }
         if (!retypePassword) {
-            alert('Please fill Retype Password');
+            Alert.alert('', 'Please fill Retype Password');
             return;
         }
         if (retypePassword != password) {
-            alert('Please retype the same password');
+            Alert.alert('', 'Please retype the same password');
             return;
         }
         //Show Loader
@@ -68,7 +68,7 @@ const RegisterScreen = props => {
             .then(response => {
                 setLoading(false);
                 const responseData = response.data;
-                console.log(responseData);
+                // console.log(responseData);
                 if (response.status === HttpStatusCode.Ok) {
                     prompt(
                         'Verification register',
@@ -101,7 +101,7 @@ const RegisterScreen = props => {
             phone_number: phonenumberForVerification,
             verify_code: code,
         };
-        console.log(requestBody);
+        // console.log(requestBody);
         axios
             .post(BASE_URL + '/it4788/check_verify_code', requestBody)
             .then(response => {

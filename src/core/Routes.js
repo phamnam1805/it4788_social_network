@@ -2,6 +2,7 @@ export const Routes = {
     SPLASH_SCREEN: 'splashScreen',
     LOGIN_SCREEN: 'loginScreen',
     REGISTER_SCREEN: 'registerScreen',
+    MAIN_TAB: 'mainTab',
     HOME_SCREEN: 'homeScreen',
     FRIEND_REQUEST_SCREEN: 'friendRequestScreen',
     USER_PROFILE_SCREEN: 'userProfileScreen',

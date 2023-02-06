@@ -1,4 +1,6 @@
-import React, {Component} from 'react';
+/* eslint-disable no-shadow */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {Component, useEffect, useState} from 'react';
 import {
     Keyboard,
     Animated,
@@ -12,39 +14,251 @@ import {
     Dimensions,
     ImageBackground,
     KeyboardAvoidingView,
+    Platform,
+    Alert,
+    Button,
 } from 'react-native';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
     PanGestureHandler,
     State,
     TouchableWithoutFeedback,
     ScrollView,
 } from 'react-native-gesture-handler';
-import {useSelector} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
+import {launchImageLibrary} from 'react-native-image-picker';
+import ModalSelector from 'react-native-modal-selector';
 
 import {userSelectors} from '../../../core/slice/User';
 import {Routes} from '../../../core/Routes';
 import {navigation} from '../../../core/Navigation';
+import {postOperations, postSelectors} from '../../../core/slice/Post';
 
-const FullPostToolScreen = () => {
+const backGroundColor = {color: '#fff', textColor: '#000'};
+const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
+const FullPostToolScreen = ({route}) => {
+    const dispatch = useDispatch();
+    const statusContent = useSelector(postSelectors.getStatusContent);
+    const statusList = useSelector(postSelectors.getStatusList);
+
+    const {selectedPhotos, selectedVideo} = route.params || {};
+
+    const [photos, setPhotos] = useState(selectedPhotos);
+    const [video, setVideo] = useState(selectedVideo);
+    const [content, setContent] = useState('');
+
+    const [selectedStatus, setSelectedStatus] = useState('');
+
     const user = useSelector(userSelectors.getUser);
 
-    const _editorWrapperHeight = new Animated.Value(100);
-    this.state = {
-        selectedBgColorId: 0,
+    const onPressGoBackHandler = () => {
+        navigation.goBack();
     };
-    const _isShowBgColors = true;
-    const _bgColorListWidth = new Animated.Value(screenWidth - 60);
-    const _toggleZindexValue = new Animated.Value(2);
-    const _degTransformToggle = new Animated.Value(0);
-    const _scaleTransformToggle = new Animated.Value(0);
-    const _isKeyBoardVisibled = false;
-    const _distanceTopOption = new Animated.Value(0);
-    const _prevTranslatetionY = 0;
+
+    const onSharePhotoPressHandler = () => {
+        var options = {
+            mediaType: 'photo',
+            selectionLimit: 4,
+        };
+        launchImageLibrary(options, res => {
+            console.log('Response = ', res);
+            if (res.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (res.assets) {
+                const photos = res.assets;
+                if (photos.length > 4) {
+                    Alert.alert('', 'Please choose maximum 4 photos');
+                } else {
+                    setPhotos(photos);
+                }
+            } else {
+            }
+        });
+    };
+
+    const onShareVideoPressHandler = () => {
+        var options = {
+            mediaType: 'video',
+            selectionLimit: 1,
+        };
+        launchImageLibrary(options, res => {
+            console.log('Response = ', res);
+            if (res.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (res.assets) {
+                const video = res.assets;
+                if (video.length > 1) {
+                    Alert.alert('', 'Please choose maximum 1 video');
+                } else {
+                    setVideo(video[0]);
+                }
+            } else {
+            }
+        });
+    };
+
+    const onPostPressHandler = () => {
+        // console.log(photos);
+        let status = null;
+        if (selectedStatus && selectedStatus !== 'nothing') {
+            status = selectedStatus;
+        }
+        console.log(status);
+        if (!content && !photos && !video && !status) {
+            Alert.alert('', 'Please enter something');
+        } else {
+            dispatch(
+                postOperations.fetchAddPost({
+                    content: content,
+                    status: status,
+                    photos: photos,
+                    video: video,
+                }),
+            );
+        }
+    };
+
     return (
-        <View>
-            <Text>FullPostTool</Text>
-        </View>
+        <KeyboardAvoidingView
+            style={styles.parentContainer}
+            enabled
+            keyboardVerticalOffset={keyboardVerticalOffset}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <SafeAreaView style={styles.container}>
+                <View style={styles.navigationBar}>
+                    <TouchableOpacity
+                        onPress={onPressGoBackHandler.bind(this)}
+                        style={styles.naviIcon}>
+                        <FontAwesome5Icon
+                            color="#000"
+                            name="arrow-left"
+                            size={20}></FontAwesome5Icon>
+                    </TouchableOpacity>
+                    <Text style={styles.naviTitle}>Create a post</Text>
+                    <TouchableOpacity onPress={onPostPressHandler} style={styles.btnPost}>
+                        <Text style={{fontSize: 16}}>POST</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.infoWrapper}>
+                    <Image style={styles.avatar} source={{uri: user.avatar}}></Image>
+                    <View>
+                        <View style={styles.nameWrapper}>
+                            <Text style={styles.name}>{user.username}</Text>
+                            {selectedStatus && selectedStatus !== 'nothing' ? (
+                                <>
+                                    <Text style={styles.name}>
+                                        {' is ' + statusContent[selectedStatus]}
+                                    </Text>
+                                    <MaterialCommunityIcon
+                                        size={25}
+                                        name={selectedStatus}
+                                        // style={styles.optionImage}
+                                        color="#bd9cf1"
+                                    />
+                                </>
+                            ) : (
+                                <></>
+                            )}
+                        </View>
+
+                        <View style={styles.areaWrapper}>
+                            <TouchableOpacity style={styles.areaOption}>
+                                <FontAwesome5Icon
+                                    style={{marginRight: 3}}
+                                    name="globe-asia"
+                                    size={14}>
+                                    {' '}
+                                </FontAwesome5Icon>
+                                <Text>Public</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+
+                <View
+                    style={{
+                        ...styles.editorWrapper,
+                        backgroundColor: backGroundColor.color,
+                    }}>
+                    <View
+                        style={{
+                            alignSelf: 'stretch',
+                            width: '100%',
+                            justifyContent: 'center',
+                        }}>
+                        <TextInput
+                            placeholderTextColor={backGroundColor.textColor}
+                            placeholder="What's on your mind?"
+                            onChangeText={content => setContent(content)}
+                            multiline
+                            style={{
+                                ...styles.editor,
+                                fontSize: 26,
+                                textAlign: 'center',
+                                color: backGroundColor.textColor,
+                                fontWeight: 'bold',
+                            }}></TextInput>
+                    </View>
+                </View>
+            </SafeAreaView>
+
+            <View style={styles.toolOptionsWrapper}>
+                <TouchableWithoutFeedback>
+                    <View style={styles.optionTitle}>
+                        <Text style={{fontSize: 16}}>Add to your post</Text>
+                        <View style={styles.optionImagesWrapper}>
+                            <TouchableOpacity
+                                disabled={video ? true : false}
+                                onPress={onSharePhotoPressHandler}>
+                                <FontAwesomeIcon
+                                    size={24}
+                                    name="file-image-o"
+                                    style={styles.optionImage}
+                                    color={!video ? '#318bfb' : '#ddd'}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                disabled={photos ? true : false}
+                                onPress={onShareVideoPressHandler}>
+                                <FontAwesomeIcon
+                                    size={24}
+                                    name="file-video-o"
+                                    style={styles.optionImage}
+                                    color={!photos ? '#318bfb' : '#ddd'}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.selector.open()}>
+                                <ModalSelector
+                                    // disabled={isModalDisable}
+                                    data={statusList}
+                                    initValue="What are you feeling?"
+                                    supportedOrientations={['landscape']}
+                                    accessible={true}
+                                    scrollViewAccessibilityLabel={'Scrollable options'}
+                                    cancelButtonAccessibilityLabel={'Cancel Button'}
+                                    ref={selector => {
+                                        this.selector = selector;
+                                    }}
+                                    onChange={option => {
+                                        setSelectedStatus(option.key);
+                                    }}
+                                    customSelector={
+                                        <MaterialCommunityIcon
+                                            size={24}
+                                            name="emoticon-outline"
+                                            style={styles.optionImage}
+                                            color="#318bfb"
+                                        />
+                                    }
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
+            </View>
+        </KeyboardAvoidingView>
     );
 };
 
@@ -55,6 +269,8 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 
 const styles = StyleSheet.create({
     parentContainer: {
+        paddingTop: 5,
+        paddingBottom: 15,
         height: screenHeight,
         position: 'relative',
     },
@@ -62,6 +278,7 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%',
         backgroundColor: '#fff',
+        flex: 1,
     },
     navigationBar: {
         flexDirection: 'row',
@@ -106,8 +323,11 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
     },
+    nameWrapper: {
+        flexDirection: 'row',
+    },
     name: {
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 'bold',
     },
     editorWrapper: {
@@ -116,7 +336,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        height: 300,
+        height: '60%',
     },
     editor: {
         justifyContent: 'center',
@@ -124,18 +344,13 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     toolOptionsWrapper: {
-        position: 'absolute',
+        position: 'relative',
         bottom: 0,
         left: 0,
         width: '100%',
-        paddingBottom: 55,
-    },
-    optionsWrapper: {
+        paddingBottom: 10,
         backgroundColor: '#fff',
-        position: 'absolute',
-        width: '100%',
-        left: 0,
-        zIndex: 999999,
+        // height: '10%',
     },
     optionTitle: {
         flexDirection: 'row',
@@ -148,44 +363,11 @@ const styles = StyleSheet.create({
     },
     optionImagesWrapper: {
         flexDirection: 'row',
-        zIndex: 1,
     },
     optionImage: {
-        height: 25,
-        resizeMode: 'contain',
+        // backgroundColor: '#000',
+        padding: 2,
+        height: 35,
+        width: 45,
     },
-    bgColorsWrapper: {
-        backgroundColor: '#fff',
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 15,
-        height: 50,
-    },
-    bgColorsScrollView: {
-        flexDirection: 'row',
-    },
-    btnBgColor: {
-        height: 30,
-        width: 30,
-    },
-    bgColor: {
-        height: 30,
-        width: 30,
-        marginHorizontal: 5,
-    },
-    bgImage: {
-        resizeMode: 'cover',
-        height: 30,
-        width: 30,
-        borderRadius: 10,
-        borderWidth: 1,
-    },
-    toggleBgColors: {
-        padding: 5,
-        borderWidth: 0,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-    },
-    moreBgColors: {},
 });
