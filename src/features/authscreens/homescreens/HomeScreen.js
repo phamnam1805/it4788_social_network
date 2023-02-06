@@ -24,6 +24,7 @@ import {Routes} from '../../../core/Routes';
 import {navigation} from '../../../core/Navigation';
 import {userSelectors} from '../../../core/slice/User';
 import Loader from '../../../components/Loader';
+import {TextInput} from 'react-native-gesture-handler';
 
 const Item = ({index, item, user, statusContent}) => {
     // console.log(item);
@@ -66,6 +67,36 @@ const Item = ({index, item, user, statusContent}) => {
         });
     };
 
+    const convertTime = time => {
+        const preViousDate = new Date(time);
+        const previousTimestamp = preViousDate.getTime();
+        const nowTimestamp = Date.now();
+
+        const msPerMinute = 60 * 1000;
+        const msPerHour = msPerMinute * 60;
+        const msPerDay = msPerHour * 24;
+        const msPerWeek = msPerDay * 7;
+        const msPerMonth = msPerDay * 30;
+        const msPerYear = msPerDay * 365;
+
+        const elapsed = nowTimestamp - previousTimestamp;
+        if (elapsed < msPerMinute) {
+            return 'Just now';
+        } else if (elapsed < msPerHour) {
+            return Math.round(elapsed / msPerMinute) + ' minutes ago';
+        } else if (elapsed < msPerDay) {
+            return Math.round(elapsed / msPerHour) + ' hours ago';
+        } else if (elapsed < msPerWeek) {
+            return Math.round(elapsed / msPerDay) + ' days ago';
+        } else if (elapsed < msPerMonth) {
+            return Math.round(elapsed / msPerWeek) + ' weeks ago';
+        } else if (elapsed < msPerYear) {
+            return Math.round(elapsed / msPerMonth) + ' months ago';
+        } else {
+            return Math.round(elapsed / msPerYear) + ' years ago';
+        }
+    };
+
     return (
         <View style={stylesForItem.item}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -96,7 +127,9 @@ const Item = ({index, item, user, statusContent}) => {
                             )}
                         </View>
                         <View style={stylesForItem.extraInfoWrapper}>
-                            <Text style={{color: '#333', fontSize: 14}}>{item.created}</Text>
+                            <Text style={{color: '#333', fontSize: 14}}>
+                                {convertTime(item.created)}
+                            </Text>
                             <Text style={{fontSize: 16, marginHorizontal: 5}}>·</Text>
                         </View>
                     </View>
@@ -127,7 +160,13 @@ const Item = ({index, item, user, statusContent}) => {
                         color={isLiked ? '#318bfb' : '#999999'}
                         backgroundColor="#fff"
                         style={stylesForItem.reactionIcon}>
-                        <Text style={{fontSize: 14}}> {like} likes</Text>
+                        {isLiked ? (
+                            <Text style={{fontSize: 14}}>
+                                {'You' + (like > 1 ? ' and ' + (like - 1) + ' others' : '')}
+                            </Text>
+                        ) : (
+                            <Text style={{fontSize: 14}}> {like} </Text>
+                        )}
                     </FontAwesome5Icon>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={onPressHandle.bind(this)}>
@@ -165,6 +204,7 @@ const HomeScreen = () => {
     const posts = useSelector(postSelectors.getPost);
     const user = useSelector(userSelectors.getUser);
     const statusContent = useSelector(postSelectors.getStatusContent);
+
     const dispatch = useDispatch();
 
     const [isReload, setIsReload] = useState(false);
@@ -194,12 +234,12 @@ const HomeScreen = () => {
                 bounces={false}
                 style={styles.listContainter}
                 refreshControl={<RefreshControl refreshing={isReload} onRefresh={handleReload} />}
-                onMomentumScrollEnd={({nativeEvent}) => {
+                onScroll={({nativeEvent}) => {
                     if (isCloseToBottom(nativeEvent)) {
                         handleLoadMore();
                     }
                 }}
-                scrollEventThrottle={400}>
+                scrollEventThrottle={1000}>
                 <PostTool userAvatar={user.avatar}></PostTool>
                 {posts.map((item, index) => (
                     <View key={index}>
