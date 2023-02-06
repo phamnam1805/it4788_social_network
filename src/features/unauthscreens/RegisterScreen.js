@@ -22,7 +22,7 @@ import {HttpStatusCode} from 'axios';
 
 import {Routes} from '../../core/Routes';
 import {navigation} from '../../core/Navigation';
-import {BASE_URL} from '../../core/Constants';
+import {BASE_URL, LogicCode} from '../../core/Constants';
 import Loader from '../../components/Loader';
 
 const RegisterScreen = props => {
@@ -38,10 +38,19 @@ const RegisterScreen = props => {
     const passwordInputRef = createRef();
     const retypePasswordInputRef = createRef();
 
+    const isPhoneNumber = (phoneNumber) => {
+        return (phoneNumber.search(/0{1}/) == 0)
+            && (phoneNumber.match(/^\d{10}$/) != null);
+    }
+
     const handleSubmitButton = () => {
         setErrorText('');
         if (!phonenumber) {
             Alert.alert('', 'Please fill Phonenumber');
+            return;
+        }
+        if(!isPhoneNumber(phonenumber)){
+            Alert.alert('', 'Phone number is invalid');
             return;
         }
         if (!password) {
@@ -63,6 +72,7 @@ const RegisterScreen = props => {
             phone_number: phonenumber,
             password: password,
         };
+
         axios
             .post(BASE_URL + '/it4788/signup', requestBody)
             .then(response => {
@@ -70,26 +80,42 @@ const RegisterScreen = props => {
                 const responseData = response.data;
                 // console.log(responseData);
                 if (response.status === HttpStatusCode.Ok) {
-                    prompt(
-                        'Verification register',
-                        'Enter your verification code',
-                        [
+                    if (responseData.code == LogicCode.USER_EXISTED){
+                        Alert.alert('', 'The user is already existed!');
+                    }
+                    else if(responseData.code == LogicCode.SUCCESS){
+                        prompt(
+                            'Verification register',
+                            'Enter your verification code',
+                            [
+                                {
+                                    text: 'Cancel',
+                                    onPress: () => console.log('Cancel is pressed'),
+                                    style: 'cancel',
+                                },
+                                {text: 'Submit', onPress: code => HandleSubmitVerificationCode(code)},
+                            ],
                             {
-                                text: 'Cancel',
-                                onPress: () => console.log('Cancel is pressed'),
-                                style: 'cancel',
+                                type: 'phone-pad',
+                                // type: 'secure-text',
+                                cancelable: true,
+                                placeholder: 'verification code',
+                                // keyboardType: 'phone-pad',
                             },
-                            {text: 'Submit', onPress: code => HandleSubmitVerificationCode(code)},
-                        ],
-                        {
-                            type: 'phone-pad',
-                            // type: 'secure-text',
-                            cancelable: true,
-                            placeholder: 'verification code',
-                            // keyboardType: 'phone-pad',
-                        },
-                    );
+                        );
+                    }
+                    else if(responseData.code == LogicCode.PARAMETER_VALUE_IS_INVALID){
+                        Alert.alert('', 'The phone number is invalid!');
+                    }
                 }
+                else if(response.status === HttpStatusCode.BadRequest){
+                    Alert.alert('', 'Bad Request!');
+                }
+                else if(response.status === HttpStatusCode.NotFound){
+                    Alert.alert('', 'Not found!');
+                }
+
+                console.log("GO HERE TOO");
             })
             .catch(err => {
                 setLoading(false);
