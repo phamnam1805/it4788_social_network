@@ -56,7 +56,13 @@ const PostTool = ({userAvatar}) => {
         <View style={styles.container}>
             <View style={styles.postToolWrapper}>
                 <TouchableOpacity activeOpacity={0.5} style={styles.userAvatarWrapper}>
-                    <Image source={{uri: userAvatar}} style={styles.userAvatar}></Image>
+                    {userAvatar ? <>
+                        <Image source={{uri: userAvatar}} style={styles.userAvatar}></Image>
+                    </> : <> 
+                        <View style = {styles.userAvatarDummy}>
+                            <FontAweSome5 size={25} style={styles.userAvatarDummy} name="user" />
+                        </View>
+                    </>}
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={onFullPostToolPressHandler}
@@ -174,6 +180,12 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 50,
+    },
+    userAvatarDummy: {
+        width: 40,
+        height: 40,
+        textAlign: 'center',
+        verticalAlign: 'middle',
     },
     userAvatarWrapper: {},
 });
