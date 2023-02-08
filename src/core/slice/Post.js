@@ -52,6 +52,8 @@ const post = createSlice({
                 } else {
                     // Alert.alert('Hehe');
                     const lastList = payload.lastList;
+
+                    console.log("last List" + lastList);
                     const result = mergePosts(lastList, newList);
                     state.posts = result;
                     state.lastIndex = Math.ceil(result.length / state.count);
@@ -213,9 +215,14 @@ export const postApi = {
 };
 
 const mergePosts = (lastList, newList) => {
-    if (newList.length === 0) {
+    if (!newList || newList.length === 0) {
         return lastList;
     }
+
+    if (!lastList || lastList.length === 0){
+        return newList;
+    }
+
     const firstItem = newList[0];
     for (let i = lastList.length - 1; i > 0; i--) {
         if (lastList[i].id === firstItem.id) {
