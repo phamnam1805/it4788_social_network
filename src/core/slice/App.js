@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createSlice} from '@reduxjs/toolkit';
 import SplashScreen from 'react-native-splash-screen';
-import {navigate} from '../Navigation';
+import {dispatch, navigate} from '../Navigation';
 import {Routes} from '../Routes';
 import {userActions, userOperations, userSelectors} from './User';
 import {authenticationActions} from './Authentication';
@@ -67,6 +67,11 @@ export const appOperations = {
             const userData = userSelectors.getUser(getState());
             await saveData(appData, userData);
         },
+    logout:() => async (dispatch, getState) => {
+        await AsyncStorage.removeItem('user');
+        dispatch(authenticationActions.setAuth(false));
+        navigate(Routes.LOGIN_SCREEN);
+    }
 };
 
 export const appReducer = app.reducer;
