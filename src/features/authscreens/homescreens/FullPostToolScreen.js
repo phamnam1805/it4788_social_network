@@ -101,7 +101,7 @@ const FullPostToolScreen = ({route}) => {
 
     const onPostPressHandler = () => {
         // console.log(photos);
-        let status = null;
+        let status = '';
         if (selectedStatus && selectedStatus !== 'nothing') {
             status = selectedStatus;
         }

@@ -26,10 +26,10 @@ import {userSelectors} from '../../../core/slice/User';
 import Loader from '../../../components/Loader';
 import {TextInput} from 'react-native-gesture-handler';
 import PostItem from '../../../components/PostItem';
-import MemorizedPostList from '../../../components/PostList';
+import PostList from '../../../components/PostList';
 
 const HomeScreen = () => {
-    const posts = useSelector(postSelectors.getPost);
+    const posts = useSelector(postSelectors.getAllPosts);
     const user = useSelector(userSelectors.getUser);
     const statusContent = useSelector(postSelectors.getStatusContent);
 
@@ -39,7 +39,7 @@ const HomeScreen = () => {
     const [isLoadMore, setIsLoadMore] = useState(false);
 
     const handleReload = () => {
-        if (!isReload) {
+        if (!isReload && !isLoadMore) {
             setIsReload(true);
             dispatch(postOperations.fetchGetListPosts({reloadFlag: true})).then(() => {
                 setIsReload(false);
@@ -48,7 +48,7 @@ const HomeScreen = () => {
     };
 
     const handleLoadMore = () => {
-        if (!isLoadMore) {
+        if (!isLoadMore && !isReload) {
             setIsLoadMore(true);
             dispatch(postOperations.fetchGetListPosts({})).then(() => {
                 setTimeout(() => setIsLoadMore(false), 2000);
@@ -73,17 +73,7 @@ const HomeScreen = () => {
                 }}
                 scrollEventThrottle={400}>
                 <PostTool userAvatar={user.avatar}></PostTool>
-                <MemorizedPostList posts={posts} user={user} statusContent={statusContent} />
-                {/* {posts.map((item, index) => (
-                    <View key={index}>
-                        <PostItem
-                            key={index}
-                            index={index}
-                            item={item}
-                            user={user}
-                            statusContent={statusContent}></PostItem>
-                    </View>
-                ))} */}
+                <PostList posts={posts} user={user} statusContent={statusContent} />
                 <View visible={isLoadMore}>
                     <ActivityIndicator
                         animating={isLoadMore}

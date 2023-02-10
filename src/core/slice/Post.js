@@ -88,7 +88,9 @@ export const postActions = post.actions;
 const getRoot = state => state.post;
 
 export const postSelectors = {
-    getPost: state => getRoot(state).posts,
+    getPost: (state, index) => getRoot(state).posts[index],
+    getAllPosts: state => getRoot(state).posts,
+    getPostsLength: state => getRoot(state).posts.length,
     getStatusContent: state => getRoot(state).statusContent,
     getStatusList: state => getRoot(state).statusList,
     getLastIndex: state => getRoot(state).lastIndex,
@@ -138,7 +140,7 @@ export const postOperations = {
         const userId = appSelectors.getUserId(state);
         const lastIndex = postSelectors.getLastIndex(state);
         const count = postSelectors.getCount(state);
-        const lastList = postSelectors.getPost(state);
+        const lastList = postSelectors.getAllPosts(state);
         if (reloadFlag) {
             const response = await postApi.getListPosts(token, userId, lastId, 0, count);
             return {lastList: lastList, response: response, reloadFlag: true};
@@ -158,7 +160,7 @@ export const postOperations = {
     fetchLikePost: createAsyncThunk('post/fetchLikePost', async (data, thunkParams) => {
         const {index} = data;
         const token = appSelectors.getToken(thunkParams.getState());
-        const postId = postSelectors.getPost(thunkParams.getState())[index].id;
+        const postId = postSelectors.getPost(thunkParams.getState(), index).id;
         await postApi.likePost(token, postId);
         return {index: index, response: await postApi.getPost(token, postId)};
     }),

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View,
     ScrollView,
@@ -17,15 +17,23 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIc
 import {useDispatch, useSelector} from 'react-redux';
 
 import {navigation} from '../core/Navigation';
-import {postOperations} from '../core/slice/Post';
+import {postOperations, postSelectors} from '../core/slice/Post';
 import ScaledImage from './ScaledImage';
 import {Routes} from '../core/Routes';
 import {commentOperations} from '../core/slice/Comment';
+import VideoPlayer from './VideoPlayer';
+import Swiper from 'react-native-swiper';
 
-const PostItem = ({index, item, user, statusContent}) => {
-    // console.log(item);
+const PostItem = ({item, index, user, statusContent}) => {
     const [isLiked, setIsLiked] = useState(item.is_liked);
     const [like, setLike] = useState(item.like);
+
+    useEffect(() => {
+        setIsLiked(item.is_liked);
+        setLike(item.like);
+    }, [item.is_liked, item.like]);
+
+    // useEffect(() => {}, [item.like]);
 
     const dispatch = useDispatch();
     const onCommentPressHandler = () => {
@@ -47,9 +55,10 @@ const PostItem = ({index, item, user, statusContent}) => {
             postDetail: item,
         });
     };
-    const onPressPostImageHandler = id => {
-        navigation.navigate('PostDetail', {
-            id,
+    const onPostImagePressHandler = () => {
+        navigation.navigate(Routes.POST_DETAIL_SCREEN, {
+            index: index,
+            post: item,
         });
     };
     const onPressProfileHandler = userId => {
@@ -137,14 +146,21 @@ const PostItem = ({index, item, user, statusContent}) => {
             <View style={styles.contentContainer}>
                 <Text style={styles.paragraph}>{item.content}</Text>
             </View>
-            <TouchableOpacity onPress={onPressPostImageHandler.bind(this, item.id)}>
+            <TouchableOpacity onPress={onPostImagePressHandler}>
                 {item.image.length ? (
-                    <View style={styles.imageContainer}>
-                        <ScaledImage height={300} source={item.image[0]}></ScaledImage>
-                    </View>
+                    <Swiper height={300} showsButtons={true} scrollEnabled={false}>
+                        {item.image.map((imageItem, index) => (
+                            <View key={index} style={styles.imageContainer}>
+                                <ScaledImage height={300} source={imageItem}></ScaledImage>
+                            </View>
+                        ))}
+                    </Swiper>
                 ) : (
-                    <View></View>
+                    <></>
                 )}
+            </TouchableOpacity>
+            <TouchableOpacity>
+                {item.video ? <VideoPlayer videoUri={item.video} /> : <></>}
             </TouchableOpacity>
             <View horizontal={true} style={styles.reactionContainer}>
                 <TouchableOpacity onPress={onReactPressHandler}>

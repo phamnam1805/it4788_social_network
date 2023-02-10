@@ -16,6 +16,7 @@ import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import PostItem from './PostItem';
+import {postSelectors} from '../core/slice/Post';
 
 const PostList = ({posts, user, statusContent}) => {
     return (
@@ -34,9 +35,4 @@ const PostList = ({posts, user, statusContent}) => {
     );
 };
 
-const MemorizedPostList = React.memo(
-    PostList,
-    (prevProps, nextProps) => prevProps.posts.length === nextProps.posts.length,
-);
-
-export default MemorizedPostList;
+export default PostList;
