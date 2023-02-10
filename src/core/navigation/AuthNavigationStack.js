@@ -13,6 +13,7 @@ import {ShortcutNavigationStack} from './ShortcutNavigationStack';
 import {Routes} from '../Routes';
 
 import FullPostToolScreen from '../../features/authscreens/homescreens/FullPostToolScreen';
+import CommentScreen from '../../features/authscreens/homescreens/CommentScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();
@@ -95,6 +96,7 @@ export const AuthNavigationStack = () => {
                 name={Routes.FULL_POST_TOOL_SCREEN}
                 component={FullPostToolScreen}
             />
+            <StackNavigator.Screen name={Routes.COMMENT_SCREEN} component={CommentScreen} />
         </StackNavigator.Navigator>
     );
     // return (

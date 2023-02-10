@@ -47,14 +47,10 @@ const post = createSlice({
                 const reloadFlag = payload.reloadFlag;
                 if (reloadFlag) {
                     state.posts = newList;
-                    state.lastIndex = 0;
-                    // Alert.alert('Hehe');
+                    state.lastIndex = 1;
                 } else {
-                    // Alert.alert('Hehe');
-                    const lastList = payload.lastList;
-                    const result = mergePosts(lastList, newList);
-                    state.posts = result;
-                    state.lastIndex = Math.ceil(result.length / state.count);
+                    state.posts = mergePosts(payload.lastList, newList);
+                    state.lastIndex += 1;
                 }
             }
         });
@@ -71,7 +67,17 @@ const post = createSlice({
         builder.addCase(postOperations.fetchAddPost.fulfilled, (state, action) => {
             const response = action.payload;
             if (response.status === HttpStatusCode.Ok) {
-                console.log(response);
+                const postItem = response.data.data;
+                // console.log(response);
+                state.posts.unshift(postItem);
+            }
+        });
+        builder.addCase(postOperations.fetchGetPost.fulfilled, (state, action) => {
+            const payload = action.payload;
+            const response = payload.response;
+            if (response.status === HttpStatusCode.Ok) {
+                const postIndex = payload.postIndex;
+                state.posts[postIndex] = response.data.data;
             }
         });
     },
@@ -140,6 +146,14 @@ export const postOperations = {
             const response = await postApi.getListPosts(token, userId, lastId, lastIndex, count);
             return {lastList: lastList, response: response};
         }
+    }),
+    fetchGetPost: createAsyncThunk('post/fetchGetPost', async (data, thunkParams) => {
+        const {postId, postIndex} = data;
+        const state = thunkParams.getState();
+
+        const token = appSelectors.getToken(state);
+        const response = await postApi.getPost(token, postId);
+        return {postIndex: postIndex, response: response};
     }),
     fetchLikePost: createAsyncThunk('post/fetchLikePost', async (data, thunkParams) => {
         const {index} = data;
@@ -213,17 +227,28 @@ export const postApi = {
 };
 
 const mergePosts = (lastList, newList) => {
-    if (newList.length === 0) {
-        return lastList;
-    }
-    const firstItem = newList[0];
-    for (let i = lastList.length - 1; i > 0; i--) {
-        if (lastList[i].id === firstItem.id) {
-            lastList.pop();
-            console.log('pop');
-        }
-    }
     return lastList.concat(newList);
+    // if (newList.length === 0) {
+    //     return lastList;
+    // }
+    // if (lastList.length === 0) {
+    //     return newList;
+    // }
+    // const firstItem = newList[0];
+    // const newListTimestamp = getTimestamp(firstItem.created);
+    // let i = lastList.length - 1;
+    // while (i > 0) {
+    //     if (getTimestamp(lastList[i].created) <= newListTimestamp) {
+    //         lastList.pop();
+    //         i -= 1;
+    //     } else {
+    //         break;
+    //     }
+    // }
+    // return [...lastList, ...newList];
 };
 
-export const convertTime = time => {};
+const getTimestamp = date => {
+    const tmp = new Date(date);
+    return tmp.getTime();
+};

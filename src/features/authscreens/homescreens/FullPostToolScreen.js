@@ -105,7 +105,6 @@ const FullPostToolScreen = ({route}) => {
         if (selectedStatus && selectedStatus !== 'nothing') {
             status = selectedStatus;
         }
-        console.log(status);
         if (!content && !photos && !video && !status) {
             Alert.alert('', 'Please enter something');
         } else {
@@ -138,7 +137,17 @@ const FullPostToolScreen = ({route}) => {
                             size={20}></FontAwesome5Icon>
                     </TouchableOpacity>
                     <Text style={styles.naviTitle}>Create a post</Text>
-                    <TouchableOpacity onPress={onPostPressHandler} style={styles.btnPost}>
+                    <TouchableOpacity
+                        onPress={onPostPressHandler}
+                        style={styles.btnPost}
+                        disabled={
+                            !content &&
+                            !photos &&
+                            !video &&
+                            !(selectedStatus && selectedStatus !== 'nothing'
+                                ? selectedStatus
+                                : null)
+                        }>
                         <Text style={{fontSize: 16}}>POST</Text>
                     </TouchableOpacity>
                 </View>
@@ -293,7 +302,7 @@ const styles = StyleSheet.create({
     },
     naviTitle: {
         paddingHorizontal: 10,
-        fontSize: 16,
+        fontSize: 18,
     },
     btnPost: {
         position: 'absolute',
