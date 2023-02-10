@@ -47,16 +47,10 @@ const post = createSlice({
                 const reloadFlag = payload.reloadFlag;
                 if (reloadFlag) {
                     state.posts = newList;
-                    state.lastIndex = 0;
-                    // Alert.alert('Hehe');
+                    state.lastIndex = 1;
                 } else {
-                    // Alert.alert('Hehe');
-                    const lastList = payload.lastList;
-
-                    console.log("last List" + lastList);
-                    const result = mergePosts(lastList, newList);
-                    state.posts = result;
-                    state.lastIndex = Math.ceil(result.length / state.count);
+                    state.posts = mergePosts(payload.lastList, newList);
+                    state.lastIndex += 1;
                 }
             }
         });
@@ -73,7 +67,17 @@ const post = createSlice({
         builder.addCase(postOperations.fetchAddPost.fulfilled, (state, action) => {
             const response = action.payload;
             if (response.status === HttpStatusCode.Ok) {
-                console.log(response);
+                const postItem = response.data.data;
+                // console.log(response);
+                state.posts.unshift(postItem);
+            }
+        });
+        builder.addCase(postOperations.fetchGetPost.fulfilled, (state, action) => {
+            const payload = action.payload;
+            const response = payload.response;
+            if (response.status === HttpStatusCode.Ok) {
+                const postIndex = payload.postIndex;
+                state.posts[postIndex] = response.data.data;
             }
         });
     },
@@ -84,7 +88,9 @@ export const postActions = post.actions;
 const getRoot = state => state.post;
 
 export const postSelectors = {
-    getPost: state => getRoot(state).posts,
+    getPost: (state, index) => getRoot(state).posts[index],
+    getAllPosts: state => getRoot(state).posts,
+    getPostsLength: state => getRoot(state).posts.length,
     getStatusContent: state => getRoot(state).statusContent,
     getStatusList: state => getRoot(state).statusList,
     getLastIndex: state => getRoot(state).lastIndex,
@@ -134,7 +140,7 @@ export const postOperations = {
         const userId = appSelectors.getUserId(state);
         const lastIndex = postSelectors.getLastIndex(state);
         const count = postSelectors.getCount(state);
-        const lastList = postSelectors.getPost(state);
+        const lastList = postSelectors.getAllPosts(state);
         if (reloadFlag) {
             const response = await postApi.getListPosts(token, userId, lastId, 0, count);
             return {lastList: lastList, response: response, reloadFlag: true};
@@ -143,10 +149,18 @@ export const postOperations = {
             return {lastList: lastList, response: response};
         }
     }),
+    fetchGetPost: createAsyncThunk('post/fetchGetPost', async (data, thunkParams) => {
+        const {postId, postIndex} = data;
+        const state = thunkParams.getState();
+
+        const token = appSelectors.getToken(state);
+        const response = await postApi.getPost(token, postId);
+        return {postIndex: postIndex, response: response};
+    }),
     fetchLikePost: createAsyncThunk('post/fetchLikePost', async (data, thunkParams) => {
         const {index} = data;
         const token = appSelectors.getToken(thunkParams.getState());
-        const postId = postSelectors.getPost(thunkParams.getState())[index].id;
+        const postId = postSelectors.getPost(thunkParams.getState(), index).id;
         await postApi.likePost(token, postId);
         return {index: index, response: await postApi.getPost(token, postId)};
     }),
@@ -215,22 +229,28 @@ export const postApi = {
 };
 
 const mergePosts = (lastList, newList) => {
-    if (!newList || newList.length === 0) {
-        return lastList;
-    }
-
-    if (!lastList || lastList.length === 0){
-        return newList;
-    }
-
-    const firstItem = newList[0];
-    for (let i = lastList.length - 1; i > 0; i--) {
-        if (lastList[i].id === firstItem.id) {
-            lastList.pop();
-            console.log('pop');
-        }
-    }
     return lastList.concat(newList);
+    // if (newList.length === 0) {
+    //     return lastList;
+    // }
+    // if (lastList.length === 0) {
+    //     return newList;
+    // }
+    // const firstItem = newList[0];
+    // const newListTimestamp = getTimestamp(firstItem.created);
+    // let i = lastList.length - 1;
+    // while (i > 0) {
+    //     if (getTimestamp(lastList[i].created) <= newListTimestamp) {
+    //         lastList.pop();
+    //         i -= 1;
+    //     } else {
+    //         break;
+    //     }
+    // }
+    // return [...lastList, ...newList];
 };
 
-export const convertTime = time => {};
+const getTimestamp = date => {
+    const tmp = new Date(date);
+    return tmp.getTime();
+};

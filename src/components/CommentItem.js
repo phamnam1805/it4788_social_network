@@ -1,39 +1,8 @@
 import React, {Component} from 'react';
 import {View, Image, TouchableOpacity, Text, Dimensions, StyleSheet} from 'react-native';
 import ScaledImage from './ScaledImage';
-export class Comment1 extends Component {
-    render() {
-        const {comment} = this.props;
-        return (
-            <View style={styles.container}>
-                <Image style={styles.avatar} source={{uri: comment.avatar_url}}></Image>
-                <View style={styles.centerContainer}>
-                    <View style={styles.contentContainer}>
-                        <TouchableOpacity>
-                            <Text style={styles.name}>{comment.name}</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.content}>{comment.content}</Text>
-                    </View>
-                    <ScaledImage
-                        width={screenWidth * 0.7}
-                        style={styles.image}
-                        source={comment.image}></ScaledImage>
-                    <View style={styles.toolContainer}>
-                        <Text style={styles.createAt}>{comment.create_at}</Text>
-                        <TouchableOpacity style={styles.likeBtn}>
-                            <Text>Like</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.replyBtn}>
-                            <Text>Reply</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-        );
-    }
-}
 
-const Comment = ({id, comment, created, poster}) => {
+const CommentItem = ({comment}) => {
     const convertTime = time => {
         const preViousDate = new Date(time);
         const previousTimestamp = preViousDate.getTime();
@@ -65,29 +34,23 @@ const Comment = ({id, comment, created, poster}) => {
     };
     return (
         <View style={styles.container}>
-            <Image style={styles.avatar} source={{uri: poster.avatar}}></Image>
+            <Image style={styles.avatar} source={{uri: comment.poster.avatar}}></Image>
             <View style={styles.centerContainer}>
                 <View style={styles.contentContainer}>
                     <TouchableOpacity>
-                        <Text style={styles.name}>{poster.username}</Text>
+                        <Text style={styles.name}>{comment.poster.username}</Text>
                     </TouchableOpacity>
-                    <Text style={styles.content}>{comment}</Text>
+                    <Text style={styles.content}>{comment.comment}</Text>
                 </View>
                 <View style={styles.toolContainer}>
-                    <Text style={styles.createAt}>{convertTime(created)}</Text>
-                    {/* <TouchableOpacity style={styles.likeBtn}>
-                        <Text>Like</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.replyBtn}>
-                        <Text>Reply</Text>
-                    </TouchableOpacity> */}
+                    <Text style={styles.createAt}>{convertTime(comment.created)}</Text>
                 </View>
             </View>
         </View>
     );
 };
 
-export default Comment;
+export default CommentItem;
 const screenWidth = Math.round(Dimensions.get('window').width);
 const styles = StyleSheet.create({
     container: {
@@ -112,8 +75,11 @@ const styles = StyleSheet.create({
     },
     name: {
         fontWeight: 'bold',
+        fontSize: 18,
     },
-    content: {},
+    content: {
+        fontSize: 16,
+    },
     image: {
         borderRadius: 10,
     },

@@ -25,183 +25,11 @@ import {navigation} from '../../../core/Navigation';
 import {userSelectors} from '../../../core/slice/User';
 import Loader from '../../../components/Loader';
 import {TextInput} from 'react-native-gesture-handler';
-
-const Item = ({index, item, user, statusContent}) => {
-    // console.log(item);
-    const [isLiked, setIsLiked] = useState(item.is_liked);
-    const [like, setLike] = useState(item.like);
-
-    const dispatch = useDispatch();
-    const onPressHandle = () => {
-        const {comments} = item;
-        navigation.navigate('Comments', {
-            comments,
-        });
-    };
-    const onReactPressHandler = async () => {
-        dispatch(postOperations.fetchLikePost({index: index}));
-        if (isLiked) {
-            setLike(like - 1);
-        } else {
-            setLike(like + 1);
-        }
-        setIsLiked(!isLiked);
-    };
-
-    const onPressPostOptionsIconHandler = () => {
-        navigation.navigate('PostOptions', {
-            postDetail: item,
-        });
-    };
-    const onPressPostImageHandler = id => {
-        navigation.navigate('PostDetail', {
-            id,
-        });
-    };
-    const onPressProfileHandler = userId => {
-        if (userId === user.id) {
-            return navigation.navigate('Profile');
-        }
-        navigation.push('ProfileX', {
-            userId,
-        });
-    };
-
-    const convertTime = time => {
-        const preViousDate = new Date(time);
-        const previousTimestamp = preViousDate.getTime();
-        const nowTimestamp = Date.now();
-
-        const msPerMinute = 60 * 1000;
-        const msPerHour = msPerMinute * 60;
-        const msPerDay = msPerHour * 24;
-        const msPerWeek = msPerDay * 7;
-        const msPerMonth = msPerDay * 30;
-        const msPerYear = msPerDay * 365;
-
-        const elapsed = nowTimestamp - previousTimestamp;
-        if (elapsed < msPerMinute) {
-            return 'Just now';
-        } else if (elapsed < msPerHour) {
-            return Math.round(elapsed / msPerMinute) + ' minutes ago';
-        } else if (elapsed < msPerDay) {
-            return Math.round(elapsed / msPerHour) + ' hours ago';
-        } else if (elapsed < msPerWeek) {
-            return Math.round(elapsed / msPerDay) + ' days ago';
-        } else if (elapsed < msPerMonth) {
-            return Math.round(elapsed / msPerWeek) + ' weeks ago';
-        } else if (elapsed < msPerYear) {
-            return Math.round(elapsed / msPerMonth) + ' months ago';
-        } else {
-            return Math.round(elapsed / msPerYear) + ' years ago';
-        }
-    };
-
-    return (
-        <View style={stylesForItem.item}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <View style={stylesForItem.customListView}>
-                    <Image style={stylesForItem.avatar} source={{uri: item.author?.avatar}}></Image>
-                    <View style={stylesForItem.infoWrapper}>
-                        <View style={stylesForItem.namesWrapper}>
-                            <TouchableOpacity
-                                onPress={onPressProfileHandler.bind(this, item.author?.id)}>
-                                <Text style={{fontSize: 16, fontWeight: '500'}}>
-                                    {item.author?.username}
-                                </Text>
-                            </TouchableOpacity>
-                            {item.status ? (
-                                <>
-                                    <Text style={{fontSize: 16, fontWeight: '500'}}>
-                                        {' is ' + statusContent[item.status]}
-                                    </Text>
-                                    <MaterialCommunityIcon
-                                        size={35}
-                                        name={item.status}
-                                        // style={styles.optionImage}
-                                        color="#bd9cf1"
-                                    />
-                                </>
-                            ) : (
-                                <></>
-                            )}
-                        </View>
-                        <View style={stylesForItem.extraInfoWrapper}>
-                            <Text style={{color: '#333', fontSize: 14}}>
-                                {convertTime(item.created)}
-                            </Text>
-                            <Text style={{fontSize: 16, marginHorizontal: 5}}>·</Text>
-                        </View>
-                    </View>
-                </View>
-                <TouchableOpacity
-                    onPress={onPressPostOptionsIconHandler.bind(this)}
-                    style={{width: 25, alignItems: 'center'}}>
-                    <Icon name="ellipsis-h" color="#000"></Icon>
-                </TouchableOpacity>
-            </View>
-            <View style={stylesForItem.contentContainer}>
-                <Text style={stylesForItem.paragraph}>{item.content}</Text>
-            </View>
-            <TouchableOpacity onPress={onPressPostImageHandler.bind(this, item.id)}>
-                {item.image.length ? (
-                    <View style={stylesForItem.imageContainer}>
-                        <ScaledImage height={300} source={item.image[0]}></ScaledImage>
-                    </View>
-                ) : (
-                    <View></View>
-                )}
-            </TouchableOpacity>
-            <View horizontal={true} style={stylesForItem.reactionContainer}>
-                <TouchableOpacity onPress={onReactPressHandler}>
-                    <FontAwesome5Icon
-                        name="thumbs-up"
-                        // color="#318bfb"
-                        color={isLiked ? '#318bfb' : '#999999'}
-                        backgroundColor="#fff"
-                        style={stylesForItem.reactionIcon}>
-                        {isLiked ? (
-                            <Text style={{fontSize: 14}}>
-                                {'You' + (like > 1 ? ' and ' + (like - 1) + ' others' : '')}
-                            </Text>
-                        ) : (
-                            <Text style={{fontSize: 14}}> {like} </Text>
-                        )}
-                    </FontAwesome5Icon>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={onPressHandle.bind(this)}>
-                    <FontAwesome5Icon
-                        lineBreakMode={false}
-                        name="comment-alt"
-                        color="gray"
-                        backgroundColor="white"
-                        style={{...stylesForItem.reactionIcon, fontSize: 14}}>
-                        <Text style={{fontSize: 14}}> {item.comment} comments</Text>
-                    </FontAwesome5Icon>
-                </TouchableOpacity>
-            </View>
-            <View style={stylesForItem.commentContainer}>
-                <Image source={{uri: user.avatar}} style={stylesForItem.commentAvatar}></Image>
-                <View style={stylesForItem.commentInput}>
-                    <TouchableOpacity
-                        onPress={onPressHandle.bind(this)}
-                        style={stylesForItem.commentInputWrapper}>
-                        <Text>Comment...</Text>
-                    </TouchableOpacity>
-                </View>
-                <TouchableOpacity>
-                    <Icon
-                        style={stylesForItem.btnSendComment}
-                        name="paper-plane"
-                        color="gray"></Icon>
-                </TouchableOpacity>
-            </View>
-        </View>
-    );
-};
+import PostItem from '../../../components/PostItem';
+import PostList from '../../../components/PostList';
 
 const HomeScreen = () => {
-    const posts = useSelector(postSelectors.getPost);
+    const posts = useSelector(postSelectors.getAllPosts);
     const user = useSelector(userSelectors.getUser);
     const statusContent = useSelector(postSelectors.getStatusContent);
 
@@ -209,17 +37,21 @@ const HomeScreen = () => {
 
     const [isReload, setIsReload] = useState(false);
     const [isLoadMore, setIsLoadMore] = useState(false);
+
     const handleReload = () => {
-        setIsReload(true);
-        dispatch(postOperations.fetchGetListPosts({reloadFlag: true})).then(() => {
-            setIsReload(false);
-        });
+        if (!isReload && !isLoadMore) {
+            setIsReload(true);
+            dispatch(postOperations.fetchGetListPosts({reloadFlag: true})).then(() => {
+                setIsReload(false);
+            });
+        }
     };
+
     const handleLoadMore = () => {
-        if (!isLoadMore) {
+        if (!isLoadMore && !isReload) {
             setIsLoadMore(true);
             dispatch(postOperations.fetchGetListPosts({})).then(() => {
-                setIsLoadMore(false);
+                setTimeout(() => setIsLoadMore(false), 2000);
             });
         }
     };
@@ -239,18 +71,9 @@ const HomeScreen = () => {
                         handleLoadMore();
                     }
                 }}
-                scrollEventThrottle={1000}>
+                scrollEventThrottle={400}>
                 <PostTool userAvatar={user.avatar}></PostTool>
-                {posts.map((item, index) => (
-                    <View key={index}>
-                        <Item
-                            index={index}
-                            item={item}
-                            key={index}
-                            user={user}
-                            statusContent={statusContent}></Item>
-                    </View>
-                ))}
+                <PostList posts={posts} user={user} statusContent={statusContent} />
                 <View visible={isLoadMore}>
                     <ActivityIndicator
                         animating={isLoadMore}

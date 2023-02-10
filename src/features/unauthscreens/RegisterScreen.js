@@ -38,10 +38,9 @@ const RegisterScreen = props => {
     const passwordInputRef = createRef();
     const retypePasswordInputRef = createRef();
 
-    const isPhoneNumber = (phoneNumber) => {
-        return (phoneNumber.search(/0{1}/) == 0)
-            && (phoneNumber.match(/^\d{10}$/) != null);
-    }
+    const isPhoneNumber = phoneNumber => {
+        return phoneNumber.search(/0{1}/) == 0 && phoneNumber.match(/^\d{10}$/) != null;
+    };
 
     const handleSubmitButton = () => {
         setErrorText('');
@@ -49,7 +48,7 @@ const RegisterScreen = props => {
             Alert.alert('', 'Please fill Phonenumber');
             return;
         }
-        if(!isPhoneNumber(phonenumber)){
+        if (!isPhoneNumber(phonenumber)) {
             Alert.alert('', 'Phone number is invalid');
             return;
         }
@@ -80,10 +79,9 @@ const RegisterScreen = props => {
                 const responseData = response.data;
                 // console.log(responseData);
                 if (response.status === HttpStatusCode.Ok) {
-                    if (responseData.code == LogicCode.USER_EXISTED){
+                    if (responseData.code == LogicCode.USER_EXISTED) {
                         Alert.alert('', 'The user is already existed!');
-                    }
-                    else if(responseData.code == LogicCode.SUCCESS){
+                    } else if (responseData.code == LogicCode.SUCCESS) {
                         prompt(
                             'Verification register',
                             'Enter your verification code',
@@ -93,7 +91,10 @@ const RegisterScreen = props => {
                                     onPress: () => console.log('Cancel is pressed'),
                                     style: 'cancel',
                                 },
-                                {text: 'Submit', onPress: code => HandleSubmitVerificationCode(code)},
+                                {
+                                    text: 'Submit',
+                                    onPress: code => HandleSubmitVerificationCode(code),
+                                },
                             ],
                             {
                                 type: 'phone-pad',
@@ -103,19 +104,16 @@ const RegisterScreen = props => {
                                 // keyboardType: 'phone-pad',
                             },
                         );
-                    }
-                    else if(responseData.code == LogicCode.PARAMETER_VALUE_IS_INVALID){
+                    } else if (responseData.code == LogicCode.PARAMETER_VALUE_IS_INVALID) {
                         Alert.alert('', 'The phone number is invalid!');
                     }
-                }
-                else if(response.status === HttpStatusCode.BadRequest){
+                } else if (response.status === HttpStatusCode.BadRequest) {
                     Alert.alert('', 'Bad Request!');
-                }
-                else if(response.status === HttpStatusCode.NotFound){
+                } else if (response.status === HttpStatusCode.NotFound) {
                     Alert.alert('', 'Not found!');
                 }
 
-                console.log("GO HERE TOO");
+                console.log('GO HERE TOO');
             })
             .catch(err => {
                 setLoading(false);

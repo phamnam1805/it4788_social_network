@@ -13,6 +13,8 @@ import {ShortcutNavigationStack} from './ShortcutNavigationStack';
 import {Routes} from '../Routes';
 
 import FullPostToolScreen from '../../features/authscreens/homescreens/FullPostToolScreen';
+import CommentScreen from '../../features/authscreens/homescreens/CommentScreen';
+import PostDetailScreen from '../../features/authscreens/homescreens/PostDetailScreen';
 import TermsAndPoliciesScreen from '../../features/authscreens/shortcutscreens/TermsAndPoliciesScreen';
 
 const TopTab = createMaterialTopTabNavigator();
@@ -97,6 +99,8 @@ export const AuthNavigationStack = () => {
                 component={FullPostToolScreen}
             />
             <StackNavigator.Screen name={Routes.TERMS_AND_POLICIES_SCREEN} component={TermsAndPoliciesScreen}/>
+            <StackNavigator.Screen name={Routes.COMMENT_SCREEN} component={CommentScreen} />
+            <StackNavigator.Screen name={Routes.POST_DETAIL_SCREEN} component={PostDetailScreen} />
         </StackNavigator.Navigator>
     );
     // return (
