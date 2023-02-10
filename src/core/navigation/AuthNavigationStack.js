@@ -15,6 +15,7 @@ import {Routes} from '../Routes';
 import FullPostToolScreen from '../../features/authscreens/homescreens/FullPostToolScreen';
 import CommentScreen from '../../features/authscreens/homescreens/CommentScreen';
 import PostDetailScreen from '../../features/authscreens/homescreens/PostDetailScreen';
+import TermsAndPoliciesScreen from '../../features/authscreens/shortcutscreens/TermsAndPoliciesScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();
@@ -97,6 +98,7 @@ export const AuthNavigationStack = () => {
                 name={Routes.FULL_POST_TOOL_SCREEN}
                 component={FullPostToolScreen}
             />
+            <StackNavigator.Screen name={Routes.TERMS_AND_POLICIES_SCREEN} component={TermsAndPoliciesScreen}/>
             <StackNavigator.Screen name={Routes.COMMENT_SCREEN} component={CommentScreen} />
             <StackNavigator.Screen name={Routes.POST_DETAIL_SCREEN} component={PostDetailScreen} />
         </StackNavigator.Navigator>

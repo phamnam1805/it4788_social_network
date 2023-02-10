@@ -14,6 +14,7 @@ export const Routes = {
     NOTIFICATION_TAB: 'notificationTab',
     SHORTCUT_TAB: 'shortcutTab',
     FULL_POST_TOOL_SCREEN: 'fullPostToolScreen',
+    TERMS_AND_POLICIES_SCREEN: "termsAndPoliciesScreen",
     COMMENT_SCREEN: 'commentScreen',
     POST_DETAIL_SCREEN: 'postDetailScreen',
 };
