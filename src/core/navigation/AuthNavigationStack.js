@@ -16,6 +16,11 @@ import FullPostToolScreen from '../../features/authscreens/homescreens/FullPostT
 import CommentScreen from '../../features/authscreens/homescreens/CommentScreen';
 import PostDetailScreen from '../../features/authscreens/homescreens/PostDetailScreen';
 import TermsAndPoliciesScreen from '../../features/authscreens/shortcutscreens/TermsAndPoliciesScreen';
+import SettingsScreen from '../../features/authscreens/shortcutscreens/settingscreens';
+import ProfileSettingsScreen from '../../features/authscreens/shortcutscreens/settingscreens/ProfileSettingsScreen';
+import PersonalInformationScreen from '../../features/authscreens/shortcutscreens/settingscreens/PersonalInformationScreen';
+import ChangeNameScreen from '../../features/authscreens/shortcutscreens/settingscreens/ChangeNameScreen';
+import BlockingListScreen from '../../features/authscreens/shortcutscreens/settingscreens/BlockingListScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();
@@ -101,6 +106,12 @@ export const AuthNavigationStack = () => {
             <StackNavigator.Screen name={Routes.TERMS_AND_POLICIES_SCREEN} component={TermsAndPoliciesScreen}/>
             <StackNavigator.Screen name={Routes.COMMENT_SCREEN} component={CommentScreen} />
             <StackNavigator.Screen name={Routes.POST_DETAIL_SCREEN} component={PostDetailScreen} />
+
+            <StackNavigator.Screen name={Routes.SETTINGS_SCREEN} component={SettingsScreen} />
+            <StackNavigator.Screen name={Routes.PROFILE_SETTINGS_SCREEN} component={ProfileSettingsScreen} />
+            <StackNavigator.Screen name={Routes.PERSONAL_INFORMATION_SCREEN} component={PersonalInformationScreen} />
+            <StackNavigator.Screen name={Routes.CHANGE_NAME_SCREEN} component={ChangeNameScreen} />
+            <StackNavigator.Screen name={Routes.BLOCKING_LIST_SCREEN} component={BlockingListScreen} />
         </StackNavigator.Navigator>
     );
     // return (
