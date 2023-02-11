@@ -60,6 +60,7 @@ export const appOperations = {
             dispatch(authenticationActions.setAuth(true));
             dispatch(appActions.setUserId(userId));
             dispatch(appActions.setToken(token));
+            // console.log("username ===== " + username);
             dispatch(userActions.setUsername(username));
             dispatch(userActions.setAvatar(avatar));
             dispatch(postOperations.fetchGetListPosts({lastId: 0, reloadFlag: true}));

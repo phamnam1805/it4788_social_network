@@ -7,18 +7,20 @@ import Animated from 'react-native-reanimated';
 import Collapsible from 'react-native-collapsible';
 import * as navigation from '../../../core/Navigation';
 import { Routes } from '../../../core/Routes';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch} from 'react-redux';
 import {appOperations} from '../../../core/slice/App';
+import {userSelectors} from '../../../core/slice/User';
+import { useSelector } from 'react-redux';
 
 const ShortcutScreen = () => {
 
+    const user = useSelector(userSelectors.getUser);
     const [isShowMoreHelpAndSupport, setShowMoreHelpAndSupport] = useState(false);
     const [isShowSettingAndPrivacy, setShowSettingAndPrivacy] = useState(false);
     const dispatch = useDispatch();
 
     const onPressViewMyProfileHandler = () => {
-
+        navigation.navigate(Routes.USER_PROFILE_SCREEN);
     }
 
     const onOpenTermsAndPolicies = () => {
@@ -45,9 +47,9 @@ const ShortcutScreen = () => {
         <View style={styles.container}>
             <ScrollView bounces={false}>
                 <ExTouchableOpacity style={styles.btnProfile} onPress={onPressViewMyProfileHandler}>
-                    <Image style={styles.avatar} source={{ uri: "https://picsum.photos/536/354" }} />
+                    <Image style={styles.avatar} source={{ uri: user.avatar }} />
                     <View>
-                        <Text style={styles.name}>NGUYEN MINH CHI</Text>
+                        <Text style={styles.name}>{user.username}</Text>
                         <Text style={{ color: '#333' }}>View your profile page</Text>
                     </View>
                 </ExTouchableOpacity>
@@ -62,7 +64,7 @@ const ShortcutScreen = () => {
                 </ExTouchableOpacity>
                 <Collapsible collapsed={!isShowMoreHelpAndSupport}>
                     <View style={{backgroundColor: "#ffffff"}}>
-                        <ExTouchableOpacity style={styles.btnCollapseInnerOption}>
+                        <ExTouchableOpacity  onPress={onOpenTermsAndPolicies} style={styles.btnCollapseInnerOption}>
                                 <Image style={styles.icon} source={require('../../../assets/icons/question-mark.png')} />
                                 <View>
                                     <Text style={styles.name}>Terms & Policies</Text>
@@ -82,7 +84,7 @@ const ShortcutScreen = () => {
                 </ExTouchableOpacity>
                 <Collapsible collapsed={!isShowSettingAndPrivacy}>
                     <View style={{backgroundColor: "#ffffff"}}>
-                        <ExTouchableOpacity onPress={onOpenTermsAndPolicies} style={styles.btnCollapseInnerOption}>
+                        <ExTouchableOpacity style={styles.btnCollapseInnerOption}>
                                 <Image style={styles.icon} source={require('../../../assets/icons/bookmark.png')} />
                                 <View>
                                     <Text style={styles.name}>Terms & Policies</Text>
@@ -91,18 +93,18 @@ const ShortcutScreen = () => {
                     </View>
                 </Collapsible>
 
-                <ExTouchableOpacity onPress={logout} style={styles.btnCollapseOption} >
-                    <Image style={styles.icon} source={require('../../../assets/icons/logout.png')} />
-                    <View>
-                        <Text style={styles.name}>Logout</Text>
-                    </View>
-                </ExTouchableOpacity>
-                <ExTouchableOpacity onPress={quitApp} style={styles.btnCollapseOption} >
-                    <Image style={styles.icon} source={require('../../../assets/icons/logout.png')} />
-                    <View>
-                        <Text style={styles.name}>Quit App</Text>
-                    </View>
-                </ExTouchableOpacity>
+                <View style={{backgroundColor: "#ffffff"}}>
+                    <ExTouchableOpacity onPress={logout} style={styles.btnLogout} >
+                        <View>
+                            <Text style={styles.name}>Logout</Text>
+                        </View>
+                    </ExTouchableOpacity>
+                    <ExTouchableOpacity onPress={quitApp} style={styles.btnLogout} >
+                        <View>
+                            <Text style={styles.name}>Quit App</Text>
+                        </View>
+                    </ExTouchableOpacity>
+                </View>
             </ScrollView>
         </View>
     );
@@ -155,6 +157,23 @@ const styles = StyleSheet.create({
         elevation: 6,
         shadowRadius: 15,
         shadowOffset : { width: 1, height: 13},
+    },
+    btnLogout:{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignContent: 'center',
+        backgroundColor: '#f0f0f0',
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        shadowColor: 'rgba(0, 0, 0, 0.5)',
+        shadowOpacity: 0.8,
+        elevation: 6,
+        shadowRadius: 15,
+        shadowOffset : { width: 1, height: 13},
+        marginTop: 10,
+        marginBottom: 5,
+        marginHorizontal: 20
     },
     avatar: {
         height: 32,     
