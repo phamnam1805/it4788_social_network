@@ -23,4 +23,6 @@ export const Routes = {
     PROFILE_SETTINGS_SCREEN: 'profileSettingsScreen',
     SETTINGS_SCREEN: 'settingsScreen',
     BLOCKING_LIST_SCREEN: 'blockingListScreen',
+
+    SETTING_PROFILE_PAGE_SCREEN: 'settingProfilePageScreen',
 };

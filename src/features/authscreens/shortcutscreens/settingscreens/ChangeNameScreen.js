@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { Routes } from "../../../../core/Routes";
 import { HttpStatusCode } from "axios";
+import { LogicCode } from "../../../../core/Constants";
 
 const ChangeNameScreen = () => {
     const dispatch = useDispatch();
@@ -30,11 +31,11 @@ const ChangeNameScreen = () => {
             photo: null
         }));
 
-        if(response.status === HttpStatusCode.Ok){
+        if(response.payload.data.code == LogicCode.SUCCESS){
+            console.log(response.data)
             navigation.navigate(Routes.SHORTCUT_SCREEN);
         }
         else{
-            
             console.error(response);
         }
     }
