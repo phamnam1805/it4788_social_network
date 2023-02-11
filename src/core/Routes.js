@@ -17,4 +17,10 @@ export const Routes = {
     TERMS_AND_POLICIES_SCREEN: "termsAndPoliciesScreen",
     COMMENT_SCREEN: 'commentScreen',
     POST_DETAIL_SCREEN: 'postDetailScreen',
+
+    CHANGE_NAME_SCREEN: 'changeNameScreen',
+    PERSONAL_INFORMATION_SCREEN: 'personalInformationScreen',
+    PROFILE_SETTINGS_SCREEN: 'profileSettingsScreen',
+    SETTINGS_SCREEN: 'settingsScreen',
+    BLOCKING_LIST_SCREEN: 'blockingListScreen',
 };

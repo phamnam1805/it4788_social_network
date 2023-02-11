@@ -37,6 +37,14 @@ const user = createSlice({
                 state.avatar = userData.avatar;
             }
         });
+        builder.addCase(userOperations.fetchChangeUserInfo.fulfilled, (state, action) => {
+            const response = action.payload;
+            if(response.status === HttpStatusCode.Ok){
+                const userData = response.data.data;
+                state.username = userData.username;
+                state.avatar = userData.avatar;
+            }
+        });
     },
 });
 
@@ -57,6 +65,14 @@ export const userOperations = {
         const response = await userApi.getUserInfo(token, userId);
         return response;
     }),
+    fetchChangeUserInfo: createAsyncThunk('user/fetchChangeUserInfo', async(data, thunkParams) => {
+        const {username, photo} = data;
+        const state = thunkParams.getState();
+
+        const token = appSelectors.getToken(state);
+        const response = await userApi.changeUserInfo(token, username, photo);
+        return response
+    })
 };
 
 export const userReducer = user.reducer;
@@ -70,4 +86,17 @@ export const userApi = {
         const response = await axios.post(BASE_URL + '/it4788/get_user_info', requestBody);
         return response;
     },
+    changeUserInfo: async (token, username, photo) => {
+        const requestBody = new FormData();
+        requestBody.append("token", token);
+        requestBody.append("username", username);
+        if(photo)
+            requestBody.append("photo", photo);
+
+        const response = await axios.post(BASE_URL + '/it4788/change_info_after_signup', requestBody, {
+            headers: {'Content-Type': 'multipart/form-data'},
+        });
+
+        return response;
+    }
 };

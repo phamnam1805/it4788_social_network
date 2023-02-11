@@ -27,6 +27,10 @@ const ShortcutScreen = () => {
         navigation.navigate(Routes.TERMS_AND_POLICIES_SCREEN);
     }
 
+    const onOpenSettings = ()=> {
+        navigation.navigate(Routes.SETTINGS_SCREEN);
+    }
+
     const logout = () => {
         dispatch(appOperations.logout())
     }
@@ -65,7 +69,7 @@ const ShortcutScreen = () => {
                 <Collapsible collapsed={!isShowMoreHelpAndSupport}>
                     <View style={{backgroundColor: "#ffffff"}}>
                         <ExTouchableOpacity  onPress={onOpenTermsAndPolicies} style={styles.btnCollapseInnerOption}>
-                                <Image style={styles.icon} source={require('../../../assets/icons/question-mark.png')} />
+                        <Image style={styles.icon} source={require('../../../assets/icons/bookmark.png')} />
                                 <View>
                                     <Text style={styles.name}>Terms & Policies</Text>
                                 </View>
@@ -84,10 +88,10 @@ const ShortcutScreen = () => {
                 </ExTouchableOpacity>
                 <Collapsible collapsed={!isShowSettingAndPrivacy}>
                     <View style={{backgroundColor: "#ffffff"}}>
-                        <ExTouchableOpacity style={styles.btnCollapseInnerOption}>
-                                <Image style={styles.icon} source={require('../../../assets/icons/bookmark.png')} />
+                        <ExTouchableOpacity onPress={onOpenSettings} style={styles.btnCollapseInnerOption}>
+                                <Image style={styles.icon} source={require('../../../assets/icons/gear.png')} />
                                 <View>
-                                    <Text style={styles.name}>Terms & Policies</Text>
+                                    <Text style={styles.name}>Settings</Text>
                                 </View>
                         </ExTouchableOpacity>
                     </View>
