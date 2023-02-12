@@ -28,6 +28,7 @@ const OtherProfileScreen = ({route}) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "#fff",
+        marginBottom: 100
     },
     navigationBar: {
         flexDirection: 'row',

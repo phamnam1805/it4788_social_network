@@ -11,13 +11,15 @@ import * as navigation from '../../../core/Navigation';
 import { Routes } from '../../../core/Routes';
 import { useSelector } from 'react-redux';
 import { userSelectors } from '../../../core/slice/User';
+import { appSelectors } from '../../../core/slice/App';
 
 const UserProfileScreen = () => {
 
     const [isVisibleAvatarOptions, setVisibleAvatarOptions] = useState(false);
     const [isVisibleBackgroundOptions, setVisibleBackgroundOptions] = useState(false);
 
-    const user = useSelector(userSelectors.getUser)
+    const user = useSelector(userSelectors.getUser);
+    const userId = useSelector(appSelectors.getUserId);
 
     const onPressAvatarOptionsHandler = () => {
         setVisibleAvatarOptions(true);
@@ -87,7 +89,7 @@ const UserProfileScreen = () => {
                         <Text style={{ color: '#318bfb', fontSize: 16, fontWeight: '500' }}>Edit public info</Text>
                     </TouchableOpacity>
                 </View>
-                <FriendsShowing/>
+                <FriendsShowing userId={userId}/>
             </View>
             <PostTool />
             <ProfilePosts />
