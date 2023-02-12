@@ -15,7 +15,6 @@ import { useDispatch } from 'react-redux';
 import { appSelectors } from '../core/slice/App';
 import axios from 'axios';
 import { BASE_URL } from '../core/Constants';
-import * as uuid from 'react-native-uuid'
 
 
 const UserProfileComponent = ({ userId }) => {

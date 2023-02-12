@@ -27,6 +27,7 @@ export const Routes = {
     LIST_FRIEND_REQUESTS: 'listFriendRequests',
     CHANGE_PASSWORD: 'changePassword',
     SET_PUSH_SETTINGS: 'settingPushSettings',
+    ALL_FRIENDS_SCREEN: 'allFriendsScreen',
 
     SETTING_PROFILE_PAGE_SCREEN: 'settingProfilePageScreen',
     EDIT_PROFILE_SCREEN: 'editProfileScreen',

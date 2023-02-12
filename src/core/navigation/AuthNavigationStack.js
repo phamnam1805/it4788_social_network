@@ -27,6 +27,7 @@ import OtherProfileScreen from '../../features/authscreens/userprofilescreens/Ot
 import ListFriendRequestScreen from '../../features/authscreens/shortcutscreens/ListFriendRequestsScreen';
 import PushSettingsScreen from '../../features/authscreens/shortcutscreens/PushSettingsScreen';
 import ChangePasswordScreen from '../../features/authscreens/shortcutscreens/ChangePasswordScreen';
+import AllFriendsScreen from '../../features/authscreens/userprofilescreens/AllFriendsScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();
@@ -119,6 +120,7 @@ export const AuthNavigationStack = () => {
                 component={FullScreenImageView}
             />
 
+            <StackNavigator.Screen name={Routes.ALL_FRIENDS_SCREEN} component={AllFriendsScreen} />
             <StackNavigator.Screen name={Routes.CHANGE_PASSWORD} component={ChangePasswordScreen} />
             <StackNavigator.Screen name={Routes.SET_PUSH_SETTINGS} component={PushSettingsScreen} />
             <StackNavigator.Screen name={Routes.LIST_FRIEND_REQUESTS} component={ListFriendRequestScreen} />
