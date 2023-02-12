@@ -3,6 +3,7 @@ import axios, {HttpStatusCode} from 'axios';
 
 import {appSelectors} from './App';
 import {BASE_URL} from '../Constants';
+import { Platform } from 'react-native';
 
 const initialState = {
     username: '',
@@ -91,12 +92,19 @@ export const userApi = {
         requestBody.append("token", token);
         requestBody.append("username", username);
         if(photo)
-            requestBody.append("photo", photo);
+        {
+            var image = {
+                uri: photo.uri,
+                name: photo.fileName,
+                type: photo.type,
+            };
 
+            console.log(image);
+            requestBody.append('avatar',  image);
+        }
         const response = await axios.post(BASE_URL + '/it4788/change_info_after_signup', requestBody, {
             headers: {'Content-Type': 'multipart/form-data'},
         });
-
         return response;
     }
 };

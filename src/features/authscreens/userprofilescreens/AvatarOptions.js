@@ -2,15 +2,53 @@ import { Text, View, StyleSheet } from "react-native";
 import ExTouchableOpacity from '../../../components/ExTouchableOpacity';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import ReactNativeModal from "react-native-modal";
+import { useState } from "react";
+import { launchImageLibrary } from "react-native-image-picker";
+import { userSelectors, userOperations } from "../../../core/slice/User";
+import { useSelector, useDispatch } from "react-redux";
+import { Routes } from "../../../core/Routes";
+import * as navigation from '../../../core/Navigation';
+import { LogicCode } from "../../../core/Constants";
 
 const AvatarOptions = ({isVisible, closeModal}) => {
+
+    const user = useSelector(userSelectors.getUser);
+    const dispatch = useDispatch();
 
     const goBack = () => {
         closeModal();
     }
 
     const onPressSelectProfilePictureHandler = () => {
+        var options = {
+            mediaType: 'photo',
+            selectionLimit: 1,
+        };
+        launchImageLibrary(options, async res => {
+            console.log('Response = ', res);
+            if (res.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (res.assets) {
+                const photos = res.assets;
+                if (photos.length > 1) {
+                    Alert.alert('', 'Please choose maximum 1 photo');
+                } else {
+                    var photo = photos[0];
+                    var response = await dispatch(userOperations.fetchChangeUserInfo({
+                        username: user.username,
+                        photo: photo
+                    }));
 
+                    if(response.payload.data.code == LogicCode.SUCCESS){
+                        closeModal();
+                    }
+                    else{
+                        console.error(response);
+                    }
+                }
+            } else {
+            }
+        });
     }
 
     return (
