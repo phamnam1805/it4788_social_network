@@ -54,7 +54,7 @@ const PostItem = ({item, index, user, statusContent}) => {
     };
 
     const onPostImagePressHandler = () => {
-        navigation.navigate(Routes.POST_DETAIL_SCREEN, {
+        navigation.navigate(Routes.FULL_SCREEN_IMAGE_VIEW, {
             index: index,
             post: item,
         });
@@ -69,7 +69,7 @@ const PostItem = ({item, index, user, statusContent}) => {
             return navigation.navigate('Profile');
         }
         navigation.navigate(Routes.OTHER_PROFILE_SCREEN, {
-            userId: inputUserId
+            userId: inputUserId,
         });
     };
 

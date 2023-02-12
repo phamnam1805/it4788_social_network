@@ -14,8 +14,9 @@ export const Routes = {
     NOTIFICATION_TAB: 'notificationTab',
     SHORTCUT_TAB: 'shortcutTab',
     FULL_POST_TOOL_SCREEN: 'fullPostToolScreen',
-    TERMS_AND_POLICIES_SCREEN: "termsAndPoliciesScreen",
+    TERMS_AND_POLICIES_SCREEN: 'termsAndPoliciesScreen',
     COMMENT_SCREEN: 'commentScreen',
+    FULL_SCREEN_IMAGE_VIEW: 'fullScreenImageView',
     POST_DETAIL_SCREEN: 'postDetailScreen',
 
     CHANGE_NAME_SCREEN: 'changeNameScreen',
@@ -28,5 +29,4 @@ export const Routes = {
     SETTING_PROFILE_PAGE_SCREEN: 'settingProfilePageScreen',
     EDIT_PROFILE_SCREEN: 'editProfileScreen',
     OTHER_PROFILE_SCREEN: 'otherProfileScreen',
-
 };
