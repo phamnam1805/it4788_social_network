@@ -35,6 +35,14 @@ const ShortcutScreen = () => {
         navigation.navigate(Routes.LIST_FRIEND_REQUESTS);
     }
 
+    const openChangePassword = () => {
+        navigation.navigate(Routes.CHANGE_PASSWORD);
+    }
+
+    const openSetPushSettings = () => {
+        navigation.navigate(Routes.SET_PUSH_SETTINGS);
+    }
+
     const logout = () => {
         dispatch(appOperations.logout())
     }
@@ -106,6 +114,24 @@ const ShortcutScreen = () => {
                         <Image style={styles.icon} source={require('../../../assets/icons/speaker.png')} />
                         <View>
                             <Text style={styles.name}>Requested Friends</Text>
+                        </View>
+                    </View>
+                </ExTouchableOpacity>
+
+                <ExTouchableOpacity onPress={openChangePassword} style={styles.btnCollapseOptions}>
+                    <View style={styles.btnCollapseOption} >
+                        <Image style={styles.icon} source={require('../../../assets/icons/key.png')} />
+                        <View>
+                            <Text style={styles.name}>Change Password</Text>
+                        </View>
+                    </View>
+                </ExTouchableOpacity>
+
+                <ExTouchableOpacity onPress={openSetPushSettings} style={styles.btnCollapseOptions}>
+                    <View style={styles.btnCollapseOption} >
+                        <Image style={styles.icon} source={require('../../../assets/icons/gear.png')} />
+                        <View>
+                            <Text style={styles.name}>Change Push Settings</Text>
                         </View>
                     </View>
                 </ExTouchableOpacity>

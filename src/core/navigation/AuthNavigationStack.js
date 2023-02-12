@@ -25,6 +25,8 @@ import SettingProfilePageScreen from '../../features/authscreens/userprofilescre
 import EditProfilePageScreen from '../../features/authscreens/userprofilescreens/EditProfilePageScreen';
 import OtherProfileScreen from '../../features/authscreens/userprofilescreens/OtherProfileScreen';
 import ListFriendRequestScreen from '../../features/authscreens/shortcutscreens/ListFriendRequestsScreen';
+import PushSettingsScreen from '../../features/authscreens/shortcutscreens/PushSettingsScreen';
+import ChangePasswordScreen from '../../features/authscreens/shortcutscreens/ChangePasswordScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();
@@ -117,22 +119,12 @@ export const AuthNavigationStack = () => {
                 component={FullScreenImageView}
             />
 
-            <StackNavigator.Screen
-                name={Routes.LIST_FRIEND_REQUESTS}
-                component={ListFriendRequestScreen}
-            />
-            <StackNavigator.Screen
-                name={Routes.OTHER_PROFILE_SCREEN}
-                component={OtherProfileScreen}
-            />
-            <StackNavigator.Screen
-                name={Routes.EDIT_PROFILE_SCREEN}
-                component={EditProfilePageScreen}
-            />
-            <StackNavigator.Screen
-                name={Routes.SETTING_PROFILE_PAGE_SCREEN}
-                component={SettingProfilePageScreen}
-            />
+            <StackNavigator.Screen name={Routes.CHANGE_PASSWORD} component={ChangePasswordScreen} />
+            <StackNavigator.Screen name={Routes.SET_PUSH_SETTINGS} component={PushSettingsScreen} />
+            <StackNavigator.Screen name={Routes.LIST_FRIEND_REQUESTS} component={ListFriendRequestScreen} />
+            <StackNavigator.Screen name={Routes.OTHER_PROFILE_SCREEN} component={OtherProfileScreen} />
+            <StackNavigator.Screen name={Routes.EDIT_PROFILE_SCREEN} component={EditProfilePageScreen} />
+            <StackNavigator.Screen name={Routes.SETTING_PROFILE_PAGE_SCREEN} component={SettingProfilePageScreen} />
             <StackNavigator.Screen name={Routes.SETTINGS_SCREEN} component={SettingsScreen} />
             <StackNavigator.Screen
                 name={Routes.PROFILE_SETTINGS_SCREEN}

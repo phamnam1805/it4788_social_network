@@ -20,7 +20,7 @@ import DeviceInfo from 'react-native-device-info';
 
 import {dispatch, navigation} from '../../core/Navigation';
 import {Routes} from '../../core/Routes';
-import {BASE_URL} from '../../core/Constants';
+import {BASE_URL, LogicCode} from '../../core/Constants';
 import Loader from '../../components/Loader';
 import {appOperations} from '../../core/slice/App';
 import {useDispatch} from 'react-redux';
@@ -55,7 +55,7 @@ const LoginScreen = () => {
         axios
             .post(BASE_URL + '/it4788/login', requestBody)
             .then(response => {
-                if ((response.status = HttpStatusCode.Ok)) {
+                if ((response.data.code == LogicCode.SUCCESS)) {
                     const responseData = response.data;
                     const data = responseData.data;
                     // console.log(token);
@@ -70,6 +70,7 @@ const LoginScreen = () => {
                     setLoading(false);
                 } else {
                     alert('Incorrect phone number or password');
+                    setLoading(false);
                 }
             })
             .catch(error => {
