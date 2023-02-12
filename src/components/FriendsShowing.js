@@ -16,6 +16,10 @@ const FriendsShowing = ({userId}) => {
         navigation.navigate(Routes.LIST_FRIEND_REQUESTS);
     }
 
+    const onSeeAllFriends = () => {
+        navigation.navigate(Routes.ALL_FRIENDS_SCREEN, {userId: userId});
+    }
+
     const redirectToProfile = userId => {
         navigation.navigate(Routes.OTHER_PROFILE_SCREEN, {userId: userId})
     }
@@ -60,7 +64,7 @@ const FriendsShowing = ({userId}) => {
                     </View>
                 )))} 
             </View>
-            <ExTouchableOpacity style={styles.seeAll}>
+            <ExTouchableOpacity onPress={onSeeAllFriends} style={styles.seeAll}>
                 <Text style={styles.seeAllText}>See all friends</Text>
             </ExTouchableOpacity>
         </View>
