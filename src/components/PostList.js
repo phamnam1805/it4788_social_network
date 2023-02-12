@@ -11,7 +11,6 @@ import {
     FlatList,
     ActivityIndicator,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
@@ -21,16 +20,18 @@ import {postSelectors} from '../core/slice/Post';
 const PostList = ({posts, user, statusContent}) => {
     return (
         <>
-            {posts.map((item, index) => (
-                <View key={index}>
-                    <PostItem
-                        key={index}
-                        index={index}
-                        item={item}
-                        user={user}
-                        statusContent={statusContent}></PostItem>
-                </View>
-            ))}
+            {posts.map((item, index) => {
+                return (
+                    <View key={index}>
+                        <PostItem
+                            key={index}
+                            index={index}
+                            item={item}
+                            user={user}
+                            statusContent={statusContent}></PostItem>
+                    </View>
+                );
+            })}
         </>
     );
 };
