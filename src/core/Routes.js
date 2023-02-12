@@ -14,6 +14,16 @@ export const Routes = {
     NOTIFICATION_TAB: 'notificationTab',
     SHORTCUT_TAB: 'shortcutTab',
     FULL_POST_TOOL_SCREEN: 'fullPostToolScreen',
+    TERMS_AND_POLICIES_SCREEN: "termsAndPoliciesScreen",
     COMMENT_SCREEN: 'commentScreen',
     POST_DETAIL_SCREEN: 'postDetailScreen',
+
+    CHANGE_NAME_SCREEN: 'changeNameScreen',
+    PERSONAL_INFORMATION_SCREEN: 'personalInformationScreen',
+    PROFILE_SETTINGS_SCREEN: 'profileSettingsScreen',
+    SETTINGS_SCREEN: 'settingsScreen',
+    BLOCKING_LIST_SCREEN: 'blockingListScreen',
+
+    SETTING_PROFILE_PAGE_SCREEN: 'settingProfilePageScreen',
+    EDIT_PROFILE_SCREEN: 'editProfileScreen',
 };

@@ -9,11 +9,15 @@ import PostTool from '../../../components/PostTool';
 import ProfilePosts from '../../../components/ProfilePosts';
 import * as navigation from '../../../core/Navigation';
 import { Routes } from '../../../core/Routes';
+import { useSelector } from 'react-redux';
+import { userSelectors } from '../../../core/slice/User';
 
 const UserProfileScreen = () => {
 
     const [isVisibleAvatarOptions, setVisibleAvatarOptions] = useState(false);
     const [isVisibleBackgroundOptions, setVisibleBackgroundOptions] = useState(false);
+
+    const user = useSelector(userSelectors.getUser)
 
     const onPressAvatarOptionsHandler = () => {
         setVisibleAvatarOptions(true);
@@ -23,7 +27,14 @@ const UserProfileScreen = () => {
         setVisibleBackgroundOptions(true);
     }
 
-    const onPressEditPublicInfoHandler = () => {}
+    const onPressEditPublicInfoHandler = () => 
+    {
+       navigation.navigate(Routes.EDIT_PROFILE_SCREEN);
+    }
+
+    const onPressSettingProfilePageHandler = () => {
+        navigation.navigate(Routes.SETTING_PROFILE_PAGE_SCREEN);
+    }
 
     return (
         <View>
@@ -31,14 +42,14 @@ const UserProfileScreen = () => {
             <View style={styles.infoWrapper}>
                 <View style={styles.avatarCoverWrapper}>
                     <TouchableOpacity activeOpacity={0.8}>
-                        <Image style={styles.cover} source={{ uri: "https://picsum.photos/536/354"}} />
+                        <Image style={styles.cover} source={{ uri: user.cover}} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={onPressProfileSettingHandler} activeOpacity={0.8} style={styles.btnChangeCover}>
                         <FontAwesome5Icon size={18} name="camera" />
                     </TouchableOpacity>
                     <View style={styles.avatarWrapper}>
                         <TouchableOpacity activeOpacity={0.9}>
-                            <Image style={styles.avatar} source={{ uri: "https://picsum.photos/536/354" }} />
+                            <Image style={styles.avatar} source={{ uri: user.avatar }} />
                         </TouchableOpacity>
                         <TouchableOpacity activeOpacity={0.8} onPress={onPressAvatarOptionsHandler} style={styles.btnChangeAvatar}>
                             <FontAwesome5Icon size={18} name="camera" />
@@ -46,26 +57,28 @@ const UserProfileScreen = () => {
                     </View>
                 </View>
                 <View style={styles.introWrapper}>
-                    <Text style={styles.name}>NGUYEN MINH CHI</Text>
-                    <Text style={styles.introTxt}>This is the description of me</Text>
+                    <Text style={styles.name}>{user.username}</Text>
+                    {/* <Text style={styles.introTxt}>This is the description of me</Text> */}
                     <View style={styles.introOptionsWrapper}>
                         <TouchableOpacity activeOpacity={0.8} style={styles.btnAddStory}>
                             <FontAwesome5Icon size={16} color="#fff" name="plus-circle" />
                             <Text style={{ fontSize: 16, fontWeight: '500', color: '#fff', marginLeft: 5 }}>Add to your story</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.onPressProfileSettingHandler} activeOpacity={0.8} style={styles.btnOption}>
+                        <TouchableOpacity onPress={onPressSettingProfilePageHandler} activeOpacity={0.8} style={styles.btnOption}>
                             <FontAwesome5Icon size={20} color="#000" name="ellipsis-h" />
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={styles.introListWrapper}>
-                    <View style={styles.introLine}>
-                        <FontAwesome5Icon size={20} color="#333" style={styles.introIcon} name="home" />
-                        <Text style={styles.introLineText}>
-                            Live in <Text style={styles.introHightLight}>HO CHI MINH</Text>
-                        </Text>
+                {user.address && (<>
+                    <View style={styles.introListWrapper}>
+                        <View style={styles.introLine}>
+                            <FontAwesome5Icon size={20} color="#333" style={styles.introIcon} name="home" />
+                            <Text style={styles.introLineText}>
+                                Live in <Text style={styles.introHightLight}>{user.address}</Text>
+                            </Text>
+                        </View>
                     </View>
-                </View>
+                </>)}
                 <View style={{ paddingVertical: 20, borderBottomWidth: 0.5, borderBottomColor: '#ddd' }}>
                     <TouchableOpacity
                         onPress={onPressEditPublicInfoHandler}
@@ -77,7 +90,7 @@ const UserProfileScreen = () => {
                 <FriendsShowing/>
             </View>
             <PostTool />
-            <ProfilePosts/>
+            <ProfilePosts />
         </ScrollView>
         <AvatarOptions isVisible={isVisibleAvatarOptions} closeModal={()=> setVisibleAvatarOptions(false)}/>
         <BackgroundOptions isVisible={isVisibleBackgroundOptions} closeModal={() => setVisibleBackgroundOptions(false)} />

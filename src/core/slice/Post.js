@@ -23,7 +23,13 @@ const post = createSlice({
     initialState,
     reducers: {
         setPosts(state, action) {
-            state.posts = action.payload;
+            if(action.payload)
+            {
+                state.posts = action.payload;
+            }
+            else{
+                state.posts = []
+            }
         },
         setPost(state, action) {
             const payload = action.payload;
@@ -133,11 +139,9 @@ export const postOperations = {
         dispatch(postActions.setStatusList(statusArr));
     },
     fetchGetListPosts: createAsyncThunk('post/fetchGetListPosts', async (data, thunkParams) => {
-        const {lastId, reloadFlag} = data;
+        const {lastId, reloadFlag, userId} = data;
         const state = thunkParams.getState();
-
         const token = appSelectors.getToken(state);
-        const userId = appSelectors.getUserId(state);
         const lastIndex = postSelectors.getLastIndex(state);
         const count = postSelectors.getCount(state);
         const lastList = postSelectors.getAllPosts(state);
@@ -215,6 +219,7 @@ export const postApi = {
                     name: photo.fileName,
                     type: photo.type,
                 };
+                console.error(image);
                 requestBody.append('image', image);
             }
         } else if (video) {

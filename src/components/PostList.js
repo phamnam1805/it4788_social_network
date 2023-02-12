@@ -20,18 +20,16 @@ import {postSelectors} from '../core/slice/Post';
 const PostList = ({posts, user, statusContent}) => {
     return (
         <>
-            {posts.map((item, index) => {
-                return (
-                    <View key={index}>
-                        <PostItem
-                            key={index}
-                            index={index}
-                            item={item}
-                            user={user}
-                            statusContent={statusContent}></PostItem>
-                    </View>
-                );
-            })}
+            {posts && posts.map((item, index) => (
+                <View key={index}>
+                    <PostItem
+                        key={index}
+                        index={index}
+                        item={item}
+                        user={user}
+                        statusContent={statusContent}></PostItem>
+                </View>
+            ))}
         </>
     );
 };
