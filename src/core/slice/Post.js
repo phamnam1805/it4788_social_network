@@ -23,7 +23,13 @@ const post = createSlice({
     initialState,
     reducers: {
         setPosts(state, action) {
-            state.posts = action.payload;
+            if(action.payload)
+            {
+                state.posts = action.payload;
+            }
+            else{
+                state.posts = []
+            }
         },
         setPost(state, action) {
             const payload = action.payload;
@@ -213,6 +219,7 @@ export const postApi = {
                     name: photo.fileName,
                     type: photo.type,
                 };
+                console.error(image);
                 requestBody.append('image', image);
             }
         } else if (video) {

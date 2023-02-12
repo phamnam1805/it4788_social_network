@@ -9,11 +9,15 @@ import PostTool from '../../../components/PostTool';
 import ProfilePosts from '../../../components/ProfilePosts';
 import * as navigation from '../../../core/Navigation';
 import { Routes } from '../../../core/Routes';
+import { useSelector } from 'react-redux';
+import { userSelectors } from '../../../core/slice/User';
 
 const UserProfileScreen = () => {
 
     const [isVisibleAvatarOptions, setVisibleAvatarOptions] = useState(false);
     const [isVisibleBackgroundOptions, setVisibleBackgroundOptions] = useState(false);
+
+    const user = useSelector(userSelectors.getUser)
 
     const onPressAvatarOptionsHandler = () => {
         setVisibleAvatarOptions(true);
@@ -23,7 +27,10 @@ const UserProfileScreen = () => {
         setVisibleBackgroundOptions(true);
     }
 
-    const onPressEditPublicInfoHandler = () => {}
+    const onPressEditPublicInfoHandler = () => 
+    {
+
+    }
 
     return (
         <View>
@@ -38,7 +45,7 @@ const UserProfileScreen = () => {
                     </TouchableOpacity>
                     <View style={styles.avatarWrapper}>
                         <TouchableOpacity activeOpacity={0.9}>
-                            <Image style={styles.avatar} source={{ uri: "https://picsum.photos/536/354" }} />
+                            <Image style={styles.avatar} source={{ uri: user.avatar }} />
                         </TouchableOpacity>
                         <TouchableOpacity activeOpacity={0.8} onPress={onPressAvatarOptionsHandler} style={styles.btnChangeAvatar}>
                             <FontAwesome5Icon size={18} name="camera" />
@@ -46,8 +53,8 @@ const UserProfileScreen = () => {
                     </View>
                 </View>
                 <View style={styles.introWrapper}>
-                    <Text style={styles.name}>NGUYEN MINH CHI</Text>
-                    <Text style={styles.introTxt}>This is the description of me</Text>
+                    <Text style={styles.name}>{user.username}</Text>
+                    {/* <Text style={styles.introTxt}>This is the description of me</Text> */}
                     <View style={styles.introOptionsWrapper}>
                         <TouchableOpacity activeOpacity={0.8} style={styles.btnAddStory}>
                             <FontAwesome5Icon size={16} color="#fff" name="plus-circle" />
@@ -77,7 +84,7 @@ const UserProfileScreen = () => {
                 <FriendsShowing/>
             </View>
             <PostTool />
-            <ProfilePosts/>
+            <ProfilePosts />
         </ScrollView>
         <AvatarOptions isVisible={isVisibleAvatarOptions} closeModal={()=> setVisibleAvatarOptions(false)}/>
         <BackgroundOptions isVisible={isVisibleBackgroundOptions} closeModal={() => setVisibleBackgroundOptions(false)} />
