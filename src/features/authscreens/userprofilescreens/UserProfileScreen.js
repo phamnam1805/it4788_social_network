@@ -29,7 +29,11 @@ const UserProfileScreen = () => {
 
     const onPressEditPublicInfoHandler = () => 
     {
+       navigation.navigate(Routes.EDIT_PROFILE_SCREEN);
+    }
 
+    const onPressSettingProfilePageHandler = () => {
+        navigation.navigate(Routes.SETTING_PROFILE_PAGE_SCREEN);
     }
 
     return (
@@ -38,7 +42,7 @@ const UserProfileScreen = () => {
             <View style={styles.infoWrapper}>
                 <View style={styles.avatarCoverWrapper}>
                     <TouchableOpacity activeOpacity={0.8}>
-                        <Image style={styles.cover} source={{ uri: "https://picsum.photos/536/354"}} />
+                        <Image style={styles.cover} source={{ uri: user.cover}} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={onPressProfileSettingHandler} activeOpacity={0.8} style={styles.btnChangeCover}>
                         <FontAwesome5Icon size={18} name="camera" />
@@ -60,19 +64,21 @@ const UserProfileScreen = () => {
                             <FontAwesome5Icon size={16} color="#fff" name="plus-circle" />
                             <Text style={{ fontSize: 16, fontWeight: '500', color: '#fff', marginLeft: 5 }}>Add to your story</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={this.onPressProfileSettingHandler} activeOpacity={0.8} style={styles.btnOption}>
+                        <TouchableOpacity onPress={onPressSettingProfilePageHandler} activeOpacity={0.8} style={styles.btnOption}>
                             <FontAwesome5Icon size={20} color="#000" name="ellipsis-h" />
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={styles.introListWrapper}>
-                    <View style={styles.introLine}>
-                        <FontAwesome5Icon size={20} color="#333" style={styles.introIcon} name="home" />
-                        <Text style={styles.introLineText}>
-                            Live in <Text style={styles.introHightLight}>HO CHI MINH</Text>
-                        </Text>
+                {user.address && (<>
+                    <View style={styles.introListWrapper}>
+                        <View style={styles.introLine}>
+                            <FontAwesome5Icon size={20} color="#333" style={styles.introIcon} name="home" />
+                            <Text style={styles.introLineText}>
+                                Live in <Text style={styles.introHightLight}>{user.address}</Text>
+                            </Text>
+                        </View>
                     </View>
-                </View>
+                </>)}
                 <View style={{ paddingVertical: 20, borderBottomWidth: 0.5, borderBottomColor: '#ddd' }}>
                     <TouchableOpacity
                         onPress={onPressEditPublicInfoHandler}

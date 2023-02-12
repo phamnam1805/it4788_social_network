@@ -25,4 +25,5 @@ export const Routes = {
     BLOCKING_LIST_SCREEN: 'blockingListScreen',
 
     SETTING_PROFILE_PAGE_SCREEN: 'settingProfilePageScreen',
+    EDIT_PROFILE_SCREEN: 'editProfileScreen',
 };

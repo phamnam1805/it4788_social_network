@@ -60,9 +60,7 @@ export const appOperations = {
             dispatch(authenticationActions.setAuth(true));
             dispatch(appActions.setUserId(userId));
             dispatch(appActions.setToken(token));
-            // console.log("username ===== " + username);
-            dispatch(userActions.setUsername(username));
-            dispatch(userActions.setAvatar(avatar));
+            dispatch(userOperations.fetchUserInfo());
             dispatch(postOperations.fetchGetListPosts({lastId: 0, reloadFlag: true}));
             const appData = appSelectors.getApp(getState());
             const userData = userSelectors.getUser(getState());
