@@ -31,6 +31,10 @@ const ShortcutScreen = () => {
         navigation.navigate(Routes.SETTINGS_SCREEN);
     }
 
+    const openListRequestFriends = ()=> {
+        navigation.navigate(Routes.LIST_FRIEND_REQUESTS);
+    }
+
     const logout = () => {
         dispatch(appOperations.logout())
     }
@@ -96,6 +100,15 @@ const ShortcutScreen = () => {
                         </ExTouchableOpacity>
                     </View>
                 </Collapsible>
+
+                <ExTouchableOpacity onPress={openListRequestFriends} style={styles.btnCollapseOptions}>
+                    <View style={styles.btnCollapseOption} >
+                        <Image style={styles.icon} source={require('../../../assets/icons/speaker.png')} />
+                        <View>
+                            <Text style={styles.name}>Requested Friends</Text>
+                        </View>
+                    </View>
+                </ExTouchableOpacity>
 
                 <View style={{backgroundColor: "#ffffff"}}>
                     <ExTouchableOpacity onPress={logout} style={styles.btnLogout} >

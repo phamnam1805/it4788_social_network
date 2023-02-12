@@ -31,10 +31,16 @@ const UserProfileComponent = ({ userId }) => {
         }
     }
 
+    const acceptRequestFriend = async () => {
+        const res = await axios.post(BASE_URL + '/it4788/set_accept_friend', {token: token, user_id: userId});
+        if(res.data.code == LogicCode.SUCCESS){
+            setRefreshRequestedFriends(!refreshRequestedFriends)
+        }
+    }
+
     const otherUserProfile = useAsync(async () => {
         const res = await axios.post(BASE_URL + '/it4788/get_user_info', { token: token, user_id: userId });
         if (res.data.code == LogicCode.SUCCESS) {
-            console.error(res.data.data);
             return res.data.data;
         }
         return null;
@@ -73,9 +79,8 @@ const UserProfileComponent = ({ userId }) => {
                                                     </TouchableOpacity>
                                                 </>) : (<>
                                                     {
-                                                        otherUserProfile.is_received_request ? (<>
-                                                            <TouchableOpacity onPress={sendRequestFriend} activeOpacity={0.8} style={styles.btnAddFriends}>
-                                                                <FontAwesome5Icon size={16} color="#fff" name="plus-circle" />
+                                                        otherUserProfile.value.is_received_request ? (<>
+                                                            <TouchableOpacity onPress={acceptRequestFriend} activeOpacity={0.8} style={styles.btnAddFriends}>
                                                                 <Text style={{ fontSize: 16, fontWeight: '500', color: '#fff', marginLeft: 5 }}>Accept Request</Text>
                                                             </TouchableOpacity>
                                                         </>) : (<>
