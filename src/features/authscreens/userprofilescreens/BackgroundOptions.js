@@ -2,14 +2,49 @@ import { Text, View, StyleSheet } from "react-native";
 import ExTouchableOpacity from '../../../components/ExTouchableOpacity';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import ReactNativeModal from "react-native-modal";
+import { userSelectors, userOperations } from "../../../core/slice/User";
+import { launchImageLibrary } from "react-native-image-picker";
+import { useSelector, useDispatch } from "react-redux";
+import { LogicCode } from "../../../core/Constants";
 
 const BackgroundOptions = ({isVisible, closeModal})=> {
+
+    const user = useSelector(userSelectors.getUser);
+    const dispatch = useDispatch();
     const goBack = () => {
         closeModal();
     }
 
     const onPressSelectProfilePictureHandler = () => {
+        var options = {
+            mediaType: 'photo',
+            selectionLimit: 1,
+        };
+        launchImageLibrary(options, async res => {
+            console.log('Response = ', res);
+            if (res.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (res.assets) {
+                const photos = res.assets;
+                if (photos.length > 1) {
+                    Alert.alert('', 'Please choose maximum 1 photo');
+                } else {
+                    var photo = photos[0];
+                    var response = await dispatch(userOperations.fetchChangeUserInfo({
+                        username: user.username,
+                        background: photo
+                    }));
 
+                    if(response.payload.data.code == LogicCode.SUCCESS){
+                        closeModal();
+                    }
+                    else{
+                        console.error(response);
+                    }
+                }
+            } else {
+            }
+        });
     }
 
     return (
@@ -23,17 +58,9 @@ const BackgroundOptions = ({isVisible, closeModal})=> {
             <View style={styles.postOptionsWrapper}>
                 <ExTouchableOpacity style={styles.postOptionItemWrapper} onPress={onPressSelectProfilePictureHandler}>
                     <View style={styles.postOptionItem}>
-                        <View style={styles.optionIcon}><FontAwesome5Icon name="images" size={20}></FontAwesome5Icon></View>
+                        <View style={styles.optionIcon}><FontAwesome5Icon name="image" size={20}></FontAwesome5Icon></View>
                         <View>
-                            <Text style={styles.postOptionTitle}>View background picture</Text>
-                        </View>
-                    </View>
-                </ExTouchableOpacity>
-                <ExTouchableOpacity style={styles.postOptionItemWrapper} onPress={onPressSelectProfilePictureHandler}>
-                    <View style={styles.postOptionItem}>
-                        <View style={styles.optionIcon}><FontAwesome5Icon name="upload" size={20}></FontAwesome5Icon></View>
-                        <View>
-                            <Text style={styles.postOptionTitle}>Upload Image</Text>
+                            <Text style={styles.postOptionTitle}>Change Background Picture</Text>
                         </View>
                     </View>
                 </ExTouchableOpacity>
