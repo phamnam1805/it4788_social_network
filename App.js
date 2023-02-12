@@ -6,18 +6,30 @@
  */
 
 import React, {useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, PermissionsAndroid} from 'react-native';
 
 import {useDispatch, Provider} from 'react-redux';
 import {NavigationRouter} from './src/core/NavigationRouter';
 import {appOperations} from './src/core/slice/App';
 import store from './src/core/ReduxStore';
+import {
+    getFcmToken,
+    requestUserPermission,
+    setupNotificationServices,
+} from './src/utils/NotificationUtils';
 
 export function GlobalComponents() {
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(appOperations.initialize());
+        requestUserPermission().then(async isEnabled => {
+            if (isEnabled) {
+                const token = await getFcmToken();
+                console.log('FCM Token: ', token);
+            }
+        });
+        setupNotificationServices();
     }, [dispatch]);
 
     return (
