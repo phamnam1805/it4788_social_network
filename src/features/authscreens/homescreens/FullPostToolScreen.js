@@ -21,6 +21,8 @@ import {
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ScaledImage from '../../../components/ScaledImage';
+import Swiper from 'react-native-swiper';
 import {
     PanGestureHandler,
     State,
@@ -120,6 +122,31 @@ const FullPostToolScreen = ({route}) => {
         }
     };
 
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+            setKeyboardVisible(true); // or some other action
+        });
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardVisible(false); // or some other action
+        });
+
+        return () => {
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+    }, []);
+
+    const [imageViewDisplay, setImageViewDisplay] = useState('flex');
+    useEffect(() => {
+        if (isKeyboardVisible) {
+            setImageViewDisplay('none');
+        } else {
+            setImageViewDisplay('flex');
+        }
+    }, [isKeyboardVisible]);
+
     return (
         <KeyboardAvoidingView
             style={styles.parentContainer}
@@ -213,6 +240,24 @@ const FullPostToolScreen = ({route}) => {
                     </View>
                 </View>
             </SafeAreaView>
+            {photos ? (
+                <Swiper
+                    containerStyle={{
+                        ...styles.selectedImageContainer,
+                        display: imageViewDisplay,
+                    }}
+                    height={200}
+                    showsButtons={photos.length > 1 ? true : false}
+                    scrollEnabled={false}>
+                    {photos.map((imageItem, index) => (
+                        <View key={index} style={styles.imageContainer}>
+                            <ScaledImage height={200} source={imageItem.uri}></ScaledImage>
+                        </View>
+                    ))}
+                </Swiper>
+            ) : (
+                <></>
+            )}
 
             <View style={styles.toolOptionsWrapper}>
                 <TouchableWithoutFeedback>
@@ -352,6 +397,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         height: '100%',
         width: '100%',
+    },
+    imageContainer: {
+        marginTop: 5,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    selectedImageContainer: {
+        position: 'relative',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+        paddingBottom: 10,
+        backgroundColor: '#fff',
+        // height: '0%',
+        display: 'flex',
     },
     toolOptionsWrapper: {
         position: 'relative',
