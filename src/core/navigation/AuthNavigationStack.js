@@ -23,6 +23,7 @@ import ChangeNameScreen from '../../features/authscreens/shortcutscreens/setting
 import BlockingListScreen from '../../features/authscreens/shortcutscreens/settingscreens/BlockingListScreen';
 import SettingProfilePageScreen from '../../features/authscreens/userprofilescreens/SettingProfilePageScreen';
 import EditProfilePageScreen from '../../features/authscreens/userprofilescreens/EditProfilePageScreen';
+import OtherProfileScreen from '../../features/authscreens/userprofilescreens/OtherProfileScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();
@@ -109,6 +110,7 @@ export const AuthNavigationStack = () => {
             <StackNavigator.Screen name={Routes.COMMENT_SCREEN} component={CommentScreen} />
             <StackNavigator.Screen name={Routes.POST_DETAIL_SCREEN} component={PostDetailScreen} />
 
+            <StackNavigator.Screen name={Routes.OTHER_PROFILE_SCREEN} component={OtherProfileScreen} />
             <StackNavigator.Screen name={Routes.EDIT_PROFILE_SCREEN} component={EditProfilePageScreen} />
             <StackNavigator.Screen name={Routes.SETTING_PROFILE_PAGE_SCREEN} component={SettingProfilePageScreen} />
             <StackNavigator.Screen name={Routes.SETTINGS_SCREEN} component={SettingsScreen} />

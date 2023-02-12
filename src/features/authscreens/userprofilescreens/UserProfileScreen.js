@@ -58,7 +58,7 @@ const UserProfileScreen = () => {
                 </View>
                 <View style={styles.introWrapper}>
                     <Text style={styles.name}>{user.username}</Text>
-                    {/* <Text style={styles.introTxt}>This is the description of me</Text> */}
+                    <Text style={styles.introTxt}>{user.description}</Text>
                     <View style={styles.introOptionsWrapper}>
                         <TouchableOpacity activeOpacity={0.8} style={styles.btnAddStory}>
                             <FontAwesome5Icon size={16} color="#fff" name="plus-circle" />

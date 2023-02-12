@@ -68,8 +68,8 @@ const PostItem = ({item, index, user, statusContent}) => {
         if (userId === user.id) {
             return navigation.navigate('Profile');
         }
-        navigation.push('ProfileX', {
-            userId,
+        navigation.navigate(Routes.OTHER_PROFILE_SCREEN, {
+            userId: inputUserId
         });
     };
 
