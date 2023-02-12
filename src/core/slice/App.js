@@ -6,6 +6,7 @@ import {Routes} from '../Routes';
 import {userActions, userOperations, userSelectors} from './User';
 import {authenticationActions} from './Authentication';
 import {postOperations} from './Post';
+import {notificationOperations} from './Notification';
 
 const initialState = {
     loading: true,
@@ -50,6 +51,7 @@ export const appOperations = {
             dispatch(userOperations.fetchUserInfo());
             dispatch(postOperations.createStatusList());
             dispatch(postOperations.fetchGetListPosts({lastId: 0, reloadFlag: true}));
+            dispatch(notificationOperations.fetchGetListNotifications({reloadFlag: true}));
         } else {
             navigate(Routes.LOGIN_SCREEN);
         }
@@ -62,6 +64,7 @@ export const appOperations = {
             dispatch(appActions.setToken(token));
             dispatch(userOperations.fetchUserInfo());
             dispatch(postOperations.fetchGetListPosts({lastId: 0, reloadFlag: true}));
+            dispatch(notificationOperations.fetchGetListNotifications({reloadFlag: true}));
             const appData = appSelectors.getApp(getState());
             const userData = userSelectors.getUser(getState());
             await saveData(appData, userData);
