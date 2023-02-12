@@ -56,13 +56,21 @@ const PostTool = ({userAvatar}) => {
         <View style={styles.container}>
             <View style={styles.postToolWrapper}>
                 <TouchableOpacity activeOpacity={0.5} style={styles.userAvatarWrapper}>
-                    {userAvatar ? <>
-                        <Image source={{uri: userAvatar}} style={styles.userAvatar}></Image>
-                    </> : <> 
-                        <View style = {styles.userAvatarDummy}>
-                            <FontAweSome5 size={25} style={styles.userAvatarDummy} name="user" />
-                        </View>
-                    </>}
+                    {userAvatar ? (
+                        <>
+                            <Image source={{uri: userAvatar}} style={styles.userAvatar}></Image>
+                        </>
+                    ) : (
+                        <>
+                            <View style={styles.userAvatarDummy}>
+                                <FontAweSome5
+                                    size={25}
+                                    style={styles.userAvatarDummy}
+                                    name="user"
+                                />
+                            </View>
+                        </>
+                    )}
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={onFullPostToolPressHandler}

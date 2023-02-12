@@ -5,6 +5,7 @@ import {useReducer} from 'react';
 import {userReducer} from './slice/User';
 import {postReducer} from './slice/Post';
 import {commentReducer} from './slice/Comment';
+import {notificationReducer} from './slice/Notification';
 
 export const rootReducer = combineReducers({
     authentication: authenticationReducer,
@@ -12,4 +13,5 @@ export const rootReducer = combineReducers({
     user: userReducer,
     post: postReducer,
     comment: commentReducer,
+    notification: notificationReducer,
 });

@@ -90,6 +90,7 @@ const post = createSlice({
             if (response.status === HttpStatusCode.Ok) {
                 const index = payload.index;
                 state.posts.splice(index, 1);
+                alert('Post deleted');
             }
         });
     },
