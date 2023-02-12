@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { LogicCode, SCREEN_WIDTH } from '../core/Constants';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import FriendsShowing from './FriendsShowing';
@@ -12,38 +12,109 @@ import { Routes } from '../core/Routes';
 import { useAsync } from 'react-use';
 import { userApi } from '../core/slice/User';
 import { useDispatch } from 'react-redux';
+import { appSelectors } from '../core/slice/App';
+import axios from 'axios';
+import { BASE_URL } from '../core/Constants';
+import * as uuid from 'react-native-uuid'
 
-const UserProfileComponent = ({userId}) => {
-    
-    const dispatch = useDispatch();
 
-    const otherUserProfile = useAsync(async()=> {
-        var response = await dispatch(userOperations.fetchUserInfo({
-            userId: userId
-        }))
+const UserProfileComponent = ({ userId }) => {
 
-        if(response.payload.data.code == LogicCode.SUCCESS){
-            return response.payload.data;
+    const token = useSelector(appSelectors.getToken);
+    const user = useSelector(userSelectors.getUser);
+    const [refreshRequestedFriends, setRefreshRequestedFriends] = useState(false);
+
+    const sendRequestFriend = async () => {
+        const res = await axios.post(BASE_URL + '/it4788/set_request_friend', {token: token, user_id: userId});
+        if(res.data.code == LogicCode.SUCCESS){
+            setRefreshRequestedFriends(!refreshRequestedFriends)
         }
-        else{
-            return null;
+    }
+
+    const otherUserProfile = useAsync(async () => {
+        const res = await axios.post(BASE_URL + '/it4788/get_user_info', { token: token, user_id: userId });
+        if (res.data.code == LogicCode.SUCCESS) {
+            console.error(res.data.data);
+            return res.data.data;
         }
-    }, [userId]);
+        return null;
+    }, [userId, token, refreshRequestedFriends]);
 
     return (<>
-        {otherUserProfile && (<>
-            <View>
-                <Text>
-                OTHER USER PROFILE
-                </Text>
-            </View>
-        </>)}
+        <View>
+            {otherUserProfile.value && (<>
+                <View>
+                    <ScrollView bounces={false} style={styles.container}>
+                        <View style={styles.infoWrapper}>
+                            <View style={styles.avatarCoverWrapper}>
+                                <TouchableOpacity activeOpacity={0.8}>
+                                    <Image style={styles.cover} source={{ uri: otherUserProfile.value.cover }} />
+                                </TouchableOpacity>
+                                <View style={styles.avatarWrapper}>
+                                    <TouchableOpacity activeOpacity={0.9}>
+                                        <Image style={styles.avatar} source={{ uri: otherUserProfile.value.avatar }} />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={styles.introWrapper}>
+                                <Text style={styles.name}>{otherUserProfile.value.username}</Text>
+                                <Text style={styles.introTxt}>{otherUserProfile.value.description}</Text>
+                                <View style={styles.introOptionsWrapper}>
+                                    {
+                                        otherUserProfile.value.is_friend ? (<>
+                                            <TouchableOpacity activeOpacity={0.8} style={styles.btnAddFriends}>
+                                                <Text style={{ fontSize: 16, fontWeight: '500', color: '#fff', marginLeft: 5 }}>Unfriend</Text>
+                                            </TouchableOpacity>
+                                        </>) : (<> 
+                                            {
+                                                otherUserProfile.value.is_requested ? (<>
+                                                    <TouchableOpacity onPress={sendRequestFriend} activeOpacity={0.8} style={styles.btnAddFriends}>
+                                                        <Text style={{ fontSize: 16, fontWeight: '500', color: '#fff', marginLeft: 5 }}>Cancel Request</Text>
+                                                    </TouchableOpacity>
+                                                </>) : (<>
+                                                    {
+                                                        otherUserProfile.is_received_request ? (<>
+                                                            <TouchableOpacity onPress={sendRequestFriend} activeOpacity={0.8} style={styles.btnAddFriends}>
+                                                                <FontAwesome5Icon size={16} color="#fff" name="plus-circle" />
+                                                                <Text style={{ fontSize: 16, fontWeight: '500', color: '#fff', marginLeft: 5 }}>Accept Request</Text>
+                                                            </TouchableOpacity>
+                                                        </>) : (<>
+                                                            <TouchableOpacity onPress={sendRequestFriend} activeOpacity={0.8} style={styles.btnAddFriends}>
+                                                                <FontAwesome5Icon size={16} color="#fff" name="plus-circle" />
+                                                                <Text style={{ fontSize: 16, fontWeight: '500', color: '#fff', marginLeft: 5 }}>Add friend</Text>
+                                                            </TouchableOpacity>
+                                                        </>)
+                                                    }
+                                                </>)
+                                            }
+                                        </>)
+                                    }
+                                </View>
+                            </View>
+                            {otherUserProfile.address && (<>
+                                <View style={styles.introListWrapper}>
+                                    <View style={styles.introLine}>
+                                        <FontAwesome5Icon size={20} color="#333" style={styles.introIcon} name="home" />
+                                        <Text style={styles.introLineText}>
+                                            Live in <Text style={styles.introHightLight}>{otherUserProfile.value.address}</Text>
+                                        </Text>
+                                    </View>
+                                </View>
+                            </>)}
+                            <FriendsShowing />
+                        </View>
+                        <PostTool />
+                        <ProfilePosts />
+                    </ScrollView>
+                </View>
+            </>)}
+        </View>
     </>)
 }
 
 const styles = StyleSheet.create({
     container: {
-        
+
     },
     infoWrapper: {
         padding: 15,
@@ -120,14 +191,14 @@ const styles = StyleSheet.create({
         marginTop: 15,
         flexDirection: 'row'
     },
-    btnAddStory: {
+    btnAddFriends: {
         backgroundColor: '#318bfb',
         borderRadius: 5,
         height: 40,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        width: SCREEN_WIDTH - 30 - 50 - 10, //paddingHorizontal optionBtnWidth, marginLeft
+        width: SCREEN_WIDTH - 30, //paddingHorizontal optionBtnWidth, marginLeft
     },
     btnOption: {
         marginLeft: 10,

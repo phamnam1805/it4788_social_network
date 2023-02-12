@@ -41,6 +41,7 @@
         "react-native-swipe-gestures": "^1.0.5",
         "react-native-swiper": "^1.6.0",
         "react-native-tab-view": "^3.3.4",
+        "react-native-uuid": "^2.0.1",
         "react-native-vector-icons": "^9.2.0",
         "react-native-video": "^5.2.1",
         "react-native-webview": "^11.26.1",
