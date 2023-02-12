@@ -1,4 +1,5 @@
 import messaging from '@react-native-firebase/messaging';
+import PushNotification from 'react-native-push-notification';
 
 export const getFcmToken = async () => {
     let token = await messaging().getToken();
@@ -15,6 +16,18 @@ export const requestUserPermission = async () => {
 };
 
 export const setupNotificationServices = () => {
+    PushNotification.createChannel(
+        {
+          channelId: 'fcm_fallback_notification_channel', // (required)
+          channelName: 'Default', // (required)
+          channelDescription: 'Default channel', // (optional) default: undefined.
+          soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+          importance: 4, // (optional) default: 4. Int value of the Android notification importance
+          vibrate: false, // (optional) default: true. Creates the default vibration patten if true.
+        },
+        created => console.log(`createChannel returned '${created}'`),
+    );
+
     messaging().onNotificationOpenedApp(remoteMessage => {
         console.log(
             'Notification caused app to open from background state:',
