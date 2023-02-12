@@ -12,6 +12,7 @@ import {useDispatch, Provider} from 'react-redux';
 import {NavigationRouter} from './src/core/NavigationRouter';
 import {appOperations} from './src/core/slice/App';
 import store from './src/core/ReduxStore';
+import {NativeBaseProvider} from 'native-base';
 
 export function GlobalComponents() {
     const dispatch = useDispatch();
@@ -31,7 +32,9 @@ const App = () => {
     return (
         // <View></View>
         <Provider store={store}>
-            <GlobalComponents />
+            <NativeBaseProvider>
+                <GlobalComponents />
+            </NativeBaseProvider>
         </Provider>
     );
 };

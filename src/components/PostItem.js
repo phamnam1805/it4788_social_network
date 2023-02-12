@@ -11,11 +11,11 @@ import {
     FlatList,
     ActivityIndicator,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
-
+import {Menu, Pressable, Box} from 'native-base';
 import {navigation} from '../core/Navigation';
 import {postOperations, postSelectors} from '../core/slice/Post';
 import ScaledImage from './ScaledImage';
@@ -23,10 +23,12 @@ import {Routes} from '../core/Routes';
 import {commentOperations} from '../core/slice/Comment';
 import VideoPlayer from './VideoPlayer';
 import Swiper from 'react-native-swiper';
+import {appSelectors} from '../core/slice/App';
 
 const PostItem = ({item, index, user, statusContent}) => {
     const [isLiked, setIsLiked] = useState(item.is_liked);
     const [like, setLike] = useState(item.like);
+    const userId = useSelector(appSelectors.getUserId);
 
     useEffect(() => {
         setIsLiked(item.is_liked);
@@ -50,11 +52,6 @@ const PostItem = ({item, index, user, statusContent}) => {
         setIsLiked(!isLiked);
     };
 
-    const onPressPostOptionsIconHandler = () => {
-        navigation.navigate('PostOptions', {
-            postDetail: item,
-        });
-    };
     const onPostImagePressHandler = () => {
         navigation.navigate(Routes.POST_DETAIL_SCREEN, {
             index: index,
@@ -100,6 +97,35 @@ const PostItem = ({item, index, user, statusContent}) => {
         }
     };
 
+    const postActions = (
+        <Menu
+            // bg={}
+            width={'100%'}
+            trigger={triggerProps => {
+                return (
+                    <Pressable
+                        p={2}
+                        {...triggerProps}
+                        _pressed={{
+                            opacity: 0.2,
+                        }}>
+                        <FontAwesome5Icon name="ellipsis-h" color="#000" />
+                    </Pressable>
+                );
+            }}>
+            <Menu.Item onPress={() => console.log('1')}>
+                <AntDesignIcon name="edit" size={16}>
+                    {' Edit this post'}
+                </AntDesignIcon>
+            </Menu.Item>
+            <Menu.Item onPress={() => console.log('2')}>
+                <AntDesignIcon name="delete" size={16}>
+                    {' Delete this post'}
+                </AntDesignIcon>
+            </Menu.Item>
+        </Menu>
+    );
+
     return (
         <View style={styles.item}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -137,11 +163,12 @@ const PostItem = ({item, index, user, statusContent}) => {
                         </View>
                     </View>
                 </View>
-                <TouchableOpacity
-                    onPress={onPressPostOptionsIconHandler.bind(this)}
-                    style={{width: 25, alignItems: 'center'}}>
-                    <Icon name="ellipsis-h" color="#000"></Icon>
-                </TouchableOpacity>
+                <Box
+                    visible={userId === item.author.id ? true : false}
+                    flex={1}
+                    alignItems="flex-end">
+                    {postActions}
+                </Box>
             </View>
             <View style={styles.contentContainer}>
                 <Text style={styles.paragraph}>{item.content}</Text>
@@ -200,7 +227,10 @@ const PostItem = ({item, index, user, statusContent}) => {
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity>
-                    <Icon style={styles.btnSendComment} name="paper-plane" color="gray"></Icon>
+                    <FontAwesome5Icon
+                        style={styles.btnSendComment}
+                        name="paper-plane"
+                        color="gray"></FontAwesome5Icon>
                 </TouchableOpacity>
             </View>
         </View>
