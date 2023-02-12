@@ -29,6 +29,7 @@ const PostItem = ({item, index, user, statusContent}) => {
     const [isLiked, setIsLiked] = useState(item.is_liked);
     const [like, setLike] = useState(item.like);
     const userId = useSelector(appSelectors.getUserId);
+    const optionDisplay = userId === item.author.id ? 'flex' : 'none';
 
     useEffect(() => {
         setIsLiked(item.is_liked);
@@ -58,6 +59,11 @@ const PostItem = ({item, index, user, statusContent}) => {
             post: item,
         });
     };
+
+    const onDeletePostPressHandler = () => {
+        dispatch(postOperations.fetchDeletePost({index}));
+    };
+
     const onPressProfileHandler = userId => {
         if (userId === user.id) {
             return navigation.navigate('Profile');
@@ -118,7 +124,7 @@ const PostItem = ({item, index, user, statusContent}) => {
                     {' Edit this post'}
                 </AntDesignIcon>
             </Menu.Item>
-            <Menu.Item onPress={() => console.log('2')}>
+            <Menu.Item onPress={() => onDeletePostPressHandler()}>
                 <AntDesignIcon name="delete" size={16}>
                     {' Delete this post'}
                 </AntDesignIcon>
@@ -163,19 +169,24 @@ const PostItem = ({item, index, user, statusContent}) => {
                         </View>
                     </View>
                 </View>
-                <Box
-                    visible={userId === item.author.id ? true : false}
-                    flex={1}
-                    alignItems="flex-end">
-                    {postActions}
-                </Box>
+                <View style={{display: optionDisplay}}>
+                    <Box
+                        visible={userId === item.author.id ? true : false}
+                        flex={1}
+                        alignItems="flex-end">
+                        {postActions}
+                    </Box>
+                </View>
             </View>
             <View style={styles.contentContainer}>
                 <Text style={styles.paragraph}>{item.content}</Text>
             </View>
             <TouchableOpacity onPress={onPostImagePressHandler}>
                 {item.image.length ? (
-                    <Swiper height={300} showsButtons={true} scrollEnabled={false}>
+                    <Swiper
+                        height={300}
+                        showsButtons={item.image.length > 1 ? true : false}
+                        scrollEnabled={false}>
                         {item.image.map((imageItem, index) => (
                             <View key={index} style={styles.imageContainer}>
                                 <ScaledImage height={300} source={imageItem}></ScaledImage>

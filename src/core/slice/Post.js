@@ -23,12 +23,10 @@ const post = createSlice({
     initialState,
     reducers: {
         setPosts(state, action) {
-            if(action.payload)
-            {
+            if (action.payload) {
                 state.posts = action.payload;
-            }
-            else{
-                state.posts = []
+            } else {
+                state.posts = [];
             }
         },
         setPost(state, action) {
@@ -86,6 +84,14 @@ const post = createSlice({
                 state.posts[postIndex] = response.data.data;
             }
         });
+        builder.addCase(postOperations.fetchDeletePost.fulfilled, (state, action) => {
+            const payload = action.payload;
+            const response = payload.response;
+            if (response.status === HttpStatusCode.Ok) {
+                const index = payload.index;
+                state.posts.splice(index, 1);
+            }
+        });
     },
 });
 
@@ -96,7 +102,6 @@ const getRoot = state => state.post;
 export const postSelectors = {
     getPost: (state, index) => getRoot(state).posts[index],
     getAllPosts: state => getRoot(state).posts,
-    getPostsLength: state => getRoot(state).posts.length,
     getStatusContent: state => getRoot(state).statusContent,
     getStatusList: state => getRoot(state).statusList,
     getLastIndex: state => getRoot(state).lastIndex,
@@ -174,6 +179,13 @@ export const postOperations = {
         const response = await postApi.addPost(token, content, status, photos, video);
         return response;
     }),
+    fetchDeletePost: createAsyncThunk('post/fetchDeletePost', async (data, thunkParams) => {
+        const {index} = data;
+        const token = appSelectors.getToken(thunkParams.getState());
+        const postId = postSelectors.getPost(thunkParams.getState(), index).id;
+        const response = await postApi.deletePost(token, postId);
+        return {index: index, response: response};
+    }),
 };
 
 export const postReducer = post.reducer;
@@ -229,6 +241,11 @@ export const postApi = {
         const response = await axios.post(BASE_URL + '/it4788/add_post', requestBody, {
             headers: {'Content-Type': 'multipart/form-data'},
         });
+        return response;
+    },
+    deletePost: async (token, postId) => {
+        const requestBody = {token: token, id: postId};
+        const response = await axios.post(BASE_URL + '/it4788/delete_post', requestBody);
         return response;
     },
 };

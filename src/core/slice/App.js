@@ -66,11 +66,11 @@ export const appOperations = {
             const userData = userSelectors.getUser(getState());
             await saveData(appData, userData);
         },
-    logout:() => async (dispatch, getState) => {
+    logout: () => async (dispatch, getState) => {
         await AsyncStorage.removeItem('user');
         dispatch(authenticationActions.setAuth(false));
         navigate(Routes.LOGIN_SCREEN);
-    }
+    },
 };
 
 export const appReducer = app.reducer;
