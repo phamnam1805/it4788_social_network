@@ -68,12 +68,12 @@ const PostItem = ({item, index, user, statusContent}) => {
         dispatch(postOperations.fetchDeletePost({index}));
     };
 
-    const onPressProfileHandler = userId => {
-        if (userId === user.id) {
-            return navigation.navigate('Profile');
+    const onPressProfileHandler = inputUserId => {
+        if (userId === inputUserId) {
+            return navigation.navigate(Routes.USER_PROFILE_SCREEN);
         }
         navigation.navigate(Routes.OTHER_PROFILE_SCREEN, {
-            userId: userId,
+            userId: inputUserId
         });
     };
 
