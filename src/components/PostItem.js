@@ -74,6 +74,10 @@ const PostItem = ({item, index, user, statusContent}) => {
         });
     };
 
+    const onTimePressHandler = () => {
+        navigation.navigate(Routes.POST_DETAIL_SCREEN, {postIndex: index});
+    };
+
     const convertTime = time => {
         const preViousDate = new Date(time);
         const previousTimestamp = preViousDate.getTime();
@@ -164,12 +168,14 @@ const PostItem = ({item, index, user, statusContent}) => {
                                 <></>
                             )}
                         </View>
-                        <View style={styles.extraInfoWrapper}>
-                            <Text style={{color: '#333', fontSize: 14}}>
-                                {convertTime(item.created)}
-                            </Text>
-                            <Text style={{fontSize: 16, marginHorizontal: 5}}>·</Text>
-                        </View>
+                        <TouchableOpacity onPress={onTimePressHandler}>
+                            <View style={styles.extraInfoWrapper}>
+                                <Text style={{color: '#333', fontSize: 14}}>
+                                    {convertTime(item.created)}
+                                </Text>
+                                <Text style={{fontSize: 16, marginHorizontal: 5}}>·</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={{display: optionDisplay, top: 10, right: 10}}>

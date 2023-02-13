@@ -67,7 +67,7 @@ const NotificationItem = ({item}) => {
     return (
         <View style={{backgroundColor: 'rgba(0,0,0,0.3)'}}>
             <ExTouchableOpacity
-                style={{...styles.container, backgroundColor: item.isSeen ? '#fff' : '#edf2fa'}}>
+                style={{...styles.container, backgroundColor: item.read ? '#fff' : '#edf2fa'}}>
                 <ImageBackground
                     imageStyle={{borderRadius: 64}}
                     style={styles.avatar}
@@ -80,9 +80,6 @@ const NotificationItem = ({item}) => {
                     <Description content={item.title} />
                     <Text style={{color: '#333'}}>{convertTime(item.created_at)}</Text>
                 </View>
-                <ExTouchableOpacity style={styles.btnOptions}>
-                    <FontAwesome5Icon name="ellipsis-h" />
-                </ExTouchableOpacity>
             </ExTouchableOpacity>
         </View>
     );

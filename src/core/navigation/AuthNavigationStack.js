@@ -28,6 +28,7 @@ import ListFriendRequestScreen from '../../features/authscreens/shortcutscreens/
 import PushSettingsScreen from '../../features/authscreens/shortcutscreens/PushSettingsScreen';
 import ChangePasswordScreen from '../../features/authscreens/shortcutscreens/ChangePasswordScreen';
 import AllFriendsScreen from '../../features/authscreens/userprofilescreens/AllFriendsScreen';
+import PostDetailScreen from '../../features/authscreens/homescreens/PostDetailScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();
@@ -110,6 +111,7 @@ export const AuthNavigationStack = () => {
                 name={Routes.FULL_POST_TOOL_SCREEN}
                 component={FullPostToolScreen}
             />
+            <StackNavigator.Screen name={Routes.POST_DETAIL_SCREEN} component={PostDetailScreen} />
             <StackNavigator.Screen
                 name={Routes.TERMS_AND_POLICIES_SCREEN}
                 component={TermsAndPoliciesScreen}
