@@ -27,6 +27,10 @@ const OtherProfileSettingScreen = ({route}) => {
             setRefreshBlocks(!refreshBlocks)
         }
     }
+    
+    const openSearch = () => {
+        navigation.navigate(Routes.SEARCH_POST, {userId: user.id})
+    }
 
     const blocks = useAsync(async () => {
         const res = await axios.post(BASE_URL + '/it4788/get_list_blocks', {
@@ -65,7 +69,7 @@ const OtherProfileSettingScreen = ({route}) => {
                         </>)
                     }
                 </ExTouchableOpacity>
-                <ExTouchableOpacity style={styles.item}>
+                <ExTouchableOpacity onPress={openSearch} style={styles.item}>
                     <FontAwesome5Icon name="search" style={styles.itemIcon}/>
                     <Text style={styles.itemText} >Search</Text>
                 </ExTouchableOpacity>
