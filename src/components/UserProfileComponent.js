@@ -8,10 +8,7 @@ import ProfilePosts from './ProfilePosts';
 import * as navigation from '../core/Navigation'
 import { useSelector } from 'react-redux';
 import { userSelectors, userOperations } from '../core/slice/User';
-import { Routes } from '../core/Routes';
 import { useAsync } from 'react-use';
-import { userApi } from '../core/slice/User';
-import { useDispatch } from 'react-redux';
 import { appSelectors } from '../core/slice/App';
 import axios from 'axios';
 import { BASE_URL } from '../core/Constants';
@@ -108,7 +105,6 @@ const UserProfileComponent = ({ userId }) => {
                             </>)}
                             <FriendsShowing userId={userId}/>
                         </View>
-                        <PostTool />
                         <ProfilePosts />
                     </ScrollView>
                 </View>
