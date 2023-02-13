@@ -16,12 +16,12 @@ import {
 import {ScrollView, PanGestureHandler, State} from 'react-native-gesture-handler';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
-import CommentItem from '../../../components/CommentItem';
-import MemorizedCommentList from '../../../components/CommentList';
-import {FIXED_STATUSBAR_HEIGHT} from '../../../core/Constants';
+import CommentItem from '../../components/CommentItem';
+import MemorizedCommentList from '../../components/CommentList';
+import {FIXED_STATUSBAR_HEIGHT} from '../../core/Constants';
 import {useDispatch, useSelector} from 'react-redux';
-import {commentOperations, commentSelectors} from '../../../core/slice/Comment';
-import {navigation} from '../../../core/Navigation';
+import {commentOperations, commentSelectors} from '../../core/slice/Comment';
+import {navigation} from '../../core/Navigation';
 
 const CommentScreen = ({route}) => {
     const {postId, postIndex} = route.params || {};

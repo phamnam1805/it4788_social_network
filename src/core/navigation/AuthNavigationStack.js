@@ -13,8 +13,8 @@ import {ShortcutNavigationStack} from './ShortcutNavigationStack';
 import {Routes} from '../Routes';
 
 import FullPostToolScreen from '../../features/authscreens/homescreens/FullPostToolScreen';
-import CommentScreen from '../../features/authscreens/homescreens/CommentScreen';
-import ImageViewScreen from '../../features/authscreens/homescreens/ImageViewScreen';
+import CommentScreen from '../../features/authscreens/CommentScreen';
+import ImageViewScreen from '../../features/authscreens/ImageViewScreen';
 import TermsAndPoliciesScreen from '../../features/authscreens/shortcutscreens/TermsAndPoliciesScreen';
 import SettingsScreen from '../../features/authscreens/shortcutscreens/settingscreens';
 import ProfileSettingsScreen from '../../features/authscreens/shortcutscreens/settingscreens/ProfileSettingsScreen';
@@ -28,7 +28,7 @@ import ListFriendRequestScreen from '../../features/authscreens/shortcutscreens/
 import PushSettingsScreen from '../../features/authscreens/shortcutscreens/PushSettingsScreen';
 import ChangePasswordScreen from '../../features/authscreens/shortcutscreens/ChangePasswordScreen';
 import AllFriendsScreen from '../../features/authscreens/userprofilescreens/AllFriendsScreen';
-import PostDetailScreen from '../../features/authscreens/homescreens/PostDetailScreen';
+import PostDetailScreen from '../../features/authscreens/PostDetailScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();

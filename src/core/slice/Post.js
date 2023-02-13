@@ -4,6 +4,8 @@ import {BASE_URL} from '../Constants';
 import {appSelectors} from './App';
 import {View, Text, Alert} from 'react-native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {navigation} from '../Navigation';
+import {Routes} from '../Routes';
 
 const initialState = {
     posts: [],
@@ -32,6 +34,10 @@ const post = createSlice({
         setPost(state, action) {
             const payload = action.payload;
             state.posts[payload.index] = payload.post;
+        },
+        pushPost(state, action) {
+            const payload = action.payload;
+            state.posts.push(payload);
         },
         setStatusList(state, action) {
             const payload = action.payload;
@@ -109,6 +115,19 @@ export const postSelectors = {
     getCount: state => getRoot(state).count,
 };
 export const postOperations = {
+    handleClickNoti: postId => async (dispatch, getState) => {
+        const listPosts = postSelectors.getAllPosts(getState());
+        const comparePost = id => id === postId;
+        const index = listPosts.findIndex(postItem => comparePost(postItem.id));
+        if (index >= 0) {
+            navigation.navigate(Routes.POST_DETAIL_SCREEN, {postIndex: index});
+        } else {
+            const token = appSelectors.getToken(getState());
+            const temp = (await postApi.getPost(token, postId)).data.data;
+            dispatch(postActions.pushPost(temp));
+            navigation.navigate(Routes.POST_DETAIL_SCREEN, {postIndex: listPosts.length});
+        }
+    },
     createStatusList: () => async (dispatch, getState) => {
         const statusContent = postSelectors.getStatusContent(getState());
         const statusArr = [];
@@ -232,7 +251,6 @@ export const postApi = {
                     name: photo.fileName,
                     type: photo.type,
                 };
-                console.error(image);
                 requestBody.append('image', image);
             }
         } else if (video) {

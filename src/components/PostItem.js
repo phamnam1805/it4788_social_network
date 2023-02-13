@@ -10,12 +10,15 @@ import {
     RefreshControl,
     FlatList,
     ActivityIndicator,
+    Linking,
 } from 'react-native';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {Menu, Pressable, Box} from 'native-base';
+import Hyperlink from 'react-native-hyperlink';
+
 import {navigation} from '../core/Navigation';
 import {postOperations, postSelectors} from '../core/slice/Post';
 import ScaledImage from './ScaledImage';
@@ -54,7 +57,7 @@ const PostItem = ({item, index, user, statusContent}) => {
         setIsLiked(!isLiked);
     };
 
-    const onPostImagePressHandler = () => {
+    const onImagePressHandler = () => {
         navigation.navigate(Routes.IMAGE_VIEW_SCREEN, {
             imageIndex: currentImageIndex,
             post: item,
@@ -148,7 +151,7 @@ const PostItem = ({item, index, user, statusContent}) => {
                         <View style={styles.namesWrapper}>
                             <TouchableOpacity
                                 onPress={onPressProfileHandler.bind(this, item.author?.id)}>
-                                <Text style={{fontSize: 16, fontWeight: '500'}}>
+                                <Text style={{fontSize: 16, fontWeight: '800'}}>
                                     {item.author?.username}
                                 </Text>
                             </TouchableOpacity>
@@ -183,9 +186,13 @@ const PostItem = ({item, index, user, statusContent}) => {
                 </View>
             </View>
             <View style={styles.contentContainer}>
-                <Text style={styles.paragraph}>{item.content}</Text>
+                <Hyperlink
+                    onPress={(url, text) => Linking.openURL(url)}
+                    linkStyle={{color: '#2980b9'}}>
+                    <Text style={styles.paragraph}>{item.content}</Text>
+                </Hyperlink>
             </View>
-            <TouchableOpacity onPress={onPostImagePressHandler}>
+            <TouchableOpacity onPress={onImagePressHandler}>
                 {item.image.length ? (
                     <Swiper
                         height={300}
@@ -201,9 +208,6 @@ const PostItem = ({item, index, user, statusContent}) => {
                 ) : (
                     <></>
                 )}
-            </TouchableOpacity>
-            <TouchableOpacity>
-                {item.video ? <VideoPlayer videoUri={item.video} /> : <></>}
             </TouchableOpacity>
             <View horizontal={true} style={styles.reactionContainer}>
                 <TouchableOpacity onPress={onReactPressHandler}>
@@ -294,7 +298,9 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         paddingHorizontal: 15,
     },
-    paragraph: {},
+    paragraph: {
+        fontSize: 16,
+    },
     contentContainer: {
         paddingHorizontal: 15,
     },

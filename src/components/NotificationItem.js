@@ -1,16 +1,26 @@
 import React, {Component, useEffect, useState} from 'react';
 import {Text, StyleSheet, View, Image, ImageBackground, TouchableOpacity} from 'react-native';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import {useDispatch, useSelector} from 'react-redux';
+
 import {SCREEN_WIDTH} from '../core/Constants';
 import ExTouchableOpacity from './ExTouchableOpacity';
+import {appSelectors} from '../core/slice/App';
+import {navigation} from '../core/Navigation';
+import {Routes} from '../core/Routes';
+import {postOperations} from '../core/slice/Post';
+import {notificationOperations} from '../core/slice/Notification';
 
 const Description = ({content}) => {
     return <Text style={styles.pureTxt}>{content}</Text>;
 };
 
-const NotificationItem = ({item}) => {
+const NotificationItem = ({index, item}) => {
     const displayAvatarUri = item.avatar;
+    const userId = useSelector(appSelectors.getUserId);
     const [icon, setIcon] = useState({});
+    const dispatch = useDispatch();
     useEffect(() => {
         switch (item.type) {
             case 'POST':
@@ -30,9 +40,30 @@ const NotificationItem = ({item}) => {
                 });
                 break;
             case 'NONE':
+                setIcon({
+                    name: 'notifications-outline',
+                    color: '#fff',
+                    size: 14,
+                    bgColor: '#318bfb',
+                });
                 break;
         }
     }, [item.type, item.title]);
+
+    const onNotiPressHandler = () => {
+        const objectId = item.object_id;
+        if (item.type === 'PROFILE') {
+            if (userId === objectId) {
+                return navigation.navigate('Profile');
+            }
+            navigation.navigate(Routes.OTHER_PROFILE_SCREEN, {
+                userId: userId,
+            });
+        } else if (item.type === 'POST') {
+            dispatch(postOperations.handleClickNoti(objectId));
+        }
+        dispatch(notificationOperations.fetchSetReadNotification({notiIndex: index}));
+    };
 
     const convertTime = time => {
         const preViousDate = new Date(time);
@@ -67,14 +98,25 @@ const NotificationItem = ({item}) => {
     return (
         <View style={{backgroundColor: 'rgba(0,0,0,0.3)'}}>
             <ExTouchableOpacity
-                style={{...styles.container, backgroundColor: item.read ? '#fff' : '#edf2fa'}}>
+                style={{...styles.container, backgroundColor: item.read ? '#fff' : '#edf2fa'}}
+                onPress={onNotiPressHandler}>
                 <ImageBackground
                     imageStyle={{borderRadius: 64}}
                     style={styles.avatar}
                     source={{uri: displayAvatarUri}}>
-                    <View style={{...styles.notificationIcon, backgroundColor: icon.bgColor}}>
-                        <FontAwesome5Icon name={icon.name} size={icon.size} color={icon.color} />
-                    </View>
+                    {item.type === 'NONE' ? (
+                        <View style={{...styles.notificationIcon, backgroundColor: icon.bgColor}}>
+                            <IoniconsIcon name={icon.name} size={icon.size} color={icon.color} />
+                        </View>
+                    ) : (
+                        <View style={{...styles.notificationIcon, backgroundColor: icon.bgColor}}>
+                            <FontAwesome5Icon
+                                name={icon.name}
+                                size={icon.size}
+                                color={icon.color}
+                            />
+                        </View>
+                    )}
                 </ImageBackground>
                 <View style={styles.contentWrapper}>
                     <Description content={item.title} />

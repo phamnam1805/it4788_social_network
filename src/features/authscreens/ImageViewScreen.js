@@ -1,30 +1,9 @@
 import React, {Component, useState} from 'react';
-import {
-    Text,
-    StyleSheet,
-    View,
-    Image,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    Dimensions,
-    Animated,
-    ScrollView,
-} from 'react-native';
-import Modal from 'react-native-modal';
-import {connect, useDispatch, useSelector} from 'react-redux';
-import {
-    closePostDetailModal,
-    openCommentModal,
-    FetchPostDetailRequest,
-} from '../actions/postDetailActions';
+import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import Swiper from 'react-native-swiper';
-
-import {navigation} from '../../../core/Navigation';
-import {Routes} from '../../../core/Routes';
-import {commentOperations} from '../../../core/slice/Comment';
-import {postOperations, postSelectors} from '../../../core/slice/Post';
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import {navigation} from '../../core/Navigation';
 
 const ImageSwiper = React.memo(
     props => {
@@ -54,16 +33,13 @@ const ImageViewScreen = ({route}) => {
 
     return (
         <View style={styles.postWrapper}>
-            {/* <Swiper showsPagination={false}>
-                {post.image.map((imageItem, index) => (
-                    <Image
-                        onPress={onPressHideDetailWrapperHandler.bind(this)}
-                        key={index}
-                        style={styles.image}
-                        resizeMode="contain"
-                        source={{uri: imageItem}}></Image>
-                ))}
-            </Swiper> */}
+            <View style={{...styles.backIconWrapper}}>
+                <TouchableOpacity
+                    style={styles.cycleWrapper}
+                    onPress={onPressGoBackHandler.bind(this)}>
+                    <FeatherIcon name="x-circle" color="#fff" size={20}></FeatherIcon>
+                </TouchableOpacity>
+            </View>
             <ImageSwiper image={post.image} index={imageIndex} />
         </View>
     );
@@ -77,6 +53,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,1)',
         height: '100%',
     },
+    backIconWrapper: {position: 'absolute', left: 10, top: 10, zIndex: 999999},
     optionIconWrapper: {
         position: 'absolute',
         right: 30,

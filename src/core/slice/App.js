@@ -54,12 +54,11 @@ export const appOperations = {
     initialize: () => async (dispatch, getState) => {
         let appData = await AsyncStorage.getItem('app');
         let userData = await AsyncStorage.getItem('user');
-        let fcmToken = await AsyncStorage.getItem('fcmToken');
-        await checkNotiPermission(dispatch, fcmToken);
-        await createNotificationListeners();
+        await checkNotiPermission(dispatch);
 
         if (appData && userData) {
             dispatchData(dispatch, appData, userData);
+            await createNotificationListeners(dispatch, appSelectors.getUserId(getState()));
             dispatch(authenticationActions.setAuth(true));
             dispatch(userOperations.fetchUserInfo());
             dispatch(postOperations.createStatusList());
@@ -75,6 +74,7 @@ export const appOperations = {
             dispatch(authenticationActions.setAuth(true));
             dispatch(appActions.setUserId(userId));
             dispatch(appActions.setToken(token));
+            await createNotificationListeners(dispatch, appSelectors.getUserId(getState()));
             dispatch(userOperations.fetchUserInfo());
             dispatch(postOperations.fetchGetListPosts({lastId: 0, reloadFlag: true}));
             dispatch(notificationOperations.fetchGetListNotifications({reloadFlag: true}));
@@ -119,6 +119,8 @@ const checkNotiPermission = async dispatch => {
                 await AsyncStorage.setItem('fcmToken', fcmToken);
                 dispatch(appActions.setFcmToken(fcmToken));
             }
+        } else {
+            dispatch(appActions.setFcmToken(fcmToken));
         }
     } else {
         const permission = await requestUserPermission();
@@ -133,7 +135,7 @@ const checkNotiPermission = async dispatch => {
     }
 };
 
-const createNotificationListeners = async () => {
+const createNotificationListeners = async (dispatch, userId) => {
     PushNotification.createChannel(
         {
             channelId: 'fcm_fallback_notification_channel', // (required)
@@ -147,8 +149,7 @@ const createNotificationListeners = async () => {
         created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
     );
     messaging().onMessage(async remoteMessage => {
-        await NotificationHandler.onNotificationReceived(remoteMessage.notification);
-        console.log(remoteMessage);
+        await NotificationHandler.onNotificationReceived(dispatch, userId, remoteMessage);
     });
     messaging().setBackgroundMessageHandler(async remoteMessage => {
         if (remoteMessage) {

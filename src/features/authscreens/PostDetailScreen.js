@@ -11,20 +11,24 @@ import {
     RefreshControl,
     FlatList,
     ActivityIndicator,
+    Linking,
 } from 'react-native';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {Menu, Pressable, Box} from 'native-base';
-import {postApi, postSelectors} from '../../../core/slice/Post';
-import {appSelectors} from '../../../core/slice/App';
-import PostItem from '../../../components/PostItem';
-import {userSelectors} from '../../../core/slice/User';
-import {navigation} from '../../../core/Navigation';
-import {Routes} from '../../../core/Routes';
-import {commentOperations} from '../../../core/slice/Comment';
-import {postOperations} from '../../../core/slice/Post';
+import Hyperlink from 'react-native-hyperlink';
+import Swiper from 'react-native-swiper';
+import {postApi, postSelectors} from '../../core/slice/Post';
+import {appSelectors} from '../../core/slice/App';
+import PostItem from '../../components/PostItem';
+import {userSelectors} from '../../core/slice/User';
+import {navigation} from '../../core/Navigation';
+import {Routes} from '../../core/Routes';
+import {commentOperations} from '../../core/slice/Comment';
+import {postOperations} from '../../core/slice/Post';
+import ScaledImage from '../../components/ScaledImage';
 
 const PostDetailScreen = ({route}) => {
     const {postIndex} = route.params || {};
@@ -75,6 +79,12 @@ const PostDetailScreen = ({route}) => {
         });
     };
 
+    const onImagePressHandler = index => {
+        navigation.navigate(Routes.IMAGE_VIEW_SCREEN, {
+            imageIndex: index,
+            post: post,
+        });
+    };
     const convertTime = time => {
         const preViousDate = new Date(time);
         const previousTimestamp = preViousDate.getTime();
@@ -104,7 +114,6 @@ const PostDetailScreen = ({route}) => {
             return Math.round(elapsed / msPerYear) + ' years ago';
         }
     };
-
     const postActions = (
         <Menu
             // bg={}
@@ -157,7 +166,7 @@ const PostDetailScreen = ({route}) => {
                                 <View style={styles.namesWrapper}>
                                     <TouchableOpacity
                                         onPress={onPressProfileHandler.bind(this, post.author?.id)}>
-                                        <Text style={{fontSize: 16, fontWeight: '500'}}>
+                                        <Text style={{fontSize: 16, fontWeight: '800'}}>
                                             {post.author?.username}
                                         </Text>
                                     </TouchableOpacity>
@@ -190,8 +199,28 @@ const PostDetailScreen = ({route}) => {
                         </View>
                     </View>
                     <View style={styles.contentContainer}>
-                        <Text style={styles.paragraph}>{post.content}</Text>
+                        <Hyperlink
+                            onPress={(url, text) => Linking.openURL(url)}
+                            linkStyle={{color: '#2980b9'}}>
+                            <Text style={styles.paragraph}>{post.content}</Text>
+                        </Hyperlink>
                     </View>
+                    {post.image.length ? (
+                        <View>
+                            {post.image.map((imageItem, imageIndex) => (
+                                <View key={imageIndex} style={styles.imageContainer}>
+                                    <TouchableOpacity
+                                        onPress={() => onImagePressHandler(imageIndex)}>
+                                        <ScaledImage
+                                            width={screenWidth - 20}
+                                            source={imageItem}></ScaledImage>
+                                    </TouchableOpacity>
+                                </View>
+                            ))}
+                        </View>
+                    ) : (
+                        <></>
+                    )}
                     <View horizontal={true} style={styles.reactionContainer}>
                         <TouchableOpacity onPress={onReactPressHandler}>
                             <FontAwesome5Icon
@@ -232,6 +261,12 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 const styles = StyleSheet.create({
+    wrapper: {
+        position: 'absolute',
+        left: 0,
+        width: '100%',
+        height: '100%',
+    },
     navigationStackBar: {
         flexDirection: 'row',
         height: 40,
@@ -280,7 +315,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    paragraph: {},
+    paragraph: {
+        fontSize: 16,
+    },
     contentContainer: {
         paddingHorizontal: 15,
     },
@@ -294,5 +331,11 @@ const styles = StyleSheet.create({
     reactionIcon: {
         fontSize: 25,
         padding: 12,
+    },
+    imageContainer: {
+        marginTop: 5,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
