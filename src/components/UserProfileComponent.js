@@ -1,9 +1,8 @@
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import React, { useMemo, useState } from 'react';
 import { LogicCode, SCREEN_WIDTH } from '../core/Constants';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import FriendsShowing from './FriendsShowing';
-import PostTool from './PostTool';
 import ProfilePosts from './ProfilePosts';
 import * as navigation from '../core/Navigation'
 import { useSelector } from 'react-redux';
@@ -12,9 +11,52 @@ import { useAsync } from 'react-use';
 import { appSelectors } from '../core/slice/App';
 import axios from 'axios';
 import { BASE_URL } from '../core/Constants';
-
+import { Routes } from '../core/Routes';
+import { postSelectors } from '../core/slice/Post';
+import PostItem from './PostItem';
 
 const UserProfileComponent = ({ userId }) => {
+    const [posts, setPosts] = useState([])
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [refresh, setRefresh] = useState(false);
+    const statusContent = useSelector(postSelectors.getStatusContent);
+
+    const state = useAsync(async () => {
+        const requestBody = {
+            token: token,
+            user_id: userId,
+            index: currentIndex,
+            count: 10,
+        };
+        const response = await axios.post(BASE_URL + '/it4788/get_list_posts', requestBody);
+        if(response.data.code == LogicCode.SUCCESS){
+            var listPosts = response.data.data.posts.filter(x => posts.filter(y => y.id == x.id).length == 0);
+            setPosts([...posts, ...listPosts])
+            setIsReload(false);
+            setIsLoadMore(false);
+        }
+    }, [refresh, currentIndex, token])
+
+    
+    const [isReload, setIsReload] = useState(false);
+    const [isLoadMore, setIsLoadMore] = useState(false);
+
+    const handleReload = () => {
+        if (!isReload && !isLoadMore) {
+            setIsReload(true);
+            setCurrentIndex(0);
+            setRefresh(!refresh);
+        }
+    };
+
+    const handleLoadMore = () => {
+        if (!isLoadMore && !isReload) {
+            setIsLoadMore(true);
+            setCurrentIndex(currentIndex + 1);
+        }
+    };
+
+
 
     const token = useSelector(appSelectors.getToken);
     const user = useSelector(userSelectors.getUser);
@@ -35,7 +77,7 @@ const UserProfileComponent = ({ userId }) => {
     }
 
     const openSettings = () => {
-
+        navigation.navigate(Routes.OTHER_PROFILE_SETTINGS_SCREEN, {user : otherUserProfile.value});
     }
 
     const openChat = () => {
@@ -55,8 +97,10 @@ const UserProfileComponent = ({ userId }) => {
         <View>
             {otherUserProfile.value && (<>
                 <View>
-                    <ScrollView bounces={false} style={styles.container}>
-                        <View style={styles.infoWrapper}>
+                <FlatList
+                    data={posts}
+                    ListHeaderComponent={<>
+                          <View style={styles.infoWrapper}>
                             <View style={styles.avatarCoverWrapper}>
                                 <TouchableOpacity activeOpacity={0.8}>
                                     <Image style={styles.cover} source={{ uri: otherUserProfile.value.cover }} />
@@ -120,8 +164,24 @@ const UserProfileComponent = ({ userId }) => {
                             </>)}
                             <FriendsShowing userId={userId}/>
                         </View>
-                        <ProfilePosts />
-                    </ScrollView>
+                    </>}
+                    ListEmptyComponent={<View />}
+                    ListFooterComponent={() => isLoadMore && <ActivityIndicator size="large" />}
+                    onRefresh={handleReload}
+                    refreshing={isReload}
+                    onEndReached={handleLoadMore}
+                    onEndReachedThreshold={0.5}
+                    renderItem={({item, index}) => {
+                        return (
+                            <PostItem
+                                key={item.id}
+                                index={index}
+                                item={item}
+                                user={user}
+                                statusContent={statusContent}
+                            />
+                        );
+                    }}></FlatList>
                 </View>
             </>)}
         </View>

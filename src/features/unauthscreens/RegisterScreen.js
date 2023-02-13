@@ -293,7 +293,6 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         flex: 1,
-        color: 'white',
         paddingLeft: 15,
         paddingRight: 15,
         borderWidth: 1,

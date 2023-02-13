@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import React, { useState } from 'react';
 import { SCREEN_WIDTH } from '../../../core/Constants';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
@@ -12,14 +12,62 @@ import { Routes } from '../../../core/Routes';
 import { useSelector } from 'react-redux';
 import { userSelectors } from '../../../core/slice/User';
 import { appSelectors } from '../../../core/slice/App';
+import { postSelectors } from '../../../core/slice/Post';
+import { useAsync } from 'react-use';
+import PostItem from '../../../components/PostItem';
+import axios from 'axios';
+import { LogicCode } from '../../../core/Constants';
+import { BASE_URL } from '../../../core/Constants';
 
 const UserProfileScreen = () => {
+
+    const [posts, setPosts] = useState([])
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [refresh, setRefresh] = useState(false);
+    const statusContent = useSelector(postSelectors.getStatusContent);
+    const token = useSelector(appSelectors.getToken);
+    const userId = useSelector(appSelectors.getUserId);
+
+    const state = useAsync(async () => {
+        const requestBody = {
+            token: token,
+            user_id: userId,
+            index: currentIndex,
+            count: 10,
+        };
+        const response = await axios.post(BASE_URL + '/it4788/get_list_posts', requestBody);
+        if (response.data.code == LogicCode.SUCCESS) {
+            var listPosts = response.data.data.posts.filter(x => posts.filter(y => y.id == x.id).length == 0);
+            setPosts([...posts, ...listPosts])
+            setIsReload(false);
+            setIsLoadMore(false);
+        }
+    }, [refresh, currentIndex, token, userId])
+
+
+    const [isReload, setIsReload] = useState(false);
+    const [isLoadMore, setIsLoadMore] = useState(false);
+
+    const handleReload = () => {
+        if (!isReload && !isLoadMore) {
+            setIsReload(true);
+            setCurrentIndex(0);
+            setRefresh(!refresh);
+        }
+    };
+
+    const handleLoadMore = () => {
+        if (!isLoadMore && !isReload) {
+            setIsLoadMore(true);
+            setCurrentIndex(currentIndex + 1);
+        }
+    };
+
 
     const [isVisibleAvatarOptions, setVisibleAvatarOptions] = useState(false);
     const [isVisibleBackgroundOptions, setVisibleBackgroundOptions] = useState(false);
 
     const user = useSelector(userSelectors.getUser);
-    const userId = useSelector(appSelectors.getUserId);
 
     const onPressAvatarOptionsHandler = () => {
         setVisibleAvatarOptions(true);
@@ -29,9 +77,8 @@ const UserProfileScreen = () => {
         setVisibleBackgroundOptions(true);
     }
 
-    const onPressEditPublicInfoHandler = () => 
-    {
-       navigation.navigate(Routes.EDIT_PROFILE_SCREEN);
+    const onPressEditPublicInfoHandler = () => {
+        navigation.navigate(Routes.EDIT_PROFILE_SCREEN);
     }
 
     const onPressSettingProfilePageHandler = () => {
@@ -40,69 +87,87 @@ const UserProfileScreen = () => {
 
     return (
         <View>
-        <ScrollView bounces={false} style={styles.container}>
-            <View style={styles.infoWrapper}>
-                <View style={styles.avatarCoverWrapper}>
-                    <TouchableOpacity activeOpacity={0.8}>
-                        <Image style={styles.cover} source={{ uri: user.cover}} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={onPressProfileSettingHandler} activeOpacity={0.8} style={styles.btnChangeCover}>
-                        <FontAwesome5Icon size={18} name="camera" />
-                    </TouchableOpacity>
-                    <View style={styles.avatarWrapper}>
-                        <TouchableOpacity activeOpacity={0.9}>
-                            <Image style={styles.avatar} source={{ uri: user.avatar }} />
-                        </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={0.8} onPress={onPressAvatarOptionsHandler} style={styles.btnChangeAvatar}>
-                            <FontAwesome5Icon size={18} name="camera" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.introWrapper}>
-                    <Text style={styles.name}>{user.username}</Text>
-                    <Text style={styles.introTxt}>{user.description}</Text>
-                    <View style={styles.introOptionsWrapper}>
-                        <TouchableOpacity activeOpacity={0.8} style={styles.btnAddStory}>
-                            <FontAwesome5Icon size={16} color="#fff" name="plus-circle" />
-                            <Text style={{ fontSize: 16, fontWeight: '500', color: '#fff', marginLeft: 5 }}>Add to your story</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={onPressSettingProfilePageHandler} activeOpacity={0.8} style={styles.btnOption}>
-                            <FontAwesome5Icon size={20} color="#000" name="ellipsis-h" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                {user.address && (<>
-                    <View style={styles.introListWrapper}>
-                        <View style={styles.introLine}>
-                            <FontAwesome5Icon size={20} color="#333" style={styles.introIcon} name="home" />
-                            <Text style={styles.introLineText}>
-                                Live in <Text style={styles.introHightLight}>{user.address}</Text>
-                            </Text>
+            <FlatList
+                data={posts}
+                ListHeaderComponent={<>
+                    <View style={styles.infoWrapper}>
+                        <View style={styles.avatarCoverWrapper}>
+                            <TouchableOpacity activeOpacity={0.8}>
+                                <Image style={styles.cover} source={{ uri: user.cover }} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={onPressProfileSettingHandler} activeOpacity={0.8} style={styles.btnChangeCover}>
+                                <FontAwesome5Icon size={18} name="camera" />
+                            </TouchableOpacity>
+                            <View style={styles.avatarWrapper}>
+                                <TouchableOpacity activeOpacity={0.9}>
+                                    <Image style={styles.avatar} source={{ uri: user.avatar }} />
+                                </TouchableOpacity>
+                                <TouchableOpacity activeOpacity={0.8} onPress={onPressAvatarOptionsHandler} style={styles.btnChangeAvatar}>
+                                    <FontAwesome5Icon size={18} name="camera" />
+                                </TouchableOpacity>
+                            </View>
                         </View>
+                        <View style={styles.introWrapper}>
+                            <Text style={styles.name}>{user.username}</Text>
+                            <Text style={styles.introTxt}>{user.description}</Text>
+                            <View style={styles.introOptionsWrapper}>
+                                <TouchableOpacity activeOpacity={0.8} style={styles.btnAddStory}>
+                                    <FontAwesome5Icon size={16} color="#fff" name="plus-circle" />
+                                    <Text style={{ fontSize: 16, fontWeight: '500', color: '#fff', marginLeft: 5 }}>Add to your story</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={onPressSettingProfilePageHandler} activeOpacity={0.8} style={styles.btnOption}>
+                                    <FontAwesome5Icon size={20} color="#000" name="ellipsis-h" />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        {user.address && (<>
+                            <View style={styles.introListWrapper}>
+                                <View style={styles.introLine}>
+                                    <FontAwesome5Icon size={20} color="#333" style={styles.introIcon} name="home" />
+                                    <Text style={styles.introLineText}>
+                                        Live in <Text style={styles.introHightLight}>{user.address}</Text>
+                                    </Text>
+                                </View>
+                            </View>
+                        </>)}
+                        <View style={{ paddingVertical: 20, borderBottomWidth: 0.5, borderBottomColor: '#ddd' }}>
+                            <TouchableOpacity
+                                onPress={onPressEditPublicInfoHandler}
+                                activeOpacity={0.8}
+                                style={styles.btnEditPublicDetail}>
+                                <Text style={{ color: '#318bfb', fontSize: 16, fontWeight: '500' }}>Edit public info</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <FriendsShowing userId={userId} />
                     </View>
-                </>)}
-                <View style={{ paddingVertical: 20, borderBottomWidth: 0.5, borderBottomColor: '#ddd' }}>
-                    <TouchableOpacity
-                        onPress={onPressEditPublicInfoHandler}
-                        activeOpacity={0.8}
-                        style={styles.btnEditPublicDetail}>
-                        <Text style={{ color: '#318bfb', fontSize: 16, fontWeight: '500' }}>Edit public info</Text>
-                    </TouchableOpacity>
-                </View>
-                <FriendsShowing userId={userId}/>
-            </View>
-            <PostTool />
-            <ProfilePosts />
-        </ScrollView>
-        <AvatarOptions isVisible={isVisibleAvatarOptions} closeModal={()=> setVisibleAvatarOptions(false)}/>
-        <BackgroundOptions isVisible={isVisibleBackgroundOptions} closeModal={() => setVisibleBackgroundOptions(false)} />
+                    <PostTool />
+                </>}
+                ListEmptyComponent={<View />}
+                ListFooterComponent={() => isLoadMore && <ActivityIndicator size="large" />}
+                onRefresh={handleReload}
+                refreshing={isReload}
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.5}
+                renderItem={({ item, index }) => {
+                    return (
+                        <PostItem
+                            key={item.id}
+                            index={index}
+                            item={item}
+                            user={user}
+                            statusContent={statusContent}
+                        />
+                    );
+                }}></FlatList>
+            <AvatarOptions isVisible={isVisibleAvatarOptions} closeModal={() => setVisibleAvatarOptions(false)} />
+            <BackgroundOptions isVisible={isVisibleBackgroundOptions} closeModal={() => setVisibleBackgroundOptions(false)} />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        
+
     },
     infoWrapper: {
         padding: 15,

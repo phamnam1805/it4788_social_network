@@ -32,6 +32,7 @@ import AllFriendsScreen from '../../features/authscreens/userprofilescreens/AllF
 import PostDetailScreen from '../../features/authscreens/PostDetailScreen';
 import MessageNavigationStack from './MessageNavigationStack';
 import AddBlockListScreen from '../../features/authscreens/shortcutscreens/AddBlockListScreen';
+import OtherProfileSettingScreen from '../../features/authscreens/userprofilescreens/OtherProfileSettingScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();
@@ -135,6 +136,10 @@ export const AuthNavigationStack = () => {
             <StackNavigator.Screen
                 name={Routes.OTHER_PROFILE_SCREEN}
                 component={OtherProfileScreen}
+            />
+            <StackNavigator.Screen 
+                name = {Routes.OTHER_PROFILE_SETTINGS_SCREEN}
+                component ={OtherProfileSettingScreen}
             />
             <StackNavigator.Screen
                 name={Routes.EDIT_PROFILE_SCREEN}
