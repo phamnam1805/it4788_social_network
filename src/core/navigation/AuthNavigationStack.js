@@ -14,7 +14,7 @@ import {Routes} from '../Routes';
 
 import FullPostToolScreen from '../../features/authscreens/homescreens/FullPostToolScreen';
 import CommentScreen from '../../features/authscreens/homescreens/CommentScreen';
-import FullScreenImageView from '../../features/authscreens/homescreens/FullScreenImageView';
+import ImageViewScreen from '../../features/authscreens/homescreens/ImageViewScreen';
 import TermsAndPoliciesScreen from '../../features/authscreens/shortcutscreens/TermsAndPoliciesScreen';
 import SettingsScreen from '../../features/authscreens/shortcutscreens/settingscreens';
 import ProfileSettingsScreen from '../../features/authscreens/shortcutscreens/settingscreens/ProfileSettingsScreen';
@@ -28,6 +28,7 @@ import ListFriendRequestScreen from '../../features/authscreens/shortcutscreens/
 import PushSettingsScreen from '../../features/authscreens/shortcutscreens/PushSettingsScreen';
 import ChangePasswordScreen from '../../features/authscreens/shortcutscreens/ChangePasswordScreen';
 import AllFriendsScreen from '../../features/authscreens/userprofilescreens/AllFriendsScreen';
+import PostDetailScreen from '../../features/authscreens/homescreens/PostDetailScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();
@@ -110,23 +111,33 @@ export const AuthNavigationStack = () => {
                 name={Routes.FULL_POST_TOOL_SCREEN}
                 component={FullPostToolScreen}
             />
+            <StackNavigator.Screen name={Routes.POST_DETAIL_SCREEN} component={PostDetailScreen} />
             <StackNavigator.Screen
                 name={Routes.TERMS_AND_POLICIES_SCREEN}
                 component={TermsAndPoliciesScreen}
             />
             <StackNavigator.Screen name={Routes.COMMENT_SCREEN} component={CommentScreen} />
-            <StackNavigator.Screen
-                name={Routes.FULL_SCREEN_IMAGE_VIEW}
-                component={FullScreenImageView}
-            />
+            <StackNavigator.Screen name={Routes.IMAGE_VIEW_SCREEN} component={ImageViewScreen} />
 
             <StackNavigator.Screen name={Routes.ALL_FRIENDS_SCREEN} component={AllFriendsScreen} />
             <StackNavigator.Screen name={Routes.CHANGE_PASSWORD} component={ChangePasswordScreen} />
             <StackNavigator.Screen name={Routes.SET_PUSH_SETTINGS} component={PushSettingsScreen} />
-            <StackNavigator.Screen name={Routes.LIST_FRIEND_REQUESTS} component={ListFriendRequestScreen} />
-            <StackNavigator.Screen name={Routes.OTHER_PROFILE_SCREEN} component={OtherProfileScreen} />
-            <StackNavigator.Screen name={Routes.EDIT_PROFILE_SCREEN} component={EditProfilePageScreen} />
-            <StackNavigator.Screen name={Routes.SETTING_PROFILE_PAGE_SCREEN} component={SettingProfilePageScreen} />
+            <StackNavigator.Screen
+                name={Routes.LIST_FRIEND_REQUESTS}
+                component={ListFriendRequestScreen}
+            />
+            <StackNavigator.Screen
+                name={Routes.OTHER_PROFILE_SCREEN}
+                component={OtherProfileScreen}
+            />
+            <StackNavigator.Screen
+                name={Routes.EDIT_PROFILE_SCREEN}
+                component={EditProfilePageScreen}
+            />
+            <StackNavigator.Screen
+                name={Routes.SETTING_PROFILE_PAGE_SCREEN}
+                component={SettingProfilePageScreen}
+            />
             <StackNavigator.Screen name={Routes.SETTINGS_SCREEN} component={SettingsScreen} />
             <StackNavigator.Screen
                 name={Routes.PROFILE_SETTINGS_SCREEN}

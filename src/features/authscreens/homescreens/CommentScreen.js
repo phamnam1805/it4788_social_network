@@ -81,12 +81,10 @@ const CommentScreen = ({route}) => {
     // console.log(comments);
     return (
         <View>
-            <View
+            {/* <View style={styles.backdrop}></View> */}
+            <KeyboardAvoidingView
                 keyboardVerticalOffset={keyboardVerticalOffset}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={styles.backdrop}></View>
-            <KeyboardAvoidingView
-                behavior="height"
                 enabled
                 style={{...styles.keyboardAvoidingContainer}}>
                 <View style={{...styles.wrapper}}>

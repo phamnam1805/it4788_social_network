@@ -17,6 +17,10 @@ const notification = createSlice({
             const payload = action.payload;
             state.notifications = payload;
         },
+        pushNotification(state, action) {
+            const payload = action.payload;
+            state.notifications.unshift(payload);
+        },
     },
     extraReducers: builder => {
         builder.addCase(
@@ -83,6 +87,11 @@ export const notificationApi = {
     getListNotifications: async (token, index, count) => {
         const requestBody = {token: token, index: index, count: count};
         const response = await axios.post(BASE_URL + '/it4788/get_notification', requestBody);
+        return response;
+    },
+    setReadNotification: async (token, notificationId) => {
+        const requestBody = {token: token, notification_id: notificationId};
+        const response = await axios.post(BASE_URL + '/it4788/set_read_notification', requestBody);
         return response;
     },
 };

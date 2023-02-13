@@ -3,7 +3,7 @@ import axios, {HttpStatusCode} from 'axios';
 
 import {appSelectors} from './App';
 import {BASE_URL} from '../Constants';
-import { Platform } from 'react-native';
+import {Platform} from 'react-native';
 
 const initialState = {
     username: '',
@@ -45,19 +45,17 @@ const user = createSlice({
                 state.username = userData.username;
                 state.avatar = userData.avatar;
                 state.cover = userData.cover;
-                state.address = userData.address,
-                state.description = userData.description;
+                (state.address = userData.address), (state.description = userData.description);
             }
         });
         builder.addCase(userOperations.fetchChangeUserInfo.fulfilled, (state, action) => {
             const response = action.payload;
-            if(response.status === HttpStatusCode.Ok){
+            if (response.status === HttpStatusCode.Ok) {
                 const userData = response.data.data;
                 state.username = userData.username;
                 state.avatar = userData.avatar;
                 state.cover = userData.cover;
-                state.address = userData.address,
-                state.description = userData.description;
+                (state.address = userData.address), (state.description = userData.description);
             }
         });
     },
@@ -87,14 +85,21 @@ export const userOperations = {
         const response = await userApi.getUserInfo(token, userId);
         return response;
     }),
-    fetchChangeUserInfo: createAsyncThunk('user/fetchChangeUserInfo', async(data, thunkParams) => {
+    fetchChangeUserInfo: createAsyncThunk('user/fetchChangeUserInfo', async (data, thunkParams) => {
         const {username, photo, background, description, address} = data;
         const state = thunkParams.getState();
 
         const token = appSelectors.getToken(state);
-        const response = await userApi.changeUserInfo(token, username, photo, background, description, address);
-        return response
-    })
+        const response = await userApi.changeUserInfo(
+            token,
+            username,
+            photo,
+            background,
+            description,
+            address,
+        );
+        return response;
+    }),
 };
 
 export const userReducer = user.reducer;
@@ -110,23 +115,21 @@ export const userApi = {
     },
     changeUserInfo: async (token, username, photo, background, description, address) => {
         const requestBody = new FormData();
-        requestBody.append("token", token);
-      
-        
-        if(username){
-            requestBody.append("username", username);
+        requestBody.append('token', token);
+
+        if (username) {
+            requestBody.append('username', username);
         }
 
-        if(description){
-            requestBody.append("description", description);
+        if (description) {
+            requestBody.append('description', description);
         }
 
-        if(address){
-            requestBody.append("address", address);
+        if (address) {
+            requestBody.append('address', address);
         }
 
-        if(photo)
-        {
+        if (photo) {
             var image = {
                 uri: photo.uri,
                 name: photo.fileName,
@@ -134,10 +137,10 @@ export const userApi = {
             };
 
             console.log(image);
-            requestBody.append('avatar',  image);
+            requestBody.append('avatar', image);
         }
 
-        if(background){
+        if (background) {
             var image = {
                 uri: background.uri,
                 name: background.fileName,
@@ -145,12 +148,12 @@ export const userApi = {
             };
 
             console.log(image);
-            requestBody.append('cover',  image);
+            requestBody.append('cover', image);
         }
 
         const response = await axios.post(BASE_URL + '/it4788/set_user_info', requestBody, {
             headers: {'Content-Type': 'multipart/form-data'},
         });
         return response;
-    }
+    },
 };

@@ -28,6 +28,7 @@ import {appSelectors} from '../core/slice/App';
 const PostItem = ({item, index, user, statusContent}) => {
     const [isLiked, setIsLiked] = useState(item.is_liked);
     const [like, setLike] = useState(item.like);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const userId = useSelector(appSelectors.getUserId);
     const optionDisplay = userId === item.author.id ? 'flex' : 'none';
 
@@ -54,8 +55,8 @@ const PostItem = ({item, index, user, statusContent}) => {
     };
 
     const onPostImagePressHandler = () => {
-        navigation.navigate(Routes.FULL_SCREEN_IMAGE_VIEW, {
-            index: index,
+        navigation.navigate(Routes.IMAGE_VIEW_SCREEN, {
+            imageIndex: currentImageIndex,
             post: item,
         });
     };
@@ -69,8 +70,12 @@ const PostItem = ({item, index, user, statusContent}) => {
             return navigation.navigate('Profile');
         }
         navigation.navigate(Routes.OTHER_PROFILE_SCREEN, {
-            userId: inputUserId,
+            userId: userId,
         });
+    };
+
+    const onTimePressHandler = () => {
+        navigation.navigate(Routes.POST_DETAIL_SCREEN, {postIndex: index});
     };
 
     const convertTime = time => {
@@ -136,7 +141,9 @@ const PostItem = ({item, index, user, statusContent}) => {
         <View style={styles.item}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={styles.customListView}>
-                    <Image style={styles.avatar} source={{uri: item.author?.avatar}}></Image>
+                    <TouchableOpacity onPress={onPressProfileHandler.bind(this, item.author?.id)}>
+                        <Image style={styles.avatar} source={{uri: item.author?.avatar}}></Image>
+                    </TouchableOpacity>
                     <View style={styles.infoWrapper}>
                         <View style={styles.namesWrapper}>
                             <TouchableOpacity
@@ -161,21 +168,18 @@ const PostItem = ({item, index, user, statusContent}) => {
                                 <></>
                             )}
                         </View>
-                        <View style={styles.extraInfoWrapper}>
-                            <Text style={{color: '#333', fontSize: 14}}>
-                                {convertTime(item.created)}
-                            </Text>
-                            <Text style={{fontSize: 16, marginHorizontal: 5}}>·</Text>
-                        </View>
+                        <TouchableOpacity onPress={onTimePressHandler}>
+                            <View style={styles.extraInfoWrapper}>
+                                <Text style={{color: '#333', fontSize: 14}}>
+                                    {convertTime(item.created)}
+                                </Text>
+                                <Text style={{fontSize: 16, marginHorizontal: 5}}>·</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
-                <View style={{display: optionDisplay}}>
-                    <Box
-                        visible={userId === item.author.id ? true : false}
-                        flex={1}
-                        alignItems="flex-end">
-                        {postActions}
-                    </Box>
+                <View style={{display: optionDisplay, top: 10, right: 10}}>
+                    <Box>{postActions}</Box>
                 </View>
             </View>
             <View style={styles.contentContainer}>
@@ -186,7 +190,8 @@ const PostItem = ({item, index, user, statusContent}) => {
                     <Swiper
                         height={300}
                         showsButtons={item.image.length > 1 ? true : false}
-                        scrollEnabled={false}>
+                        scrollEnabled={false}
+                        onIndexChanged={index => setCurrentImageIndex(index)}>
                         {item.image.map((imageItem, index) => (
                             <View key={index} style={styles.imageContainer}>
                                 <ScaledImage height={300} source={imageItem}></ScaledImage>

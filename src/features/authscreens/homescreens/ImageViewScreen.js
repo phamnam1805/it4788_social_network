@@ -28,9 +28,9 @@ import {postOperations, postSelectors} from '../../../core/slice/Post';
 
 const ImageSwiper = React.memo(
     props => {
-        const {image} = props;
+        const {image, index} = props;
         return (
-            <Swiper showsPagination={false}>
+            <Swiper showsPagination={false} index={index}>
                 {image.map((imageItem, index) => (
                     <View key={index} style={styles.imageWrapper}>
                         <Image
@@ -45,9 +45,8 @@ const ImageSwiper = React.memo(
     (prevProps, nextProps) => true,
 );
 
-const FullScreenImageView = ({route}) => {
-    const {index} = route.params || {};
-    const post = useSelector(state => postSelectors.getPost(state, index));
+const ImageViewScreen = ({route}) => {
+    const {post, imageIndex} = route.params || {};
 
     const onPressGoBackHandler = () => {
         navigation.goBack();
@@ -65,12 +64,12 @@ const FullScreenImageView = ({route}) => {
                         source={{uri: imageItem}}></Image>
                 ))}
             </Swiper> */}
-            <ImageSwiper image={post.image} />
+            <ImageSwiper image={post.image} index={imageIndex} />
         </View>
     );
 };
 
-export default FullScreenImageView;
+export default ImageViewScreen;
 
 const styles = StyleSheet.create({
     postWrapper: {

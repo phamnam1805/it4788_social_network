@@ -16,7 +16,7 @@ export const Routes = {
     FULL_POST_TOOL_SCREEN: 'fullPostToolScreen',
     TERMS_AND_POLICIES_SCREEN: 'termsAndPoliciesScreen',
     COMMENT_SCREEN: 'commentScreen',
-    FULL_SCREEN_IMAGE_VIEW: 'fullScreenImageView',
+    IMAGE_VIEW_SCREEN: 'imageViewScreen',
     POST_DETAIL_SCREEN: 'postDetailScreen',
 
     CHANGE_NAME_SCREEN: 'changeNameScreen',

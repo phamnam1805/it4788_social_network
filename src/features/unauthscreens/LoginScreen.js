@@ -22,10 +22,12 @@ import {dispatch, navigation} from '../../core/Navigation';
 import {Routes} from '../../core/Routes';
 import {BASE_URL, LogicCode} from '../../core/Constants';
 import Loader from '../../components/Loader';
-import {appOperations} from '../../core/slice/App';
-import {useDispatch} from 'react-redux';
+import {appOperations, appSelectors} from '../../core/slice/App';
+import {useDispatch, useSelector} from 'react-redux';
 
 const LoginScreen = () => {
+    const fcmToken = useSelector(appSelectors.getFcmToken);
+    console.log('fcm token', fcmToken);
     const dispatch = useDispatch();
     const [phonenumber, setPhonenumber] = useState('');
     const [password, setPassword] = useState('');
@@ -49,13 +51,13 @@ const LoginScreen = () => {
         let requestBody = {
             phone_number: phonenumber,
             password: password,
-            device_id: DeviceInfo.getUniqueId(),
+            device_token: fcmToken,
         };
         console.log(requestBody);
         axios
             .post(BASE_URL + '/it4788/login', requestBody)
             .then(response => {
-                if ((response.data.code == LogicCode.SUCCESS)) {
+                if (response.data.code == LogicCode.SUCCESS) {
                     const responseData = response.data;
                     const data = responseData.data;
                     // console.log(token);
