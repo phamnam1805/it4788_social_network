@@ -34,6 +34,14 @@ const UserProfileComponent = ({ userId }) => {
         }
     }
 
+    const openSettings = () => {
+
+    }
+
+    const openChat = () => {
+
+    }
+
     const otherUserProfile = useAsync(async () => {
         const res = await axios.post(BASE_URL + '/it4788/get_user_info', { token: token, user_id: userId });
         
@@ -91,6 +99,13 @@ const UserProfileComponent = ({ userId }) => {
                                             }
                                         </>)
                                     }
+                                    <TouchableOpacity onPress={openChat} activeOpacity={0.8} style={styles.btnOption}>
+                                        <FontAwesome5Icon size={20} color="#000" name="comment-dots" />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={openSettings} activeOpacity={0.8} style={styles.btnOption}>
+                                        <FontAwesome5Icon size={20} color="#000" name="ellipsis-h" />
+                                    </TouchableOpacity>
+                                  
                                 </View>
                             </View>
                             {otherUserProfile.address && (<>
@@ -199,7 +214,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        width: SCREEN_WIDTH - 30, //paddingHorizontal optionBtnWidth, marginLeft
+        width: SCREEN_WIDTH - 30 - 50 - 10 - 50 - 10, //paddingHorizontal optionBtnWidth, marginLeft
     },
     btnOption: {
         marginLeft: 10,
