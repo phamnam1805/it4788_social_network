@@ -3,8 +3,13 @@ import * as navigation from '../../../core/Navigation';
 import ExTouchableOpacity from "../../../components/ExTouchableOpacity";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import { Routes } from "../../../core/Routes";
+import { useSelector } from "react-redux";
+import { appSelectors } from "../../../core/slice/App";
 
 const SettingProfilePageScreen = () => {
+
+    const userId = useSelector(appSelectors.getUserId);
+
     const goBack = ()=> {
         navigation.goBack();
     }
@@ -14,7 +19,7 @@ const SettingProfilePageScreen = () => {
     }
 
     const openSearch = () => {
-        
+        navigation.navigate(Routes.SEARCH_POST, {userId: userId})
     }
 
     return (<>
@@ -30,7 +35,7 @@ const SettingProfilePageScreen = () => {
                     <FontAwesome5Icon name="edit" style={styles.itemIcon}/>
                     <Text style={styles.itemText} >Edit Profile</Text>
                 </ExTouchableOpacity>
-                <ExTouchableOpacity style={styles.item}>
+                <ExTouchableOpacity onPress={openSearch} style={styles.item}>
                     <FontAwesome5Icon name="search" style={styles.itemIcon}/>
                     <Text style={styles.itemText} >Search</Text>
                 </ExTouchableOpacity>

@@ -33,6 +33,7 @@ import PostDetailScreen from '../../features/authscreens/PostDetailScreen';
 import MessageNavigationStack from './MessageNavigationStack';
 import AddBlockListScreen from '../../features/authscreens/shortcutscreens/AddBlockListScreen';
 import OtherProfileSettingScreen from '../../features/authscreens/userprofilescreens/OtherProfileSettingScreen';
+import SearchPostScreen from '../../features/authscreens/userprofilescreens/SearchPostScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();
@@ -166,6 +167,10 @@ export const AuthNavigationStack = () => {
             <StackNavigator.Screen
                 name={Routes.ADD_BLOCKING_LIST}
                 component={AddBlockListScreen}
+            />
+            <StackNavigator.Screen
+                name={Routes.SEARCH_POST}
+                component={SearchPostScreen}
             />
         </StackNavigator.Navigator>
     );
