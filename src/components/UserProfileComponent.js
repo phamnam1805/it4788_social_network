@@ -15,7 +15,6 @@ import { useDispatch } from 'react-redux';
 import { appSelectors } from '../core/slice/App';
 import axios from 'axios';
 import { BASE_URL } from '../core/Constants';
-import * as uuid from 'react-native-uuid'
 
 
 const UserProfileComponent = ({ userId }) => {
@@ -40,6 +39,7 @@ const UserProfileComponent = ({ userId }) => {
 
     const otherUserProfile = useAsync(async () => {
         const res = await axios.post(BASE_URL + '/it4788/get_user_info', { token: token, user_id: userId });
+        
         if (res.data.code == LogicCode.SUCCESS) {
             return res.data.data;
         }
@@ -106,7 +106,7 @@ const UserProfileComponent = ({ userId }) => {
                                     </View>
                                 </View>
                             </>)}
-                            <FriendsShowing />
+                            <FriendsShowing userId={userId}/>
                         </View>
                         <PostTool />
                         <ProfilePosts />
@@ -119,7 +119,7 @@ const UserProfileComponent = ({ userId }) => {
 
 const styles = StyleSheet.create({
     container: {
-
+        paddingBottom: 200
     },
     infoWrapper: {
         padding: 15,
