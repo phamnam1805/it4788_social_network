@@ -1,17 +1,22 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createSlice} from '@reduxjs/toolkit';
 import SplashScreen from 'react-native-splash-screen';
-import {dispatch, navigate} from '../Navigation';
+import messaging, {firebase} from '@react-native-firebase/messaging';
+import PushNotification, {Importance} from 'react-native-push-notification';
+import {navigate} from '../Navigation';
 import {Routes} from '../Routes';
 import {userActions, userOperations, userSelectors} from './User';
 import {authenticationActions} from './Authentication';
 import {postOperations} from './Post';
 import {notificationOperations} from './Notification';
+import {requestUserPermission, getFcmToken, setupNotificationServices} from '../NotificationUtils';
+import NotificationHandler from '../NotificationHandler';
 
 const initialState = {
     loading: true,
     userId: null,
     token: null,
+    fcmToken: null,
 };
 
 const app = createSlice({
@@ -27,6 +32,9 @@ const app = createSlice({
         setToken(state, action) {
             state.token = action.payload;
         },
+        setFcmToken(state, action) {
+            state.fcmToken = action.payload;
+        },
     },
 });
 
@@ -39,12 +47,17 @@ export const appSelectors = {
     getLoading: state => getRoot(state).loading,
     getUserId: state => getRoot(state).userId,
     getToken: state => getRoot(state).token,
+    getFcmToken: state => getRoot(state).fcmToken,
 };
 
 export const appOperations = {
     initialize: () => async (dispatch, getState) => {
         let appData = await AsyncStorage.getItem('app');
         let userData = await AsyncStorage.getItem('user');
+        let fcmToken = await AsyncStorage.getItem('fcmToken');
+        await checkNotiPermission(dispatch, fcmToken);
+        await createNotificationListeners();
+
         if (appData && userData) {
             dispatchData(dispatch, appData, userData);
             dispatch(authenticationActions.setAuth(true));
@@ -93,4 +106,56 @@ const dispatchData = (dispatch, appData, userData) => {
     dispatch(userActions.setAvatar(userDataParsed.avatar));
     dispatch(userActions.setPosts(userDataParsed.posts));
     dispatch(userActions.setFriends(userDataParsed.friends));
+};
+
+const checkNotiPermission = async dispatch => {
+    const enabled = await firebase.messaging().hasPermission();
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    if (enabled) {
+        if (!fcmToken) {
+            fcmToken = await firebase.messaging().getToken();
+            if (fcmToken) {
+                // user has a device token
+                await AsyncStorage.setItem('fcmToken', fcmToken);
+                dispatch(appActions.setFcmToken(fcmToken));
+            }
+        }
+    } else {
+        const permission = await requestUserPermission();
+        if (permission) {
+            fcmToken = await firebase.messaging().getToken();
+            if (fcmToken) {
+                // user has a device token
+                await AsyncStorage.setItem('fcmToken', fcmToken);
+                dispatch(appActions.setFcmToken(fcmToken));
+            }
+        }
+    }
+};
+
+const createNotificationListeners = async () => {
+    PushNotification.createChannel(
+        {
+            channelId: 'fcm_fallback_notification_channel', // (required)
+            channelName: 'Default', // (required)
+            channelDescription: 'Default channel', // (optional) default: undefined.
+            playSound: false, // (optional) default: true
+            soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+            importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
+            vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+        },
+        created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+    );
+    messaging().onMessage(async remoteMessage => {
+        await NotificationHandler.onNotificationReceived(remoteMessage.notification);
+        console.log(remoteMessage);
+    });
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+        if (remoteMessage) {
+            console.log(
+                'Notification caused app to open from background:',
+                remoteMessage.notification,
+            );
+        }
+    });
 };
