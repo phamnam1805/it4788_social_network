@@ -10,6 +10,7 @@ export const Routes = {
     SHORTCUT_SCREEN: 'shortcutScreen',
     HOME_TAB: 'homeTab',
     FRIEND_REQUEST_TAB: 'friendRequestTab',
+    MESSAGE_TAB: 'messageTab',
     USER_PROFILE_TAB: 'userProfileTab',
     NOTIFICATION_TAB: 'notificationTab',
     SHORTCUT_TAB: 'shortcutTab',
@@ -18,7 +19,7 @@ export const Routes = {
     COMMENT_SCREEN: 'commentScreen',
     IMAGE_VIEW_SCREEN: 'imageViewScreen',
     POST_DETAIL_SCREEN: 'postDetailScreen',
-
+    MESSAGE_SCREEN: 'messageScreen',
     CHANGE_NAME_SCREEN: 'changeNameScreen',
     PERSONAL_INFORMATION_SCREEN: 'personalInformationScreen',
     PROFILE_SETTINGS_SCREEN: 'profileSettingsScreen',
