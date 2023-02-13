@@ -32,11 +32,10 @@ const UserProfileComponent = ({ userId }) => {
         console.error(response.data);
         if(response.data.code == LogicCode.SUCCESS){
             var listPosts = response.data.data.posts.filter(x => posts.filter(y => y.id == x.id).length == 0);
-            console.error(response.data);
             setPosts([...posts, ...listPosts])
-            setIsReload(false);
-            setIsLoadMore(false);
         }
+        setIsReload(false);
+        setIsLoadMore(false);
     }, [refresh, currentIndex, token])
 
     
