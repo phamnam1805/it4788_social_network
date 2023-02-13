@@ -21,7 +21,7 @@ import SettingsScreen from '../../features/authscreens/shortcutscreens/settingsc
 import ProfileSettingsScreen from '../../features/authscreens/shortcutscreens/settingscreens/ProfileSettingsScreen';
 import PersonalInformationScreen from '../../features/authscreens/shortcutscreens/settingscreens/PersonalInformationScreen';
 import ChangeNameScreen from '../../features/authscreens/shortcutscreens/settingscreens/ChangeNameScreen';
-import BlockingListScreen from '../../features/authscreens/shortcutscreens/settingscreens/BlockingListScreen';
+import BlockingListScreen from '../../features/authscreens/shortcutscreens/BlockingListScreen';
 import SettingProfilePageScreen from '../../features/authscreens/userprofilescreens/SettingProfilePageScreen';
 import EditProfilePageScreen from '../../features/authscreens/userprofilescreens/EditProfilePageScreen';
 import OtherProfileScreen from '../../features/authscreens/userprofilescreens/OtherProfileScreen';
@@ -31,6 +31,7 @@ import ChangePasswordScreen from '../../features/authscreens/shortcutscreens/Cha
 import AllFriendsScreen from '../../features/authscreens/userprofilescreens/AllFriendsScreen';
 import PostDetailScreen from '../../features/authscreens/PostDetailScreen';
 import MessageNavigationStack from './MessageNavigationStack';
+import AddBlockListScreen from '../../features/authscreens/shortcutscreens/AddBlockListScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();
@@ -156,6 +157,10 @@ export const AuthNavigationStack = () => {
             <StackNavigator.Screen
                 name={Routes.BLOCKING_LIST_SCREEN}
                 component={BlockingListScreen}
+            />
+            <StackNavigator.Screen
+                name={Routes.ADD_BLOCKING_LIST}
+                component={AddBlockListScreen}
             />
         </StackNavigator.Navigator>
     );

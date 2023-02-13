@@ -33,4 +33,5 @@ export const Routes = {
     SETTING_PROFILE_PAGE_SCREEN: 'settingProfilePageScreen',
     EDIT_PROFILE_SCREEN: 'editProfileScreen',
     OTHER_PROFILE_SCREEN: 'otherProfileScreen',
+    ADD_BLOCKING_LIST: 'addBlockingList'
 };
