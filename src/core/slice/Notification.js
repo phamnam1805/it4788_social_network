@@ -42,6 +42,17 @@ const notification = createSlice({
                 }
             },
         );
+        builder.addCase(
+            notificationOperations.fetchSetReadNotification.fulfilled,
+            (state, action) => {
+                const payload = action.payload;
+                const response = payload.response;
+                if (response.status === HttpStatusCode.Ok) {
+                    const notificationIndex = payload.notificationIndex;
+                    state.notifications[notificationIndex].read = true;
+                }
+            },
+        );
     },
 });
 
@@ -77,6 +88,17 @@ export const notificationOperations = {
                 );
                 return {lastList: lastList, response: response};
             }
+        },
+    ),
+    fetchSetReadNotification: createAsyncThunk(
+        'post/fetchSetReadNotification',
+        async (data, thunkParams) => {
+            const {notiIndex} = data;
+            const noti = notificationSelectors.getNotification(thunkParams.getState(), notiIndex);
+            const notificationId = noti.notification_id;
+            const token = appSelectors.getToken(thunkParams.getState());
+            const response = await notificationApi.setReadNotification(token, notificationId);
+            return {notificationIndex: notiIndex, response: response};
         },
     ),
 };

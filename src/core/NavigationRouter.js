@@ -27,7 +27,7 @@ if (Platform.OS === 'android') {
 
 export function NavigationRouter() {
     const isLoggedIn = useSelector(authenticationSelectors.isLoggedIn);
-    console.log(isLoggedIn);
+    // console.log(isLoggedIn);
     return (
         <NavigationContainer screenOptions={screenOptions} ref={navigationRef}>
             {/* <AuthNavigationStack /> */}

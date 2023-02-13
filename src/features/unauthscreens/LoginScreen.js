@@ -27,7 +27,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 const LoginScreen = () => {
     const fcmToken = useSelector(appSelectors.getFcmToken);
-    console.log('fcm token', fcmToken);
+    // console.log('fcm token', fcmToken);
     const dispatch = useDispatch();
     const [phonenumber, setPhonenumber] = useState('');
     const [password, setPassword] = useState('');
