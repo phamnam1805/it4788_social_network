@@ -2,6 +2,7 @@ import { StyleSheet, View, Text } from "react-native";
 import ExTouchableOpacity from "../../../../components/ExTouchableOpacity";
 import * as navigation from "../../../../core/Navigation";
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
+import { Routes } from "../../../../core/Routes";
 
 const ProfileSettingsScreen = () => {
     const goBack = () => {
@@ -9,7 +10,7 @@ const ProfileSettingsScreen = () => {
     }
 
     const onOpenBlocking = () => {
-
+        navigation.navigate(Routes.BLOCKING_LIST_SCREEN)
     }
 
     return (<>
