@@ -12,7 +12,7 @@ import {notificationOperations} from './Notification';
 import {requestUserPermission, getFcmToken, setupNotificationServices} from '../NotificationUtils';
 import NotificationHandler from '../NotificationHandler';
 import axios from 'axios';
-import { BASE_URL } from '../Constants';
+import {BASE_URL} from '../Constants';
 import {messageOperations} from './Message';
 
 const initialState = {
@@ -88,16 +88,15 @@ export const appOperations = {
             await saveData(appData, userData);
         },
     logout: () => async (dispatch, getState) => {
-
         const fcmToken = appSelectors.getFcmToken(getState());
         const token = appSelectors.getToken(getState());
         await AsyncStorage.removeItem('user');
         await AsyncStorage.removeItem('app');
-        
-        await axios.post(BASE_URL + "/it4788/logout", {
+
+        await axios.post(BASE_URL + '/it4788/logout', {
             token: token,
             device_token: fcmToken,
-        })
+        });
 
         dispatch(authenticationActions.setAuth(false));
         navigate(Routes.LOGIN_SCREEN);
