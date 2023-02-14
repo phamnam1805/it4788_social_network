@@ -11,6 +11,7 @@ import {postOperations} from './Post';
 import {notificationOperations} from './Notification';
 import {requestUserPermission, getFcmToken, setupNotificationServices} from '../NotificationUtils';
 import NotificationHandler from '../NotificationHandler';
+import {messageOperations} from './Message';
 
 const initialState = {
     loading: true,
@@ -62,6 +63,7 @@ export const appOperations = {
             dispatch(userOperations.fetchUserInfo());
             dispatch(postOperations.createStatusList());
             dispatch(postOperations.fetchGetListPosts({lastId: 0, reloadFlag: true}));
+            dispatch(messageOperations.fetchGetListConversations({reloadFlag: true}));
             dispatch(notificationOperations.fetchGetListNotifications({reloadFlag: true}));
         } else {
             await createNotificationListeners(dispatch, null);
@@ -75,7 +77,9 @@ export const appOperations = {
             dispatch(appActions.setUserId(userId));
             dispatch(appActions.setToken(token));
             dispatch(userOperations.fetchUserInfo());
+            dispatch(postOperations.createStatusList());
             dispatch(postOperations.fetchGetListPosts({lastId: 0, reloadFlag: true}));
+            dispatch(messageOperations.fetchGetListConversations({reloadFlag: true}));
             dispatch(notificationOperations.fetchGetListNotifications({reloadFlag: true}));
             const appData = appSelectors.getApp(getState());
             const userData = userSelectors.getUser(getState());

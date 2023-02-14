@@ -29,6 +29,7 @@ export const Routes = {
     CHANGE_PASSWORD: 'changePassword',
     SET_PUSH_SETTINGS: 'settingPushSettings',
     ALL_FRIENDS_SCREEN: 'allFriendsScreen',
+    CHANNEL_SCREEN: 'channelScreen',
 
     SETTING_PROFILE_PAGE_SCREEN: 'settingProfilePageScreen',
     EDIT_PROFILE_SCREEN: 'editProfileScreen',

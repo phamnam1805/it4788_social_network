@@ -34,6 +34,7 @@ import MessageNavigationStack from './MessageNavigationStack';
 import AddBlockListScreen from '../../features/authscreens/shortcutscreens/AddBlockListScreen';
 import OtherProfileSettingScreen from '../../features/authscreens/userprofilescreens/OtherProfileSettingScreen';
 import SearchPostScreen from '../../features/authscreens/userprofilescreens/SearchPostScreen';
+import ChannelScreen from '../../features/authscreens/messagescreens/ChannelScreen';
 
 const TopTab = createMaterialTopTabNavigator();
 const StackNavigator = createStackNavigator();
@@ -115,6 +116,7 @@ export const AuthNavigationStack = () => {
             screenOptions={navigationOptions}
             initialRouteName={Routes.MAIN_TAB}>
             <StackNavigator.Screen name={Routes.MAIN_TAB} component={MainTab} />
+            <StackNavigator.Screen name={Routes.CHANNEL_SCREEN} component={ChannelScreen} />
             <StackNavigator.Screen
                 name={Routes.FULL_POST_TOOL_SCREEN}
                 component={FullPostToolScreen}
@@ -138,9 +140,9 @@ export const AuthNavigationStack = () => {
                 name={Routes.OTHER_PROFILE_SCREEN}
                 component={OtherProfileScreen}
             />
-            <StackNavigator.Screen 
-                name = {Routes.OTHER_PROFILE_SETTINGS_SCREEN}
-                component ={OtherProfileSettingScreen}
+            <StackNavigator.Screen
+                name={Routes.OTHER_PROFILE_SETTINGS_SCREEN}
+                component={OtherProfileSettingScreen}
             />
             <StackNavigator.Screen
                 name={Routes.EDIT_PROFILE_SCREEN}
@@ -164,14 +166,8 @@ export const AuthNavigationStack = () => {
                 name={Routes.BLOCKING_LIST_SCREEN}
                 component={BlockingListScreen}
             />
-            <StackNavigator.Screen
-                name={Routes.ADD_BLOCKING_LIST}
-                component={AddBlockListScreen}
-            />
-            <StackNavigator.Screen
-                name={Routes.SEARCH_POST}
-                component={SearchPostScreen}
-            />
+            <StackNavigator.Screen name={Routes.ADD_BLOCKING_LIST} component={AddBlockListScreen} />
+            <StackNavigator.Screen name={Routes.SEARCH_POST} component={SearchPostScreen} />
         </StackNavigator.Navigator>
     );
     // return (

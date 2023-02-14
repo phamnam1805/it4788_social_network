@@ -32,6 +32,7 @@ const NotificationScreen = () => {
     };
 
     const handleLoadMore = () => {
+        // if (!isLoadMore && notifications.length >= 10) {
         if (!isLoadMore && notifications.length >= 10) {
             setIsLoadMore(true);
             dispatch(notificationOperations.fetchGetListNotifications({})).then(() => {

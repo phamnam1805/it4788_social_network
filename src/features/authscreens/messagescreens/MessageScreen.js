@@ -1,22 +1,24 @@
-import {View, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, FlatList, Text} from 'react-native';
 import React, {useState} from 'react';
-import {Avatar, Text} from 'react-native-elements';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import {useSelector} from 'react-redux';
 
 import {userSelectors} from '../../../core/slice/User';
 import ChannelItem from '../../../components/ChannelItem';
 import Data from './Data';
+import {messageSelectors} from '../../../core/slice/Message';
 
 const MessageScreen = () => {
-    const user = useSelector(userSelectors.getUser);
-    const [channelList, setChannelList] = useState([]);
-
+    const conversations = useSelector(messageSelectors.getAllConversations);
+    // console.log(conversations[0]);
     return (
         <FlatList
-            data={Data}
-            keyExtractor={item => item.id}
-            renderItem={ChannelItem}
+            data={conversations}
+            // keyExtractor={item => item.id}
+            ListEmptyComponent={<View></View>}
+            renderItem={({item, index}) => {
+                return <ChannelItem item={item} index={index} />;
+            }}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
     );
