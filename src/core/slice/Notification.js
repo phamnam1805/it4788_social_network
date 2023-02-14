@@ -34,7 +34,7 @@ const notification = createSlice({
                     const newList = response.data.data.notifications;
                     if (reloadFlag) {
                         state.notifications = newList;
-                        alert(newList.length);
+                        // alert(newList.length);
                         state.lastIndex = 1;
                     } else {
                         const lastList = payload.lastList;

@@ -149,7 +149,7 @@ const PostDetailScreen = ({route}) => {
                     <FontAwesome5Icon name="arrow-left" size={24} color="#000"></FontAwesome5Icon>
                 </TouchableOpacity>
                 <View style={styles.stackBarTitle}>
-                    <Text style={{fontSize: 18, color: '#000', fontWeight: '#800'}}>
+                    <Text style={{fontSize: 18, color: '#000', fontWeight: '800'}}>
                         {post.author.username + "'s post"}
                     </Text>
                 </View>
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     paragraph: {
         fontSize: 16,
         color: '#000',
-        fontWeight: '600',
+        fontWeight: '500',
     },
     contentContainer: {
         paddingHorizontal: 15,
