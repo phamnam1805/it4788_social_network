@@ -21,7 +21,7 @@ const NotificationScreen = () => {
     const [isLoadMore, setIsLoadMore] = useState(false);
 
     const handleReload = () => {
-        if (!isReload && !isLoadMore) {
+        if (!isReload) {
             setIsReload(true);
             dispatch(notificationOperations.fetchGetListNotifications({reloadFlag: true})).then(
                 () => {
@@ -32,7 +32,7 @@ const NotificationScreen = () => {
     };
 
     const handleLoadMore = () => {
-        if (!isLoadMore && !isReload) {
+        if (!isLoadMore && notifications.length >= 10) {
             setIsLoadMore(true);
             dispatch(notificationOperations.fetchGetListNotifications({})).then(() => {
                 setTimeout(() => setIsLoadMore(false), 2000);

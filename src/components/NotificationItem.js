@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
     },
     pureTxt: {
         fontSize: 16,
+        color: '#000',
     },
     hightlightTxt: {
         fontSize: 15,

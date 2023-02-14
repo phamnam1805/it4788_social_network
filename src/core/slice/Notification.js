@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios, {HttpStatusCode} from 'axios';
 import {BASE_URL} from '../Constants';
 import {appSelectors} from './App';
+import {Alert} from 'native-base';
 
 const initialState = {
     notifications: [],
@@ -33,6 +34,7 @@ const notification = createSlice({
                     const newList = response.data.data.notifications;
                     if (reloadFlag) {
                         state.notifications = newList;
+                        alert(newList.length);
                         state.lastIndex = 1;
                     } else {
                         const lastList = payload.lastList;

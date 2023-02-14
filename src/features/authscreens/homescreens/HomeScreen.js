@@ -46,7 +46,7 @@ const HomeScreen = () => {
     };
 
     const handleLoadMore = () => {
-        if (!isLoadMore && !isReload) {
+        if (!isLoadMore && !isReload && posts.length >= 9) {
             setIsLoadMore(true);
             dispatch(postOperations.fetchGetListPosts({})).then(() => {
                 setTimeout(() => setIsLoadMore(false), 2000);

@@ -131,12 +131,12 @@ const PostDetailScreen = ({route}) => {
                 );
             }}>
             <Menu.Item onPress={() => console.log('1')}>
-                <AntDesignIcon name="edit" size={16}>
+                <AntDesignIcon name="edit" size={16} color="#000">
                     {' Edit this post'}
                 </AntDesignIcon>
             </Menu.Item>
             <Menu.Item onPress={() => onDeletePostPressHandler()}>
-                <AntDesignIcon name="delete" size={16}>
+                <AntDesignIcon name="delete" size={16} color="#000">
                     {' Delete this post'}
                 </AntDesignIcon>
             </Menu.Item>
@@ -146,10 +146,12 @@ const PostDetailScreen = ({route}) => {
         <View style={{...styles.wrapper}}>
             <View style={styles.navigationStackBar}>
                 <TouchableOpacity onPress={onPressGoBackHandler} style={styles.btnBack}>
-                    <FontAwesome5Icon name="arrow-left" size={24}></FontAwesome5Icon>
+                    <FontAwesome5Icon name="arrow-left" size={24} color="#000"></FontAwesome5Icon>
                 </TouchableOpacity>
                 <View style={styles.stackBarTitle}>
-                    <Text style={{fontSize: 18}}>{post.author.username + "'s post"}</Text>
+                    <Text style={{fontSize: 18, color: '#000', fontWeight: '#800'}}>
+                        {post.author.username + "'s post"}
+                    </Text>
                 </View>
             </View>
             <ScrollView>
@@ -166,13 +168,23 @@ const PostDetailScreen = ({route}) => {
                                 <View style={styles.namesWrapper}>
                                     <TouchableOpacity
                                         onPress={onPressProfileHandler.bind(this, post.author?.id)}>
-                                        <Text style={{fontSize: 16, fontWeight: '800'}}>
+                                        <Text
+                                            style={{
+                                                fontSize: 16,
+                                                fontWeight: '800',
+                                                color: '#000',
+                                            }}>
                                             {post.author?.username}
                                         </Text>
                                     </TouchableOpacity>
                                     {post.status ? (
                                         <>
-                                            <Text style={{fontSize: 16, fontWeight: '500'}}>
+                                            <Text
+                                                style={{
+                                                    fontSize: 16,
+                                                    fontWeight: '500',
+                                                    color: '#000',
+                                                }}>
                                                 {' is ' + statusContent[post.status]}
                                             </Text>
                                             <MaterialCommunityIcon
@@ -317,6 +329,8 @@ const styles = StyleSheet.create({
     },
     paragraph: {
         fontSize: 16,
+        color: '#000',
+        fontWeight: '600',
     },
     contentContainer: {
         paddingHorizontal: 15,

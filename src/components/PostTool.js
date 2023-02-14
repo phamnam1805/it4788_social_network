@@ -76,7 +76,7 @@ const PostTool = ({userAvatar}) => {
                     onPress={onFullPostToolPressHandler}
                     style={styles.postInputWrapper}>
                     <View style={{...styles.postInput}}>
-                        <Text>What's on your mind?</Text>
+                        <Text style={styles.textContent}>What's on your mind?</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -106,7 +106,7 @@ const PostTool = ({userAvatar}) => {
                             color="red"
                             size={16}
                         />
-                        <Text>Share Photos</Text>
+                        <Text style={styles.textContent}>Share Photos</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -120,7 +120,7 @@ const PostTool = ({userAvatar}) => {
                             color="red"
                             size={16}
                         />
-                        <Text>Share video</Text>
+                        <Text style={styles.textContent}>Share video</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -131,6 +131,7 @@ const PostTool = ({userAvatar}) => {
 export default PostTool;
 
 const styles = StyleSheet.create({
+    textContent: {color: '#000'},
     container: {
         borderTopColor: '#ddd',
         borderTopWidth: 1,

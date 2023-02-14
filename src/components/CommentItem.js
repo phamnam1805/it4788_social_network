@@ -38,12 +38,18 @@ const CommentItem = ({comment}) => {
             <View style={styles.centerContainer}>
                 <View style={styles.contentContainer}>
                     <TouchableOpacity>
-                        <Text style={styles.name}>{comment.poster.username}</Text>
+                        <Text style={{...styles.name, ...styles.textContent}}>
+                            {comment.poster.username}
+                        </Text>
                     </TouchableOpacity>
-                    <Text style={styles.content}>{comment.comment}</Text>
+                    <Text style={{...styles.content, ...styles.textContent}}>
+                        {comment.comment}
+                    </Text>
                 </View>
                 <View style={styles.toolContainer}>
-                    <Text style={styles.createAt}>{convertTime(comment.created)}</Text>
+                    <Text style={{...styles.createAt, ...styles.textContent}}>
+                        {convertTime(comment.created)}
+                    </Text>
                 </View>
             </View>
         </View>
@@ -53,6 +59,7 @@ const CommentItem = ({comment}) => {
 export default CommentItem;
 const screenWidth = Math.round(Dimensions.get('window').width);
 const styles = StyleSheet.create({
+    textContent: {color: '#000'},
     container: {
         flexDirection: 'row',
         marginBottom: 15,

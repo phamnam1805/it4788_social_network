@@ -73,7 +73,7 @@ const PostItem = ({item, index, user, statusContent}) => {
             return navigation.navigate(Routes.USER_PROFILE_SCREEN);
         }
         navigation.navigate(Routes.OTHER_PROFILE_SCREEN, {
-            userId: inputUserId
+            userId: inputUserId,
         });
     };
 
@@ -128,12 +128,12 @@ const PostItem = ({item, index, user, statusContent}) => {
                 );
             }}>
             <Menu.Item onPress={() => console.log('1')}>
-                <AntDesignIcon name="edit" size={16}>
+                <AntDesignIcon name="edit" size={16} color="#000">
                     {' Edit this post'}
                 </AntDesignIcon>
             </Menu.Item>
             <Menu.Item onPress={() => onDeletePostPressHandler()}>
-                <AntDesignIcon name="delete" size={16}>
+                <AntDesignIcon name="delete" size={16} color="#000">
                     {' Delete this post'}
                 </AntDesignIcon>
             </Menu.Item>
@@ -151,13 +151,13 @@ const PostItem = ({item, index, user, statusContent}) => {
                         <View style={styles.namesWrapper}>
                             <TouchableOpacity
                                 onPress={onPressProfileHandler.bind(this, item.author?.id)}>
-                                <Text style={{fontSize: 16, fontWeight: '800'}}>
+                                <Text style={{...styles.textContent, fontWeight: '800'}}>
                                     {item.author?.username}
                                 </Text>
                             </TouchableOpacity>
                             {item.status ? (
                                 <>
-                                    <Text style={{fontSize: 16, fontWeight: '500'}}>
+                                    <Text style={{...styles.textContent, fontWeight: '500'}}>
                                         {' is ' + statusContent[item.status]}
                                     </Text>
                                     <MaterialCommunityIcon
@@ -189,7 +189,7 @@ const PostItem = ({item, index, user, statusContent}) => {
                 <Hyperlink
                     onPress={(url, text) => Linking.openURL(url)}
                     linkStyle={{color: '#2980b9'}}>
-                    <Text style={styles.paragraph}>{item.content}</Text>
+                    <Text style={{...styles.textContent, fontWeight: '600'}}>{item.content}</Text>
                 </Hyperlink>
             </View>
             <TouchableOpacity onPress={onImagePressHandler}>
@@ -243,7 +243,7 @@ const PostItem = ({item, index, user, statusContent}) => {
                     <TouchableOpacity
                         onPress={onCommentPressHandler.bind(this)}
                         style={styles.commentInputWrapper}>
-                        <Text>Comment...</Text>
+                        <Text style={{color: '#000'}}>Comment...</Text>
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity>
@@ -263,6 +263,11 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 const screenWidth = Math.round(Dimensions.get('window').width);
 
 const styles = StyleSheet.create({
+    textContent: {
+        color: '#000',
+        fontSize: 16,
+        fontFamily: 'roboto',
+    },
     customListView: {
         padding: 15,
         width: screenWidth - 40,
@@ -297,9 +302,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 20,
         paddingHorizontal: 15,
-    },
-    paragraph: {
-        fontSize: 16,
     },
     contentContainer: {
         paddingHorizontal: 15,

@@ -4,6 +4,7 @@ export const SCREEN_HEIGHT = Math.round(Dimensions.get('window').height);
 export const SCREEN_WIDTH = Math.round(Dimensions.get('window').width);
 export const STATUSBAR_HEIGHT = getStatusBarHeight();
 export const BASE_URL = 'http://109.123.234.163:7000';
+// export const BASE_URL = 'https://backend-facebook-clone.tuana9a.com';
 export const permission = {
     PUBLIC: 1,
     GROUP: 2,
