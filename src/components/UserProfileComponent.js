@@ -23,12 +23,14 @@ import {BASE_URL} from '../core/Constants';
 import {Routes} from '../core/Routes';
 import {postSelectors} from '../core/slice/Post';
 import PostItem from './PostItem';
+import { useDispatch } from 'react-redux';
 
 const UserProfileComponent = ({userId}) => {
     const [posts, setPosts] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [refresh, setRefresh] = useState(false);
     const statusContent = useSelector(postSelectors.getStatusContent);
+    const dispatch = useDispatch();
 
     const state = useAsync(async () => {
         const requestBody = {
@@ -62,6 +64,7 @@ const UserProfileComponent = ({userId}) => {
 
     const handleLoadMore = () => {
         if (!isLoadMore && !isReload && posts.length >= 9) {
+            
             setIsLoadMore(true);
             setCurrentIndex(currentIndex + 1);
         }
@@ -69,7 +72,6 @@ const UserProfileComponent = ({userId}) => {
 
     const token = useSelector(appSelectors.getToken);
     const user = useSelector(userSelectors.getUser);
-    const [refreshRequestedFriends, setRefreshRequestedFriends] = useState(false);
 
     const sendRequestFriend = async () => {
         const res = await axios.post(BASE_URL + '/it4788/set_request_friend', {
@@ -77,7 +79,7 @@ const UserProfileComponent = ({userId}) => {
             user_id: userId,
         });
         if (res.data.code == LogicCode.SUCCESS) {
-            setRefreshRequestedFriends(!refreshRequestedFriends);
+            setRefresh(!refresh);
         }
     };
 
@@ -87,7 +89,7 @@ const UserProfileComponent = ({userId}) => {
             user_id: userId,
         });
         if (res.data.code == LogicCode.SUCCESS) {
-            setRefreshRequestedFriends(!refreshRequestedFriends);
+            setRefresh(!refresh);
         }
     };
 
@@ -107,7 +109,7 @@ const UserProfileComponent = ({userId}) => {
             return res.data.data;
         }
         return null;
-    }, [userId, token, refreshRequestedFriends]);
+    }, [userId, token, refresh]);
 
     return (
         <>
