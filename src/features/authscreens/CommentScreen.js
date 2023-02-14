@@ -90,10 +90,13 @@ const CommentScreen = ({route}) => {
                 <View style={{...styles.wrapper}}>
                     <View style={styles.navigationStackBar}>
                         <TouchableOpacity onPress={onPressGoBackHandler} style={styles.btnBack}>
-                            <FontAwesome5Icon name="arrow-left" size={24}></FontAwesome5Icon>
+                            <FontAwesome5Icon
+                                name="arrow-left"
+                                size={24}
+                                color="#000"></FontAwesome5Icon>
                         </TouchableOpacity>
                         <View style={styles.stackBarTitle}>
-                            <Text style={{fontSize: 18}}>Comments</Text>
+                            <Text style={{fontSize: 18, color: '#000'}}>Comments</Text>
                         </View>
                     </View>
                     <ScrollView

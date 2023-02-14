@@ -6,6 +6,7 @@ import {userReducer} from './slice/User';
 import {postReducer} from './slice/Post';
 import {commentReducer} from './slice/Comment';
 import {notificationReducer} from './slice/Notification';
+// import {messageReducer} from './slice/Message';
 
 export const rootReducer = combineReducers({
     authentication: authenticationReducer,
@@ -14,4 +15,5 @@ export const rootReducer = combineReducers({
     post: postReducer,
     comment: commentReducer,
     notification: notificationReducer,
+    // message: messageReducer,
 });

@@ -80,7 +80,7 @@ export const userOperations = {
     }),
     fetchOtherUserInfo: createAsyncThunk('user/fetchOtherUserInfo', async (data, thunkParams) => {
         const {userId} = data;
-        console.error(userId);
+        // console.error(userId);
         const token = appSelectors.getToken(thunkParams.getState());
         const response = await userApi.getUserInfo(token, userId);
         return response;

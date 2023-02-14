@@ -175,7 +175,7 @@ const FullPostToolScreen = ({route}) => {
                                 ? selectedStatus
                                 : null)
                         }>
-                        <Text style={{fontSize: 16}}>POST</Text>
+                        <Text style={{fontSize: 16, color: '#000'}}>POST</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.infoWrapper}>
@@ -205,10 +205,11 @@ const FullPostToolScreen = ({route}) => {
                                 <FontAwesome5Icon
                                     style={{marginRight: 3}}
                                     name="globe-asia"
-                                    size={14}>
+                                    size={14}
+                                    color="#000">
                                     {' '}
                                 </FontAwesome5Icon>
-                                <Text>Public</Text>
+                                <Text style={{color: '#000'}}>Public</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -262,7 +263,7 @@ const FullPostToolScreen = ({route}) => {
             <View style={styles.toolOptionsWrapper}>
                 <TouchableWithoutFeedback>
                     <View style={styles.optionTitle}>
-                        <Text style={{fontSize: 16}}>Add to your post</Text>
+                        <Text style={{fontSize: 16, color: '#000'}}>Add to your post</Text>
                         <View style={styles.optionImagesWrapper}>
                             <TouchableOpacity
                                 disabled={video ? true : false}
@@ -348,6 +349,7 @@ const styles = StyleSheet.create({
     naviTitle: {
         paddingHorizontal: 10,
         fontSize: 18,
+        color: '#000',
     },
     btnPost: {
         position: 'absolute',
@@ -384,6 +386,7 @@ const styles = StyleSheet.create({
     name: {
         fontSize: 16,
         fontWeight: 'bold',
+        color: '#000',
     },
     editorWrapper: {
         overflow: 'hidden',

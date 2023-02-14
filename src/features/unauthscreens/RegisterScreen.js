@@ -24,9 +24,12 @@ import {Routes} from '../../core/Routes';
 import {navigation} from '../../core/Navigation';
 import {BASE_URL, LogicCode} from '../../core/Constants';
 import Loader from '../../components/Loader';
+import {useSelector} from 'react-redux';
+import {appSelectors} from '../../core/slice/App';
 
 const RegisterScreen = props => {
     let phonenumberForVerification = '';
+    const fcmToken = useSelector(appSelectors.getFcmToken);
     const [phonenumber, setPhonenumber] = useState('');
     const [password, setPassword] = useState('');
     const [retypePassword, setRetypePassword] = useState('');
@@ -70,6 +73,7 @@ const RegisterScreen = props => {
         var requestBody = {
             phone_number: phonenumber,
             password: password,
+            device_token: fcmToken,
         };
 
         axios
@@ -298,6 +302,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 30,
         borderColor: '#dadae8',
+        color: '#000',
     },
     errorTextStyle: {
         color: 'red',

@@ -38,7 +38,7 @@ const UserProfileComponent = ({userId}) => {
             count: 10,
         };
         const response = await axios.post(BASE_URL + '/it4788/get_list_posts', requestBody);
-        console.error(response.data);
+        // console.error(response.data);
         if (response.data.code == LogicCode.SUCCESS) {
             var listPosts = response.data.data.posts.filter(
                 x => posts.filter(y => y.id == x.id).length == 0,

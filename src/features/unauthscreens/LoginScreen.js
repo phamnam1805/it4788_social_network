@@ -78,7 +78,7 @@ const LoginScreen = () => {
             .catch(error => {
                 //Hide Loader
                 setLoading(false);
-                console.error(error);
+                // console.error(error);
             });
     };
     return (
@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 30,
         borderColor: '#dadae8',
+        color: '#000',
     },
     registerTextStyle: {
         color: '#FFFFFF',
