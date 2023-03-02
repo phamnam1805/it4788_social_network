@@ -57,7 +57,7 @@ const NotificationItem = ({index, item}) => {
                 return navigation.navigate('Profile');
             }
             navigation.navigate(Routes.OTHER_PROFILE_SCREEN, {
-                userId: userId,
+                userId: objectId,
             });
         } else if (item.type === 'POST') {
             dispatch(postOperations.handleClickNoti(objectId));
